@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="4567" Name="John the blacksmith ">
+  <Lines>
+    <Line id="1">
+      <Key>Test1</Key>
+      <Line>Testing one</Line>
+      <Condition id="1">Health &lt; 10</Condition>
+    </Line>
+    <Line id="2">
+      <Key>Test2</Key>
+      <Line>testing2</Line>
+    </Line>
+  </Lines>
+</Entity>

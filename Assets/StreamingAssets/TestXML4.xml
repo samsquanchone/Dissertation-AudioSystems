@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="John-6428" Name="John The blacksmith">
+  <Lines>
+    <Line id="1">
+      <Key>Key5</Key>
+      <Line>Ouch, i need healing!</Line>
+      <Condition id="1">health &lt; 10</Condition>
+      <Condition id="2">hey == 5</Condition>
+    </Line>
+    <Line id="2">
+      <Key>Key10</Key>
+      <Line>You are a going to be a touch challenge!</Line>
+      <Condition id="1">Renown &gt; 50</Condition>
+    </Line>
+    <Line id="3">
+      <Key>Key7</Key>
+      <Line>at least you tried!</Line>
+    </Line>
+  </Lines>
+</Entity>
