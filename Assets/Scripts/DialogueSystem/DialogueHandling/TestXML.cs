@@ -91,8 +91,10 @@ public class TestXML : MonoBehaviour
     {
         if (collision.gameObject.name == collisionObject.name && triggerType == TriggerType.Collision)
         {
-            DialogueManager.Instance.PlayDialogueSequence(entity.lines, entity.name);
-            programmerCallback = new (entity.lines[0].key, eventName, null);
+            DialogueManager.Instance.PlayDialogueSequence(entity.lines, entity.name, eventName);
+           // DialogueInfoHandler diaInfoCallback = new(entity.lines[0].key, eventName);
+          //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
+          //  programmerCallback = new (entity.lines[0].key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
         }
     }
 
@@ -100,8 +102,8 @@ public class TestXML : MonoBehaviour
     {
         if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerEnter)
         {
-            DialogueManager.Instance.PlayDialogueSequence(entity.lines, entity.name);
-            programmerCallback = new(entity.lines[0].key, eventName, null);
+           // DialogueManager.Instance.PlayDialogueSequence(entity.lines, entity.name);
+            //programmerCallback = new(entity.lines[0].key, eventName, null);
         }
     }
 
@@ -109,8 +111,8 @@ public class TestXML : MonoBehaviour
     {
         if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerExit)
         {
-            DialogueManager.Instance.PlayDialogueSequence(entity.lines, entity.name);
-            programmerCallback = new(entity.lines[0].key, eventName, null);
+           // DialogueManager.Instance.PlayDialogueSequence(entity.lines, entity.name);
+            //programmerCallback = new(entity.lines[0].key, eventName, null);
         }
     }
 

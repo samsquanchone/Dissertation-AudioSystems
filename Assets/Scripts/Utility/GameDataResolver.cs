@@ -4,15 +4,16 @@ using UnityEngine;
 
 
 public enum GameDataReturnType { GameDataOk, GameDataDefault, GameDataUnknown };
-public class GameDataResolver
+public class GameDataResolver : MonoBehaviour
 {
    private HashTable gameDataHashTable = new();
 
     private void Start()
     {
-        GameDataValue test = new(200);
-
+        GameDataValue test = new((uint)200);
         gameDataHashTable.AddGameDataToHashTable((uint)1, test);
+        SetGameDataVariable((uint)1, 25);
+       
     }
    // Start is called before the first frame update
    public void SetGameDataVariable<T>(uint key, in T inValue)
@@ -52,6 +53,8 @@ public class GameDataResolver
             return GameDataReturnType.GameDataUnknown;
         }
     }
+
+
 
 
 }

@@ -2,29 +2,29 @@
 <Entity ID="34324234" Name="John">
   <Lines>
     <Line id="1">
-      <Key>Test4</Key>
+      <Key>Test1</Key>
       <LineText>hey</LineText>
       <Conditions>
         <Condition id="1">
           <TriggerCondition>&gt;10</TriggerCondition>
           <GameDataName>Health</GameDataName>
-          <GameDataKey>500</GameDataKey>
+          <GameDataKey>1</GameDataKey>
         </Condition>
       </Conditions>
     </Line>
     <Line id="2">
-      <Key>john7</Key>
+      <Key>Test2</Key>
       <LineText>hey</LineText>
       <Conditions>
         <Condition id="1">
-          <TriggerCondition>&lt;10</TriggerCondition>
+          <TriggerCondition>&gt;10</TriggerCondition>
           <GameDataName>Health</GameDataName>
-          <GameDataKey>34234</GameDataKey>
+          <GameDataKey>1</GameDataKey>
         </Condition>
         <Condition id="2">
-          <TriggerCondition>&lt;10</TriggerCondition>
+          <TriggerCondition>&gt;10</TriggerCondition>
           <GameDataName>bata</GameDataName>
-          <GameDataKey>342345</GameDataKey>
+          <GameDataKey>1</GameDataKey>
         </Condition>
       </Conditions>
     </Line>

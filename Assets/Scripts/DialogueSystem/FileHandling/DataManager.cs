@@ -78,9 +78,10 @@ public static class DataManager
                 var triggerCondition = lineNode.Descendants("TriggerCondition");
                 foreach (var _triggerConditionLine in triggerCondition)
                 {
-                    _condition.triggerCondition = _triggerConditionLine.Value;
+                    _condition.triggerCondition =  StringValidation.GetConditionLogicType(_triggerConditionLine.Value,  out string trimmedVal);
+                    dynamic parsedVal = StringValidation.ConvertStringToDataType<dynamic>(trimmedVal);
+                    _condition.conditionValue = parsedVal;
                 }
-                
                 
                 lineObj.conditions.Add( uint.Parse(condition.Attribute("id").Value), _condition);
                 
@@ -124,7 +125,8 @@ public class Line
 public class Condition
 {
     public string gameDataName;
-    public string triggerCondition;
+    public ConditionalLogicType triggerCondition;
+    public dynamic conditionValue;
     public uint gameDataKey;
 }
 
@@ -145,12 +147,3 @@ public class Entity
 
 
 }
-
-[Serializable]
-public class LineListStorage : SerializableDictionary<string, List<Line>>
-{
-    
-}
-
-//[Serializable]
-//public class LineListDictionary : SerializableDictionary<string, List<dynamic>, LineListStorage> { }
