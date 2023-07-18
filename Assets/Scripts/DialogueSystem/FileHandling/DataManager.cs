@@ -27,7 +27,7 @@ public static class DataManager
         
        /// Debug.Log("Entity ID: " + id + "\n" + "Entity Name: " + name);
 
-        var line = xDoc.Root.Descendants("Lines"); //Get all nodes called line
+        var line = xDoc.Root.Descendants("Line"); //Get all nodes called line
       
       //  line = line.
         Debug.Log("ID: " + entity.id);
@@ -44,7 +44,7 @@ public static class DataManager
             Debug.Log(i);
 
             var key = lineNode.Descendants("Key");
-            var _line = lineNode.Descendants("Line"); //Try use this as iterator to make it not 6
+            var _line = lineNode.Descendants("LineText"); //Try use this as iterator to make it not 6
             var conditions = lineNode.Descendants("Condition");
 
             lineObj.lineID = i.ToString(); //For some reason it wont let me get the attribute of the current line node? 
@@ -63,8 +63,28 @@ public static class DataManager
 
             foreach (var condition in conditions)
             {
-                // Debug.Log("Line condition " + condition.Attribute("id").Value + ": " + condition.Value);
-                lineObj.conditions.Add("Condition: " + condition.Attribute("id").Value, condition.Value);
+                Condition _condition = new();
+                var gameDataName = lineNode.Descendants("GameDataName");
+                foreach (var _gameDataLine in gameDataName)
+                {
+                    _condition.gameDataName = _gameDataLine.Value;
+                }
+
+                var gameDataKey = lineNode.Descendants("GameDataKey");
+                foreach (var _gameDataKeyLine in gameDataKey)
+                {
+                    _condition.gameDataKey = uint.Parse(_gameDataKeyLine.Value);
+                }
+                var triggerCondition = lineNode.Descendants("TriggerCondition");
+                foreach (var _triggerConditionLine in triggerCondition)
+                {
+                    _condition.triggerCondition =  StringValidation.GetConditionLogicType(_triggerConditionLine.Value,  out string trimmedVal);
+                    dynamic parsedVal = StringValidation.ConvertStringToDataType<dynamic>(trimmedVal);
+                    _condition.conditionValue = parsedVal;
+                }
+                
+                lineObj.conditions.Add( uint.Parse(condition.Attribute("id").Value), _condition);
+                
 
             }
 
@@ -92,14 +112,24 @@ public class Line
     public string lineID;
     public string key;
     public string line;
-    public Dictionary<string, string> conditions; //Use deserialization utlity script to show this within the inspector
+    public Dictionary<uint, Condition> conditions; //Use deserialization utlity script to show this within the inspector
 
     public Line()
     {
-        conditions = new Dictionary<string, string>();
+        conditions = new Dictionary<uint, Condition>();
     }
 
 }
+
+//Used to define condition info for each line so we can store it in the hash table
+public class Condition
+{
+    public string gameDataName;
+    public ConditionalLogicType triggerCondition;
+    public dynamic conditionValue;
+    public uint gameDataKey;
+}
+
 [Serializable]
 public class Entity
 {
@@ -117,12 +147,3 @@ public class Entity
 
 
 }
-
-[Serializable]
-public class LineListStorage : SerializableDictionary<string, List<Line>>
-{
-    
-}
-
-//[Serializable]
-//public class LineListDictionary : SerializableDictionary<string, List<dynamic>, LineListStorage> { }

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="34324234" Name="John">
+  <Lines>
+    <Line id="1">
+      <Key>Test1</Key>
+      <LineText>hey</LineText>
+      <Conditions>
+        <Condition id="1">
+          <TriggerCondition>&gt;10</TriggerCondition>
+          <GameDataName>Health</GameDataName>
+          <GameDataKey>1</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+    <Line id="2">
+      <Key>Test2</Key>
+      <LineText>hey</LineText>
+      <Conditions>
+        <Condition id="1">
+          <TriggerCondition>&gt;10</TriggerCondition>
+          <GameDataName>Health</GameDataName>
+          <GameDataKey>1</GameDataKey>
+        </Condition>
+        <Condition id="2">
+          <TriggerCondition>&gt;10</TriggerCondition>
+          <GameDataName>bata</GameDataName>
+          <GameDataKey>1</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+  </Lines>
+</Entity>
