@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 
 namespace DialogueUtility
 {
-
-    public class DialogueHandler
+    public enum SequenceType {RandomOneShot, Sequential, PlayerResponse };
+    public class DialogueHandler : MonoBehaviour
     {
         FMOD.Studio.EVENT_CALLBACK dialogueCallback;
 

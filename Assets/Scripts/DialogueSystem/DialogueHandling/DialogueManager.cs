@@ -3,7 +3,7 @@ using UnityEngine;
 using DialogueUtility;
 
 
-public enum SequenceState { SEQUENTIAL, RANDOM, RESPONSE };
+
 
 /// <summary>
 /// This is where the handling of a sequence of dialogue is handled, e.g. if just a random the queue size would be one, 
@@ -31,88 +31,21 @@ public class DialogueManager : MonoBehaviour
     {
         m_instance = this;
     }
-
-    void Start()
+    public void PlayDialogueSequence(List<Line> lineSequence, SequenceType sequenceType)
     {
-        /*
-        string newString;
-        Debug.Log("Condition type: " + StringValidation.GetConditionLogicType("<10", out newString).ToString() + "/// New String:  " + newString);
-
-        string hey = "10";
-        string hey2 = "10.5";
-        Debug.Log("Condition type: " + StringValidation.GetConditionLogicType("<10.5", out hey2).ToString() + "/// New String:  " + hey2);
-        string hey3 = "hey";
-        Debug.Log("Condition type: " + StringValidation.GetConditionLogicType("Hey", out hey3).ToString() + "/// New String:  " + hey3);
 
 
-        dynamic val = StringValidation.ConvertStringToDataType<dynamic>(newString);
-        dynamic valFloat = StringValidation.ConvertStringToDataType<dynamic>(hey2);
-        dynamic valString = StringValidation.ConvertStringToDataType<dynamic>(hey3);
 
-        test = val;
-        stringtest = valString;
-        floatTest = valFloat;
+        Queue dialogueLineSequence = new();
 
-        for (int i = 0; i < 5; i++)
+
+
+        switch (sequenceType)
         {
-            GameDataValue dataVal = new(Random.Range(0, 2000));
-            gameDataHashTable.AddGameDataToHashTable((uint)i, (GameDataValue)dataVal);
+            case SequenceType.Sequential:
 
+                break;
         }
-
-        GameDataValue value = (GameDataValue)gameDataHashTable.hashTable[(uint)1];
-        Debug.Log("GameDataDefaultValue: " + value.m_default);
-        */
-    }
-
-    public void AddEntityToHashTable(Entity entity)
-    {
-        //Add an entitys dialogue information within the scene to the hash table 
-        npcDialogueHashTable.hashTable.Add(uint.Parse(entity.id), entity);
-
-        Entity _entity = (Entity)npcDialogueHashTable.hashTable[uint.Parse(entity.id)]; //NOTE NEED A BETTER WAY OF READING CONDITION ID: MAYBE ADD SOUND DESIGNER ID
-        Debug.Log(_entity.lines[0].conditions[(uint)1].triggerCondition);
-
-
-    }
-
-    public void Notify()
-    {
-        for (int i = 0; i < npcs.Count; i++)
-        {
-            //Notify all observers even though some may not be interested in what has happened
-            //Each observer should check if it is interested in this event
-            npcs[i].OnNotify();
-        }
-    }
-
-    //Add observer to the list
-    public void AddObserver(TestXML observer)
-    {
-        npcs.Add(observer);
-    }
-
-    //Remove observer from the list
-    public void RemoveObserver(TestXML observer)
-    {
-    }
-    public void PlayDialogueSequence(List<Line> lineSequence, string npcName, FMODUnity.EventReference eventName )
-    {
-
-        StartCoroutine(DialogueSequenceTimer(lineSequence, eventName));
-
-        /*
-        if (CheckDialogueCondition(lineSequence[0].conditions[(uint)1]))
-        {
-            Debug.Log("great succsess");
-        }
-        else
-        {
-            Debug.Log("Failed");
-        }
-        // if(lineSequence[0].conditions)
-
-        /*Queue<Line> dialogueLineSequence = new();
 
         //Create a queue from the list of dialogue lines passed to the manager
         foreach (var line in lineSequence)
