@@ -87,7 +87,7 @@ public class TestXML : MonoBehaviour
             }
         }
     }
-
+    
     public void OnNotify()
     {
 
@@ -97,8 +97,8 @@ public class TestXML : MonoBehaviour
     {
         if (collision.gameObject.name == collisionObject.name && triggerType == TriggerType.Collision)
         {
-            DialogueManager.Instance.PlayDialogueSequence(entity.lines, this.sequenceType);
-            programmerCallback = new (entity.lines[0].key, eventName, null);
+            DialogueManager.Instance.PlayDialogueSequence(entity.lines, this.sequenceType, this.eventName);
+            //programmerCallback = new (entity.lines[0].key, eventName, null);
         }
     }
 
@@ -106,8 +106,8 @@ public class TestXML : MonoBehaviour
     {
         if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerEnter)
         {
-            DialogueManager.Instance.PlayDialogueSequence(entity.lines, this.sequenceType);
-            programmerCallback = new(entity.lines[0].key, eventName, null);
+            DialogueManager.Instance.PlayDialogueSequence(entity.lines, this.sequenceType, this.eventName);
+            //programmerCallback = new(entity.lines[0].key, eventName, null);
         }
     }
 
@@ -115,8 +115,8 @@ public class TestXML : MonoBehaviour
     {
         if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerExit)
         {
-            DialogueManager.Instance.PlayDialogueSequence(entity.lines, this.sequenceType);
-            programmerCallback = new(entity.lines[0].key, eventName, null);
+            DialogueManager.Instance.PlayDialogueSequence(entity.lines, this.sequenceType, this.eventName);
+           // programmerCallback = new(entity.lines[0].key, eventName, null);
         }
     }
 

@@ -270,6 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerType: 3
+  sequenceType: 0
   xmlFileName: TestXML3
   eventName:
     Guid:
@@ -660,6 +661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerType: 1
+  sequenceType: 0
   xmlFileName: cheese
   eventName:
     Guid:
@@ -1459,6 +1461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerType: 0
+  sequenceType: 0
   xmlFileName: TestXML2
   eventName:
     Guid:

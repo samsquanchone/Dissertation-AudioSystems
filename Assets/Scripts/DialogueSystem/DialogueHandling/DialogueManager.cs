@@ -15,6 +15,9 @@ public class DialogueManager : MonoBehaviour
     private static DialogueManager m_instance;
     public SubtitleManager subtitleManager;
 
+
+
+
     public List<TestXML> npcs = new List<TestXML>();
 
     public int test;
@@ -31,19 +34,34 @@ public class DialogueManager : MonoBehaviour
     {
         m_instance = this;
     }
-    public void PlayDialogueSequence(List<Line> lineSequence, SequenceType sequenceType)
+
+    public void AddEntityToHashTable(Entity entity)
+    {
+        //Add an entitys dialogue information within the scene to the hash table 
+        npcDialogueHashTable.hashTable.Add(uint.Parse(entity.id), entity);
+
+        Entity _entity = (Entity)npcDialogueHashTable.hashTable[uint.Parse(entity.id)]; //NOTE NEED A BETTER WAY OF READING CONDITION ID: MAYBE ADD SOUND DESIGNER ID
+        Debug.Log(_entity.lines[0].conditions[(uint)1].triggerCondition);
+
+
+    }
+    public void PlayDialogueSequence(List<Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName)
     {
 
 
 
-        Queue dialogueLineSequence = new();
+       // Queue dialogueLineSequence = new();
 
 
 
         switch (sequenceType)
         {
             case SequenceType.Sequential:
+                StartCoroutine(DialogueSequenceTimer(lineSequence, eventName));
+                break;
 
+            case SequenceType.RandomOneShot:
+                PlayRandomDialogue(lineSequence, eventName);
                 break;
         }
 
@@ -62,8 +80,8 @@ public class DialogueManager : MonoBehaviour
        // dialogueLineSequence.Elemen
 
         //Print queue after line is populated 
-       subtitleManager.QueueDialogue(dialogueLineSequence, npcName);
-        */
+       //subtitleManager.QueueDialogue(dialogueLineSequence, npcName);
+        
     }
 
     private System.Collections.IEnumerator DialogueSequenceTimer(List<Line> lineSequence, FMODUnity.EventReference eventName)
@@ -82,10 +100,12 @@ public class DialogueManager : MonoBehaviour
                     {
                         //Play dialogue
                         DialogueInfoHandler diaInfoCallback = new(line.key, eventName);
+
+                        double diaLength = diaInfoCallback.GetDialogueLength() / 1000; //This will return MS, for now we use seconds conversion, but if there are timing issues, maybe revert back to MS
                         //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
                         DialogueHandler programmerCallback = new(line.key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
 
-                        double diaLength = diaInfoCallback.GetDialogueLength() / 1000; //This will return MS, for now we use seconds conversion, but if there are timing issues, maybe revert back to MS
+                       
 
                         yield return new WaitForSeconds((float)diaLength); //We want a dialogue call back for info to get the length of an audio table clip.... UNITY WHY CANT I USE A DOUBLE >_< 
                     }
@@ -98,6 +118,27 @@ public class DialogueManager : MonoBehaviour
         }
 
         yield return 0;
+    }
+
+    private void PlayRandomDialogue(List<Line> lineSequence, FMODUnity.EventReference eventName)
+    {
+        List<Line> triggerableLines = new();
+
+        foreach (var line in lineSequence)
+        {
+            foreach(var condition in line.conditions)
+            {
+                if (CheckDialogueCondition(condition.Value))
+                {
+                    triggerableLines.Add(line);
+                    Debug.Log("Key for lne: " + line.key);
+                }
+            }
+        }
+
+        int indexToPlay = Random.Range(0, triggerableLines.Count);
+        DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
+        //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
     }
 
     public bool CheckDialogueCondition(Condition diaCondition)
