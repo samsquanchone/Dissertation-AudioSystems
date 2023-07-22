@@ -46,8 +46,8 @@ public static class DataManager
             var key = lineNode.Descendants("Key");
             var _line = lineNode.Descendants("LineText"); //Try use this as iterator to make it not 6
             var conditions = lineNode.Descendants("Condition");
-
-            lineObj.lineID = i.ToString(); //For some reason it wont let me get the attribute of the current line node? 
+         
+            lineObj.lineID = uint.Parse((string) lineNode.Attribute("id"));
 
             foreach (var _key in key)
             {
@@ -90,7 +90,7 @@ public static class DataManager
 
             i++;
             //Pass the populated line object to the lines to the line list within the entity object
-            entity.lines.Add(lineObj);
+            entity.lines.Add((uint)lineObj.lineID ,lineObj);
 
         }
 
@@ -109,7 +109,7 @@ public static class DataManager
 [Serializable]
 public class Line
 {
-    public string lineID;
+    public uint lineID;
     public string key;
     public string line;
     public Dictionary<uint, Condition> conditions; //Use deserialization utlity script to show this within the inspector
@@ -135,14 +135,14 @@ public class Entity
 {
     public string id;
     public string name;
-    public List<Line> lines;
+    public Dictionary<uint, Line> lines;
 
     public Entity(string _id, string _name)
     {
         id = _id;
         name = _name;
 
-        lines = new List<Line>();
+        lines = new Dictionary<uint, Line>();
     }
 
 

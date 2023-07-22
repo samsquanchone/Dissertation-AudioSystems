@@ -3,7 +3,7 @@ using UnityEngine;
 using DialogueUtility;
 
 
-public enum SequenceState { SEQUENTIAL, RANDOM, RESPONSE };
+
 
 /// <summary>
 /// This is where the handling of a sequence of dialogue is handled, e.g. if just a random the queue size would be one, 
@@ -14,6 +14,10 @@ public class DialogueManager : MonoBehaviour
     public static DialogueManager Instance => m_instance;
     private static DialogueManager m_instance;
     public SubtitleManager subtitleManager;
+    public PlayerResponseUI playerResponseUI;
+
+
+
 
     public List<TestXML> npcs = new List<TestXML>();
 
@@ -32,37 +36,9 @@ public class DialogueManager : MonoBehaviour
         m_instance = this;
     }
 
-    void Start()
+    private void Start()
     {
-        /*
-        string newString;
-        Debug.Log("Condition type: " + StringValidation.GetConditionLogicType("<10", out newString).ToString() + "/// New String:  " + newString);
-
-        string hey = "10";
-        string hey2 = "10.5";
-        Debug.Log("Condition type: " + StringValidation.GetConditionLogicType("<10.5", out hey2).ToString() + "/// New String:  " + hey2);
-        string hey3 = "hey";
-        Debug.Log("Condition type: " + StringValidation.GetConditionLogicType("Hey", out hey3).ToString() + "/// New String:  " + hey3);
-
-
-        dynamic val = StringValidation.ConvertStringToDataType<dynamic>(newString);
-        dynamic valFloat = StringValidation.ConvertStringToDataType<dynamic>(hey2);
-        dynamic valString = StringValidation.ConvertStringToDataType<dynamic>(hey3);
-
-        test = val;
-        stringtest = valString;
-        floatTest = valFloat;
-
-        for (int i = 0; i < 5; i++)
-        {
-            GameDataValue dataVal = new(Random.Range(0, 2000));
-            gameDataHashTable.AddGameDataToHashTable((uint)i, (GameDataValue)dataVal);
-
-        }
-
-        GameDataValue value = (GameDataValue)gameDataHashTable.hashTable[(uint)1];
-        Debug.Log("GameDataDefaultValue: " + value.m_default);
-        */
+        playerResponseUI.Initialize();
     }
 
     public void AddEntityToHashTable(Entity entity)
@@ -71,107 +47,171 @@ public class DialogueManager : MonoBehaviour
         npcDialogueHashTable.hashTable.Add(uint.Parse(entity.id), entity);
 
         Entity _entity = (Entity)npcDialogueHashTable.hashTable[uint.Parse(entity.id)]; //NOTE NEED A BETTER WAY OF READING CONDITION ID: MAYBE ADD SOUND DESIGNER ID
-        Debug.Log(_entity.lines[0].conditions[(uint)1].triggerCondition);
+        Debug.Log("line id: " +  _entity.lines[(uint)1].lineID);
 
 
     }
 
-    public void Notify()
+    /// <summary>
+    /// Returns an entity object from npcentity hash table
+    /// </summary>
+    /// <param name="entityKey"></param>
+    ///  Key used to access specified hash element for desired npc
+    /// <returns> Returns an entity object which is key element from hashtable</returns>
+    public Entity GetNPCHashElement(uint entityKey)
     {
-        for (int i = 0; i < npcs.Count; i++)
+        Entity entity = (Entity)npcDialogueHashTable.hashTable[entityKey];
+
+        return entity;
+    }
+
+
+
+    public void ExitConversation()
+    {
+        subtitleManager.playerResponseObject.SetActive(false);
+        subtitleManager.HideInteractionUI();
+        Debug.Log("QUIT");
+
+    }
+
+
+    public void ShowInteractUI()
+    {
+
+        subtitleManager.ShowNPCInteractUI();
+    }
+
+    public void InstantiatePlayerResponseInterface(PlayerResponse playerResponseNode)
+    {
+        subtitleManager.HideInteractionUI();
+        playerResponseUI.GeneratePlayerResponses(playerResponseNode);
+        subtitleManager.ShowSubtitleInterface();
+    }
+
+    public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName)
+    {
+
+
+
+        // Queue dialogueLineSequence = new();
+
+
+
+        switch (sequenceType)
         {
-            //Notify all observers even though some may not be interested in what has happened
-            //Each observer should check if it is interested in this event
-            npcs[i].OnNotify();
+            case SequenceType.Sequential:
+                StartCoroutine(DialogueSequenceTimer(entityName, lineSequence, eventName));
+                break;
+
+            case SequenceType.RandomOneShot:
+                PlayRandomDialogue(entityName, lineSequence, eventName);
+                break;
+
+            case SequenceType.PlayerResponse:
+                StartCoroutine(DialogueResponseTimer(entityName, lineSequence[0], eventName)); //Is one shot with one element id set to 0
+                Debug.Log("Set up");
+                break;
         }
-    }
-
-    //Add observer to the list
-    public void AddObserver(TestXML observer)
-    {
-        npcs.Add(observer);
-    }
-
-    //Remove observer from the list
-    public void RemoveObserver(TestXML observer)
-    {
-    }
-    public void PlayDialogueSequence(List<Line> lineSequence, string npcName, FMODUnity.EventReference eventName )
-    {
-
-        StartCoroutine(DialogueSequenceTimer(lineSequence, eventName));
-
-        /*
-        if (CheckDialogueCondition(lineSequence[0].conditions[(uint)1]))
-        {
-            Debug.Log("great succsess");
-        }
-        else
-        {
-            Debug.Log("Failed");
-        }
-        // if(lineSequence[0].conditions)
-
-        /*Queue<Line> dialogueLineSequence = new();
 
         //Create a queue from the list of dialogue lines passed to the manager
         foreach (var line in lineSequence)
         {
-            
-            
-            
+
+
+
             //Add to queue for each line in an entity 
             //dialogueLineSequence.Enqueue(line);
             //Could handle dialogue here and use a coroutine to to queue the dialogue and text properlly, get fmod sounds length
 
         }
 
-       // dialogueLineSequence.Elemen
+        // dialogueLineSequence.Elemen
 
         //Print queue after line is populated 
-       subtitleManager.QueueDialogue(dialogueLineSequence, npcName);
-        */
+        //subtitleManager.QueueDialogue(dialogueLineSequence, npcName);
+
     }
 
-    private System.Collections.IEnumerator DialogueSequenceTimer(List<Line> lineSequence, FMODUnity.EventReference eventName)
+    private System.Collections.IEnumerator DialogueSequenceTimer(string _name, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName)
     {
-        
+
         foreach (var line in lineSequence)
         {
             int i = 0;
-            foreach (var condition in line.conditions)
+            foreach (var condition in line.Value.conditions)
             {
 
                 if (CheckDialogueCondition(condition.Value))
                 {
                     i++;
-                    if (i == line.conditions.Count) //IF all conditions true i.e at end element + all conditions are met 
+                    if (i == line.Value.conditions.Count) //IF all conditions true i.e at end element + all conditions are met 
                     {
                         //Play dialogue
-                        DialogueInfoHandler diaInfoCallback = new(line.key, eventName);
-                        //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
-                        DialogueHandler programmerCallback = new(line.key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
+                        DialogueInfoHandler diaInfoCallback = new(line.Value.key, eventName);
 
                         double diaLength = diaInfoCallback.GetDialogueLength() / 1000; //This will return MS, for now we use seconds conversion, but if there are timing issues, maybe revert back to MS
+                        //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
+                        DialogueHandler programmerCallback = new(line.Value.key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
+                        subtitleManager.QueueDialogue(line.Value.line, _name, (float)diaLength);
+
 
                         yield return new WaitForSeconds((float)diaLength); //We want a dialogue call back for info to get the length of an audio table clip.... UNITY WHY CANT I USE A DOUBLE >_< 
                     }
 
-                   
+
                 }
 
-               
+
             }
         }
 
         yield return 0;
     }
 
+    private System.Collections.IEnumerator DialogueResponseTimer(string _name, Line npcLine, FMODUnity.EventReference eventName)
+    {
+        playerResponseUI.HideCurrentResponseInterface();
+        DialogueInfoHandler diaInfoCallback = new(npcLine.key, eventName);
+
+        double diaLength = diaInfoCallback.GetDialogueLength() / 1000; //This will return MS, for now we use seconds conversion, but if there are timing issues, maybe revert back to MS
+                                                                       //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
+        DialogueHandler programmerCallback = new(npcLine.key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
+       
+        subtitleManager.QueueDialogue(npcLine.line, _name, (float)diaLength);
+        yield return new WaitForSeconds((float)diaLength);
+        playerResponseUI.ShowCurrentResponseInterface();
+    }
+
+    private void PlayRandomDialogue(string entityName, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName)
+    {
+        List<Line> triggerableLines = new();
+
+        foreach (var line in lineSequence)
+        {
+            foreach (var condition in line.Value.conditions)
+            {
+                if (CheckDialogueCondition(condition.Value))
+                {
+                    triggerableLines.Add(line.Value);
+                    Debug.Log("Key for lne: " + line.Value.key);
+                }
+            }
+        }
+
+        int indexToPlay = Random.Range(0, triggerableLines.Count);
+        DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
+        subtitleManager.QueueDialogue(triggerableLines[indexToPlay].line, entityName, 3f);
+        //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
+    }
+
+    
+
     public bool CheckDialogueCondition(Condition diaCondition)
     {
         //GameDataResolver resolver = new();
         GameDataReturnType dataResolveType = resolver.QuerryGameData<dynamic>(diaCondition.gameDataKey, out dynamic gameDataVal);
-        
+
         switch (diaCondition.triggerCondition)
         {
             case ConditionalLogicType.GreaterThan:
