@@ -6,17 +6,20 @@ using DialogueUtility;
 
 public enum TriggerType {TriggerEnter, Collision, Radius, TriggerExit} //Alow user to determine how the dialogue from the xml file is triggered within the game engine 
 public enum ColliderType {BoxCollider, SphereCollider, CapsuleCollider, Invalid} //Used to determine what collider type the user has attached to the triggerObject
+
+
 public class TestXML : MonoBehaviour
 {
-
+    [Tooltip("This dictates how the dialogue is triggered. For trigger enter it will trigger when a specified object enters a specified box, or spherical collider. For trigger exit, it is the same as trigger enter but trigger when the specfied object leaves the trigger. Collision mode will trigger when a specified object collides with the object this script is attached to. Radius mode will trigger when the attached player object is in a specified radius, and the specified interact key is pressed. PLEASE NOTE: YOU WILL ONLY SEE PARAMETERS RELATED TO THE SELECTED TRIGGER TPYE, AS VARIABLES WILL BE OVERRIDEN IN THE INSPECTOR. PLEASE ENSURE TRIGGER PARAMETERS ARE DEFINED")]
     public TriggerType triggerType;
 
-    [SerializeField] private SequenceType sequenceType;
+    [Tooltip("Dictates how dialogue is sequenced. For all dialogue in a XML file to be played in one sequence, select sequential. For a single trigger of a random line within the xml file, thats conditions are met, select random-one shot.   For player response sequence to dictate what line is played, select play response.")]
+    public SequenceType sequenceType;
    
 
 
 
-
+    [Tooltip("This is the file name of the dialogue xml file for this entity. Please enter exactly the file name (case sensitive), without the file extention (.xml)")]
     [SerializeField] private string xmlFileName;
     
 
@@ -27,17 +30,15 @@ public class TestXML : MonoBehaviour
 
     [SerializeField] private Entity entity;
 
-    public int[] intParams;
-    public float[] floatParams;
 
-
-    public int healthParams;
+    public GameObject player;
+    
 
     private DialogueHandler programmerCallback;
 
-
+    public float distance;
     public bool is3D = false;
-
+    bool hasGeneratedResponseInterface = false;
     //Dynamic parameters
     [HideInInspector] public Transform  triggerObject;
     [HideInInspector] public Transform triggeringObject;
@@ -46,6 +47,7 @@ public class TestXML : MonoBehaviour
     [HideInInspector] public Transform origin;
     [HideInInspector] public bool debugDraw = false; //Use gizmos to draw what is provided by the user supplied trigger object param 
     [HideInInspector] public Color debugColor;
+    public List<PlayerResponse> playerResponseNodes;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +55,10 @@ public class TestXML : MonoBehaviour
         DialogueManager.Instance.AddEntityToHashTable(entity);
         entityID = entity.id;
         entityName = entity.name;
+
+        
+
+        
     }
 
     void InitializeXMLFile()
@@ -87,7 +93,34 @@ public class TestXML : MonoBehaviour
             }
         }
     }
-    
+
+    private void Update()
+    {
+        if (this.sequenceType == SequenceType.PlayerResponse)
+        {
+            distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
+
+
+            if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < 12 && !hasGeneratedResponseInterface)
+            {
+                DialogueManager.Instance.ShowInteractUI();
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    DialogueManager.Instance.InstantiatePlayerResponseInterface(playerResponseNodes[0]);
+                    hasGeneratedResponseInterface = true;
+                     
+                }
+
+            }
+
+            else if (DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, player.transform.position) > 12))
+            {
+                hasGeneratedResponseInterface = true;
+                DialogueManager.Instance.ExitConversation();
+            }
+        }
+    }
+
     public void OnNotify()
     {
 
@@ -97,7 +130,7 @@ public class TestXML : MonoBehaviour
     {
         if (collision.gameObject.name == collisionObject.name && triggerType == TriggerType.Collision)
         {
-            DialogueManager.Instance.PlayDialogueSequence(entity.lines, this.sequenceType, this.eventName);
+            DialogueManager.Instance.PlayDialogueSequence(this.entityName,  entity.lines, this.sequenceType, this.eventName);
             //programmerCallback = new (entity.lines[0].key, eventName, null);
         }
     }
@@ -106,7 +139,7 @@ public class TestXML : MonoBehaviour
     {
         if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerEnter)
         {
-            DialogueManager.Instance.PlayDialogueSequence(entity.lines, this.sequenceType, this.eventName);
+            DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName);
             //programmerCallback = new(entity.lines[0].key, eventName, null);
         }
     }
@@ -115,7 +148,7 @@ public class TestXML : MonoBehaviour
     {
         if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerExit)
         {
-            DialogueManager.Instance.PlayDialogueSequence(entity.lines, this.sequenceType, this.eventName);
+            DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName);
            // programmerCallback = new(entity.lines[0].key, eventName, null);
         }
     }
@@ -253,6 +286,11 @@ public class LineData
                     break;
 
             }
+
+        if (script.sequenceType == SequenceType.PlayerResponse)
+        {
+           
+        }
 
             if (script.is3D)
             {

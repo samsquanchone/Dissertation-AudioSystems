@@ -14,7 +14,7 @@
     </Line>
     <Line id="2">
       <Key>Test2</Key>
-      <LineText>hey</LineText>
+      <LineText>How is it goin?</LineText>
       <Conditions>
         <Condition id="1">
           <TriggerCondition>&gt;10</TriggerCondition>
