@@ -8,13 +8,15 @@ public class PlayerResponse : ScriptableObject
 {
     public string playerName;
     public string responseNodeName;
+    public uint responseNodeID;
     public NodeTransitionMode nodeTransitionMode;
     public uint npcID;
     
     public List<PlayerResponseData> playerResponses;
-
     public FMODUnity.EventReference fmodEvent;
-    public ConditionalLogicType conditiontype;
+
+    public NodeTransitionCondition tranistonCondition;
+  
 
 
 
@@ -44,5 +46,17 @@ public class PlayerResponseData
     public string responseText;
     public string gameDataConditionKey;
     public uint npcLineID;
+    public uint conditionToNodeID;
+    public PlayerResponse transitionNode;
+    public bool isExitNode;
 
+}
+
+[System.Serializable]
+public class NodeTransitionCondition
+{
+    public string gameDataConditionName;
+    public ConditionalLogicType conditiontype;
+    public dynamic conditionValue;
+    public uint gameDataKey;
 }

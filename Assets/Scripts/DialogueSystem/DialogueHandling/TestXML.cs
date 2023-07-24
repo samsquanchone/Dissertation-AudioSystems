@@ -47,7 +47,7 @@ public class TestXML : MonoBehaviour
     [HideInInspector] public Transform origin;
     [HideInInspector] public bool debugDraw = false; //Use gizmos to draw what is provided by the user supplied trigger object param 
     [HideInInspector] public Color debugColor;
-    public List<PlayerResponse> playerResponseNodes;
+    public List<PlayerResponse> playerResponseNodes; //Could instead just have a list of UINTs that are used to obtain player response node. OR JUST HAVE ONE OBJECT TYPE THAT IS PLAYER RESPONSE AS A BASE NODE, THEN LET LOWER LEVEL CODE HANDLE ALL TRANSITIONS SET BY SCRIPTABLES
     // Start is called before the first frame update
     void Start()
     {
@@ -55,9 +55,6 @@ public class TestXML : MonoBehaviour
         DialogueManager.Instance.AddEntityToHashTable(entity);
         entityID = entity.id;
         entityName = entity.name;
-
-        
-
         
     }
 
@@ -113,9 +110,9 @@ public class TestXML : MonoBehaviour
 
             }
 
-            else if (DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, player.transform.position) > 12))
+            else if (DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, player.transform.position) > 12) || !DialogueManager.Instance.GetConversationState())
             {
-                hasGeneratedResponseInterface = true;
+                hasGeneratedResponseInterface = false;
                 DialogueManager.Instance.ExitConversation();
             }
         }

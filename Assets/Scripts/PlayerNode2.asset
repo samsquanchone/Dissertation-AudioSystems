@@ -10,36 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad1931276a73f054696e256efb577754, type: 3}
-  m_Name: Player
+  m_Name: PlayerNode2
   m_EditorClassIdentifier: 
   playerName: Alex
-  responseNodeName: GetQuest
-  responseNodeID: 5421
+  responseNodeName: GetQuest2
+  responseNodeID: 5422
   nodeTransitionMode: 0
   npcID: 34324234
   playerResponses:
   - sequenceType: 0
     conditiontype: 0
     conditionValue: 10
-    responseText: hey how is it goin
+    responseText: Charlie chaplin
     gameDataConditionKey: 
     npcLineID: 1
     conditionToNodeID: 456372
-    transitionNode: {fileID: 11400000, guid: 1b00f9c23eb8e5041aa5347d3ff7bdeb, type: 2}
-    isExitNode: 0
-  - sequenceType: 0
-    conditiontype: 0
-    conditionValue: 'true '
-    responseText: Know of anything I can do round here?
-    gameDataConditionKey: 
-    npcLineID: 2
-    conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 0
   - sequenceType: 0
     conditiontype: 0
+    conditionValue: 'true '
+    responseText: Whats good in the hood
+    gameDataConditionKey: 
+    npcLineID: 2
+    conditionToNodeID: 0
+    transitionNode: {fileID: 0}
+    isExitNode: 1
+  - sequenceType: 0
+    conditiontype: 0
     conditionValue: 10.5
-    responseText: Whats good?
+    responseText: bing ba boom
     gameDataConditionKey: 
     npcLineID: 0
     conditionToNodeID: 0
@@ -49,15 +49,6 @@ MonoBehaviour:
     conditiontype: 0
     conditionValue: 
     responseText: dangshan
-    gameDataConditionKey: 
-    npcLineID: 0
-    conditionToNodeID: 0
-    transitionNode: {fileID: 0}
-    isExitNode: 0
-  - sequenceType: 0
-    conditiontype: 0
-    conditionValue: 
-    responseText: Big boy
     gameDataConditionKey: 
     npcLineID: 0
     conditionToNodeID: 0

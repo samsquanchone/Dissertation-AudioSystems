@@ -15,10 +15,6 @@ public class DialogueManager : MonoBehaviour
     private static DialogueManager m_instance;
     public SubtitleManager subtitleManager;
     public PlayerResponseUI playerResponseUI;
-
-
-
-
     public List<TestXML> npcs = new List<TestXML>();
 
     public int test;
@@ -31,6 +27,11 @@ public class DialogueManager : MonoBehaviour
 
     public GameDataResolver resolver;
 
+    private PlayerResponse currentResponseNode; //Not implement but should maybe handle this here instead of response UI script
+    PlayerResponseData currentResponse;
+
+    bool isConversationActive = false;
+
     private void Awake()
     {
         m_instance = this;
@@ -39,6 +40,7 @@ public class DialogueManager : MonoBehaviour
     private void Start()
     {
         playerResponseUI.Initialize();
+       
     }
 
     public void AddEntityToHashTable(Entity entity)
@@ -65,12 +67,10 @@ public class DialogueManager : MonoBehaviour
         return entity;
     }
 
-
-
     public void ExitConversation()
     {
-        subtitleManager.playerResponseObject.SetActive(false);
-        subtitleManager.HideInteractionUI();
+        isConversationActive = false;
+        subtitleManager.HideAllUI();
         Debug.Log("QUIT");
 
     }
@@ -82,10 +82,18 @@ public class DialogueManager : MonoBehaviour
         subtitleManager.ShowNPCInteractUI();
     }
 
+    public bool GetConversationState()
+    {
+        return isConversationActive;
+    }
+
     public void InstantiatePlayerResponseInterface(PlayerResponse playerResponseNode)
     {
+        isConversationActive = true;
+        currentResponseNode = playerResponseNode;
         subtitleManager.HideInteractionUI();
         playerResponseUI.GeneratePlayerResponses(playerResponseNode);
+        playerResponseUI.ShowCurrentResponseInterface();
         subtitleManager.ShowSubtitleInterface();
     }
 
@@ -97,7 +105,7 @@ public class DialogueManager : MonoBehaviour
         // Queue dialogueLineSequence = new();
 
 
-
+        isConversationActive = true;
         switch (sequenceType)
         {
             case SequenceType.Sequential:
@@ -166,21 +174,46 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
+        ExitConversation();
+
         yield return 0;
+    }
+
+    public void SetCurrentResponse(PlayerResponseData response)
+    {
+        currentResponse = response;
     }
 
     private System.Collections.IEnumerator DialogueResponseTimer(string _name, Line npcLine, FMODUnity.EventReference eventName)
     {
         playerResponseUI.HideCurrentResponseInterface();
+
+
         DialogueInfoHandler diaInfoCallback = new(npcLine.key, eventName);
 
         double diaLength = diaInfoCallback.GetDialogueLength() / 1000; //This will return MS, for now we use seconds conversion, but if there are timing issues, maybe revert back to MS
-                                                                       //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
+
+
+        if (diaLength == 0) { diaLength = 2; } //On first trigger on occasion the callback with fmod does not happen, this just ensures there is a default val the first time
+        Debug.Log("dialength: " + diaLength);
+
+
         DialogueHandler programmerCallback = new(npcLine.key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
-       
+
         subtitleManager.QueueDialogue(npcLine.line, _name, (float)diaLength);
         yield return new WaitForSeconds((float)diaLength);
-        playerResponseUI.ShowCurrentResponseInterface();
+
+
+        if (!playerResponseUI.IsExitResponse(currentResponse))
+        {
+
+            playerResponseUI.ShowCurrentResponseInterface();
+        }
+
+        else if (playerResponseUI.IsExitResponse(currentResponse))
+        {
+            ExitConversation();
+        }
     }
 
     private void PlayRandomDialogue(string entityName, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName)

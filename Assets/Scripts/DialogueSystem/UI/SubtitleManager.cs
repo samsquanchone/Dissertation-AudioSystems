@@ -6,7 +6,7 @@ public class SubtitleManager : MonoBehaviour
 {
     //For refactoring, maybe just make this a singleton so it can easily be accessed without references. There should be as little manual referencing as needed
 
-    private GameObject subtitleContainer;
+    public GameObject subtitleContainer;
     [SerializeField] private GameObject dialogueContainer;
     [SerializeField] private TMP_Text entityNameText;
     [SerializeField] private TMP_Text dialogueLineText;
@@ -15,25 +15,33 @@ public class SubtitleManager : MonoBehaviour
 
     private void Start()
     {
-        subtitleContainer = this.gameObject;
+       // subtitleContainer = this.gameObject;
         CloseSubtitleInterace();
     }
     public void QueueDialogue(string line, string name, float length) //Need to change to object so i can see multiple line attributes 
     {
-        
+      
         StartCoroutine(LineTimer(line, name, length));
     }
 
     IEnumerator LineTimer(string line, string npcName, float length)
     {
+        ShowSubtitleInterface();
+        dialogueContainer.SetActive(true);
         dialogueLineText.text = line;
         entityNameText.text = npcName;
-     
-        dialogueContainer.SetActive(true);
-        ShowSubtitleInterface();
+       
         yield return new WaitForSeconds(length);
-        subtitleContainer.SetActive(false);
+      
         dialogueContainer.SetActive(false);
+    }
+
+    public void  HideAllUI()
+    {
+        dialogueContainer.SetActive(false);
+        interactText.gameObject.SetActive(false);
+        playerResponseObject.SetActive(false);
+        subtitleContainer.SetActive(false);
     }
 
     public void ShowNPCInteractUI()
@@ -47,6 +55,8 @@ public class SubtitleManager : MonoBehaviour
         subtitleContainer.SetActive(false);
         interactText.gameObject.SetActive(false);
     }
+
+   
 
     public bool IsInteractPanelActive()
     {
