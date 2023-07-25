@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/// <summary>
+/// This could all be static to avoid the need for references to it, then the game programmers can just add as they please
+/// </summary>
 public enum GameDataReturnType { GameDataOk, GameDataDefault, GameDataUnknown };
 public class GameDataResolver : MonoBehaviour
 {

@@ -27,6 +27,7 @@ MonoBehaviour:
     conditionToNodeID: 456372
     transitionNode: {fileID: 0}
     isExitNode: 0
+    eventsList: []
   - sequenceType: 0
     conditiontype: 0
     conditionValue: 'true '
@@ -36,6 +37,21 @@ MonoBehaviour:
     conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 1
+    eventsList:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7713350364998941058, guid: 347c64f5b3b91df43a38450f3af8b191, type: 3}
+          m_TargetAssemblyTypeName: QuestHandler, Assembly-CSharp
+          m_MethodName: SetQuest
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - sequenceType: 0
     conditiontype: 0
     conditionValue: 10.5
@@ -45,6 +61,7 @@ MonoBehaviour:
     conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 0
+    eventsList: []
   - sequenceType: 0
     conditiontype: 0
     conditionValue: 
@@ -54,6 +71,7 @@ MonoBehaviour:
     conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 0
+    eventsList: []
   fmodEvent:
     Guid:
       Data1: 1874741712
@@ -61,6 +79,7 @@ MonoBehaviour:
       Data3: -598486142
       Data4: 706363311
     Path: event:/Double
+  transitionTo: {fileID: 0}
   tranistonCondition:
     gameDataConditionName: 
     conditiontype: 0

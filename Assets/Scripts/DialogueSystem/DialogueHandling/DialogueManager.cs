@@ -21,6 +21,8 @@ public class DialogueManager : MonoBehaviour
     public string stringtest;
     public float floatTest;
 
+
+
     //Create an instace of our hashTableObject with abstracted hash handling functionality, for both npcsDialogue + gamedata
     private HashTable gameDataHashTable = new();
     private HashTable npcDialogueHashTable = new();
@@ -182,6 +184,7 @@ public class DialogueManager : MonoBehaviour
     public void SetCurrentResponse(PlayerResponseData response)
     {
         currentResponse = response;
+
     }
 
     private System.Collections.IEnumerator DialogueResponseTimer(string _name, Line npcLine, FMODUnity.EventReference eventName)
@@ -198,11 +201,17 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("dialength: " + diaLength);
 
 
-        DialogueHandler programmerCallback = new(npcLine.key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
+        DialogueHandler programmerCallback = new(npcLine.key, eventName, null);
 
         subtitleManager.QueueDialogue(npcLine.line, _name, (float)diaLength);
         yield return new WaitForSeconds((float)diaLength);
 
+
+        //Iterate through all responses event list and invoke all events
+        foreach (var _event in currentResponse.eventsList)
+        {
+            _event.Invoke();
+        }
 
         if (!playerResponseUI.IsExitResponse(currentResponse))
         {
@@ -240,19 +249,32 @@ public class DialogueManager : MonoBehaviour
 
     
 
-    public bool CheckDialogueCondition(Condition diaCondition)
+    public bool CheckDialogueCondition<T>(T diaCondition)
     {
-        //GameDataResolver resolver = new();
-        GameDataReturnType dataResolveType = resolver.QuerryGameData<dynamic>(diaCondition.gameDataKey, out dynamic gameDataVal);
 
-        switch (diaCondition.triggerCondition)
+        /*Player response data is Scriptable object driven, while the NPC XML system is driven by files and the data is contained in more complex collections, which can't be shown within the inspector.
+         Generic object casting used to determine type and provide respective conditions to the game condition query, without needing to repeat this function for a seperate data structure */
+        dynamic condition = diaCondition;
+        if (typeof(T).Equals(typeof(Condition)))
+        {
+            condition = (Condition)(object)diaCondition;
+        }
+        else if (typeof(T).Equals(typeof(NodeCondition)))
+        {
+            condition = (NodeCondition)(object)diaCondition;
+        }
+
+        //GameDataResolver resolver = new();
+        GameDataReturnType dataResolveType = resolver.QuerryGameData<dynamic>(condition.gameDataKey, out dynamic gameDataVal);
+
+        switch (condition.triggerCondition)
         {
             case ConditionalLogicType.GreaterThan:
-                if (gameDataVal > diaCondition.conditionValue) { return true; }
+                if (gameDataVal > condition.conditionValue) { return true; }
                 break;
 
             case ConditionalLogicType.LessThan:
-                if (gameDataVal < diaCondition.conditionValue) { return true; }
+                if (gameDataVal < condition.conditionValue) { return true; }
                 break;
 
             case ConditionalLogicType.True:
@@ -264,7 +286,7 @@ public class DialogueManager : MonoBehaviour
                 break;
         }
 
-        Debug.Log("Resolution: " + dataResolveType.ToString() + " /  gameDataVal: " + gameDataVal + "ConditionVAL: " + diaCondition.conditionValue);
+        Debug.Log("Resolution: " + dataResolveType.ToString() + " /  gameDataVal: " + gameDataVal + "ConditionVAL: " + condition.conditionValue);
         return false;
     }
 }

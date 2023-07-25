@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using DialogueUtility;
+using UnityEngine.Events;
 
 public enum TriggerType {TriggerEnter, Collision, Radius, TriggerExit} //Alow user to determine how the dialogue from the xml file is triggered within the game engine 
 public enum ColliderType {BoxCollider, SphereCollider, CapsuleCollider, Invalid} //Used to determine what collider type the user has attached to the triggerObject
@@ -30,6 +31,8 @@ public class TestXML : MonoBehaviour
 
     [SerializeField] private Entity entity;
 
+    [SerializeField] private List<UnityEvent> events;
+        
 
     public GameObject player;
     
@@ -55,6 +58,16 @@ public class TestXML : MonoBehaviour
         DialogueManager.Instance.AddEntityToHashTable(entity);
         entityID = entity.id;
         entityName = entity.name;
+
+        //Ditch the list idea and just have a parent bass node
+        if (this.sequenceType == SequenceType.PlayerResponse)
+        {
+            
+                //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
+                playerResponseNodes[0].tranistonCondition.conditionValue = StringValidation.ConvertStringToDataType<dynamic>(playerResponseNodes[0].tranistonCondition.conditionToParse);
+               // Debug.Log(response.condition.conditionToParse);
+            
+        }
         
     }
 
@@ -91,6 +104,10 @@ public class TestXML : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// THIS DEFFO NEEDS REFACTORING! MAYBE EVENT BASED, AS WELL AS NOT AS MANY NESTED STATEMENTS!!!!!
+    /// </summary>
     private void Update()
     {
         if (this.sequenceType == SequenceType.PlayerResponse)
@@ -103,6 +120,8 @@ public class TestXML : MonoBehaviour
                 DialogueManager.Instance.ShowInteractUI();
                 if (Input.GetKeyDown(KeyCode.E))
                 {
+                    if (DialogueManager.Instance.CheckDialogueCondition<NodeCondition>(playerResponseNodes[0].tranistonCondition)) { playerResponseNodes[0] = playerResponseNodes[0].transitionTo; } //IF the node condition is met then transition to the next response node
+
                     DialogueManager.Instance.InstantiatePlayerResponseInterface(playerResponseNodes[0]);
                     hasGeneratedResponseInterface = true;
                      

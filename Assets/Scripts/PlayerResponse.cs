@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [System.Serializable]
 [CreateAssetMenu()]
@@ -9,26 +10,20 @@ public class PlayerResponse : ScriptableObject
     public string playerName;
     public string responseNodeName;
     public uint responseNodeID;
-    public NodeTransitionMode nodeTransitionMode;
+    public NodeTransitionMode nodeTransitionMode; //Maybe just get rid of this, can have natural node progression and line back and fourth, back to bass node
     public uint npcID;
     
     public List<PlayerResponseData> playerResponses;
     public FMODUnity.EventReference fmodEvent;
 
-    public NodeTransitionCondition tranistonCondition;
+    public PlayerResponse transitionTo;
+    public NodeCondition tranistonCondition;
+
   
 
 
 
-    public void Start()
-    {
-        foreach (var response in this.playerResponses)
-        {
-            //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
-            response.conditionPassedValue = StringValidation.ConvertStringToDataType<dynamic>(response.conditionValue);
-            Debug.Log(response.conditionPassedValue);
-        }
-    }
+    
 
 
 }
@@ -39,24 +34,26 @@ public enum NodeTransitionMode {CHOICE, DATA };
 [System.Serializable]
 public class PlayerResponseData
 {
-    public DialogueUtility.SequenceType sequenceType;
-    public ConditionalLogicType conditiontype;
-    public string conditionValue;
-    public dynamic conditionPassedValue;
+   
+    
     public string responseText;
-    public string gameDataConditionKey;
+    public NodeCondition condition;
     public uint npcLineID;
     public uint conditionToNodeID;
     public PlayerResponse transitionNode;
     public bool isExitNode;
+    public List<UnityEvent> eventsList; //Use this to be able to give quest ect ect
 
 }
 
+
+//Would just use the Condition object, however it contains data types that are not shown in inspector by default
 [System.Serializable]
-public class NodeTransitionCondition
+public class NodeCondition
 {
     public string gameDataConditionName;
-    public ConditionalLogicType conditiontype;
+    public ConditionalLogicType triggerCondition;
+    public string conditionToParse;
     public dynamic conditionValue;
     public uint gameDataKey;
 }
