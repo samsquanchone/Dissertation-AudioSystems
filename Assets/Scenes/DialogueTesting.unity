@@ -977,7 +977,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerType: 1
   sequenceType: 2
-  xmlFileName: cheese
+  xmlFileName: JohnDialogue
   eventName:
     Guid:
       Data1: 1874741712

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="1041" Name="John">
+  <Lines>
+    <Line id="1234">
+      <Key>John-NotMuch</Key>
+      <LineText>Not too bad thank you</LineText>
+      <Conditions />
+    </Line>
+    <Line id="4567">
+      <Key>John-Boxes</Key>
+      <LineText>Yes, I miss placed some boxes. Could you find them for me?</LineText>
+      <Conditions />
+    </Line>
+    <Line id="3334">
+      <Key>John-SuitYourself</Key>
+      <LineText>Suit yourself...</LineText>
+      <Conditions />
+    </Line>
+    <Line id="343411">
+      <Key>John-Brilliant</Key>
+      <LineText>Brilliant! See you soon.</LineText>
+      <Conditions />
+    </Line>
+    <Line id="234511">
+      <Key>John-Liar</Key>
+      <LineText>No you have not, you liar. Come back when you have my boxes!</LineText>
+      <Conditions />
+    </Line>
+    <Line id="1111">
+      <Key>John-Reminder</Key>
+      <LineText>You need to collect all my boxes.</LineText>
+      <Conditions />
+    </Line>
+  </Lines>
+</Entity>

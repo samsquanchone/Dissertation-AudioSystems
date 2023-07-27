@@ -16,7 +16,7 @@ MonoBehaviour:
   responseNodeName: GetQuest
   responseNodeID: 5421
   nodeTransitionMode: 0
-  npcID: 34324234
+  npcID: 1041
   playerResponses:
   - responseText: Hey, how is it going?
     condition:
@@ -24,7 +24,7 @@ MonoBehaviour:
       triggerCondition: 0
       conditionToParse: 
       gameDataKey: 0
-    npcLineID: 1
+    npcLineID: 1234
     conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 0
@@ -35,18 +35,18 @@ MonoBehaviour:
       triggerCondition: 0
       conditionToParse: 
       gameDataKey: 0
-    npcLineID: 1
+    npcLineID: 4567
     conditionToNodeID: 0
     transitionNode: {fileID: 11400000, guid: 1b00f9c23eb8e5041aa5347d3ff7bdeb, type: 2}
     isExitNode: 0
     eventsList: []
   fmodEvent:
     Guid:
-      Data1: 1874741712
-      Data2: 1285005356
-      Data3: -598486142
-      Data4: 706363311
-    Path: event:/Double
+      Data1: -653277270
+      Data2: 1174471842
+      Data3: 16416897
+      Data4: 1969343076
+    Path: event:/Talking
   transitionTo: {fileID: 11400000, guid: 14a42c6534ec0b441b3c8894f9da87c8, type: 2}
   tranistonCondition:
     gameDataConditionName: QuestAccepted

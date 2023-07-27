@@ -16,7 +16,7 @@ MonoBehaviour:
   responseNodeName: Berty2
   responseNodeID: 245
   nodeTransitionMode: 1
-  npcID: 234
+  npcID: 1041
   playerResponses:
   - responseText: I have completed the quest!
     condition:
@@ -24,7 +24,7 @@ MonoBehaviour:
       triggerCondition: 0
       conditionToParse: 
       gameDataKey: 0
-    npcLineID: 0
+    npcLineID: 234511
     conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 0
@@ -35,18 +35,18 @@ MonoBehaviour:
       triggerCondition: 0
       conditionToParse: 
       gameDataKey: 0
-    npcLineID: 0
+    npcLineID: 1111
     conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 0
     eventsList: []
   fmodEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -653277270
+      Data2: 1174471842
+      Data3: 16416897
+      Data4: 1969343076
+    Path: event:/Talking
   transitionTo: {fileID: 0}
   tranistonCondition:
     gameDataConditionName: 
