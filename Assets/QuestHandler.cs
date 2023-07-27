@@ -13,6 +13,11 @@ public class QuestHandler : MonoBehaviour
     }
 
 
+    public void QuestAccepted()
+    {
+        DialogueManager.Instance.resolver.SetGameDataVariable((uint)2, true);
+    }
+
     public void SetQuest(int questKey)
     {
 

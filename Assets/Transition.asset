@@ -18,11 +18,23 @@ MonoBehaviour:
   nodeTransitionMode: 1
   npcID: 234
   playerResponses:
-  - sequenceType: 0
-    conditiontype: 0
-    conditionValue: 
-    responseText: Nice!
-    gameDataConditionKey: 
+  - responseText: I have completed the quest!
+    condition:
+      gameDataConditionName: 
+      triggerCondition: 0
+      conditionToParse: 
+      gameDataKey: 0
+    npcLineID: 0
+    conditionToNodeID: 0
+    transitionNode: {fileID: 0}
+    isExitNode: 0
+    eventsList: []
+  - responseText: What do I have to do again?
+    condition:
+      gameDataConditionName: 
+      triggerCondition: 0
+      conditionToParse: 
+      gameDataKey: 0
     npcLineID: 0
     conditionToNodeID: 0
     transitionNode: {fileID: 0}
@@ -38,5 +50,6 @@ MonoBehaviour:
   transitionTo: {fileID: 0}
   tranistonCondition:
     gameDataConditionName: 
-    conditiontype: 0
+    triggerCondition: 0
+    conditionToParse: 
     gameDataKey: 0

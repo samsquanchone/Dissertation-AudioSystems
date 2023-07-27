@@ -18,75 +18,26 @@ MonoBehaviour:
   nodeTransitionMode: 0
   npcID: 34324234
   playerResponses:
-  - responseText: hey how is it goin
+  - responseText: Hey, how is it going?
     condition:
       gameDataConditionName: 
       triggerCondition: 0
       conditionToParse: 
       gameDataKey: 0
     npcLineID: 1
-    conditionToNodeID: 456372
-    transitionNode: {fileID: 11400000, guid: 1b00f9c23eb8e5041aa5347d3ff7bdeb, type: 2}
+    conditionToNodeID: 0
+    transitionNode: {fileID: 0}
     isExitNode: 0
-    eventsList:
-    - m_PersistentCalls:
-        m_Calls: []
+    eventsList: []
   - responseText: Know of anything I can do round here?
     condition:
       gameDataConditionName: 
       triggerCondition: 0
       conditionToParse: 
       gameDataKey: 0
-    npcLineID: 2
+    npcLineID: 1
     conditionToNodeID: 0
-    transitionNode: {fileID: 0}
-    isExitNode: 0
-    eventsList: []
-  - responseText: Whats good?
-    condition:
-      gameDataConditionName: 
-      triggerCondition: 0
-      conditionToParse: 
-      gameDataKey: 0
-    npcLineID: 0
-    conditionToNodeID: 0
-    transitionNode: {fileID: 0}
-    isExitNode: 0
-    eventsList: []
-  - responseText: dangshan
-    condition:
-      gameDataConditionName: 
-      triggerCondition: 0
-      conditionToParse: 
-      gameDataKey: 0
-    npcLineID: 0
-    conditionToNodeID: 0
-    transitionNode: {fileID: 0}
-    isExitNode: 0
-    eventsList:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: 
-          m_MethodName: 
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: 
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - responseText: Big boy
-    condition:
-      gameDataConditionName: 
-      triggerCondition: 0
-      conditionToParse: 
-      gameDataKey: 0
-    npcLineID: 0
-    conditionToNodeID: 0
-    transitionNode: {fileID: 0}
+    transitionNode: {fileID: 11400000, guid: 1b00f9c23eb8e5041aa5347d3ff7bdeb, type: 2}
     isExitNode: 0
     eventsList: []
   fmodEvent:
@@ -98,7 +49,7 @@ MonoBehaviour:
     Path: event:/Double
   transitionTo: {fileID: 11400000, guid: 14a42c6534ec0b441b3c8894f9da87c8, type: 2}
   tranistonCondition:
-    gameDataConditionName: Health
-    triggerCondition: 0
-    conditionToParse: 10
-    gameDataKey: 1
+    gameDataConditionName: QuestAccepted
+    triggerCondition: 2
+    conditionToParse: true
+    gameDataKey: 2

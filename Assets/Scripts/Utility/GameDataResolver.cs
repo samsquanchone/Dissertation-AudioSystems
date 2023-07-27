@@ -13,11 +13,13 @@ public class GameDataResolver : MonoBehaviour
     private void Start()
     {
         GameDataValue test = new((uint)200);
+        GameDataValue testBool = new((bool)false);
         gameDataHashTable.AddGameDataToHashTable((uint)1, test);
+        gameDataHashTable.AddGameDataToHashTable((uint)2, testBool);
         SetGameDataVariable((uint)1, 25);
        
     }
-   // Start is called before the first frame update
+
    public void SetGameDataVariable<T>(uint key, in T inValue)
    {
         GameDataValue value = (GameDataValue)gameDataHashTable.hashTable[key];

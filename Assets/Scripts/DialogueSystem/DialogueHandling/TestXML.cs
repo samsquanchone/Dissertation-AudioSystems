@@ -121,7 +121,7 @@ public class TestXML : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     if (DialogueManager.Instance.CheckDialogueCondition<NodeCondition>(playerResponseNodes[0].tranistonCondition)) { playerResponseNodes[0] = playerResponseNodes[0].transitionTo; } //IF the node condition is met then transition to the next response node
-
+                    DialogueManager.Instance.LookAtNPC(this.transform);
                     DialogueManager.Instance.InstantiatePlayerResponseInterface(playerResponseNodes[0]);
                     hasGeneratedResponseInterface = true;
                      

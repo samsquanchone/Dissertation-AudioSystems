@@ -13,14 +13,16 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance => m_instance;
     private static DialogueManager m_instance;
+
+ 
+
     public SubtitleManager subtitleManager;
     public PlayerResponseUI playerResponseUI;
-    public List<TestXML> npcs = new List<TestXML>();
 
-    public int test;
-    public string stringtest;
-    public float floatTest;
 
+    private LookAtNPC lookAt;
+
+    public Transform player;
 
 
     //Create an instace of our hashTableObject with abstracted hash handling functionality, for both npcsDialogue + gamedata
@@ -42,18 +44,17 @@ public class DialogueManager : MonoBehaviour
     private void Start()
     {
         playerResponseUI.Initialize();
-       
+        lookAt = GetComponent<LookAtNPC>();
+
     }
 
     public void AddEntityToHashTable(Entity entity)
-    {
+    { 
         //Add an entitys dialogue information within the scene to the hash table 
         npcDialogueHashTable.hashTable.Add(uint.Parse(entity.id), entity);
 
         Entity _entity = (Entity)npcDialogueHashTable.hashTable[uint.Parse(entity.id)]; //NOTE NEED A BETTER WAY OF READING CONDITION ID: MAYBE ADD SOUND DESIGNER ID
         Debug.Log("line id: " +  _entity.lines[(uint)1].lineID);
-
-
     }
 
     /// <summary>
@@ -89,6 +90,10 @@ public class DialogueManager : MonoBehaviour
         return isConversationActive;
     }
 
+    public void LookAtNPC(Transform npcTransform)
+    {
+        lookAt.LookAtTarget(player, npcTransform);
+    }
     public void InstantiatePlayerResponseInterface(PlayerResponse playerResponseNode)
     {
         isConversationActive = true;
@@ -102,9 +107,6 @@ public class DialogueManager : MonoBehaviour
     public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName)
     {
 
-
-
-        // Queue dialogueLineSequence = new();
 
 
         isConversationActive = true;
@@ -124,22 +126,6 @@ public class DialogueManager : MonoBehaviour
                 break;
         }
 
-        //Create a queue from the list of dialogue lines passed to the manager
-        foreach (var line in lineSequence)
-        {
-
-
-
-            //Add to queue for each line in an entity 
-            //dialogueLineSequence.Enqueue(line);
-            //Could handle dialogue here and use a coroutine to to queue the dialogue and text properlly, get fmod sounds length
-
-        }
-
-        // dialogueLineSequence.Elemen
-
-        //Print queue after line is populated 
-        //subtitleManager.QueueDialogue(dialogueLineSequence, npcName);
 
     }
 

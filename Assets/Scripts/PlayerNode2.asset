@@ -18,26 +18,31 @@ MonoBehaviour:
   nodeTransitionMode: 0
   npcID: 34324234
   playerResponses:
-  - sequenceType: 0
-    conditiontype: 0
-    conditionValue: 10
-    responseText: Charlie chaplin
-    gameDataConditionKey: 
+  - responseText: Ok, count me in!
+    condition:
+      gameDataConditionName: 
+      triggerCondition: 0
+      conditionToParse: 
+      gameDataKey: 0
     npcLineID: 1
     conditionToNodeID: 456372
     transitionNode: {fileID: 0}
-    isExitNode: 0
-    eventsList: []
-  - sequenceType: 0
-    conditiontype: 0
-    conditionValue: 'true '
-    responseText: Whats good in the hood
-    gameDataConditionKey: 
-    npcLineID: 2
-    conditionToNodeID: 0
-    transitionNode: {fileID: 0}
     isExitNode: 1
     eventsList:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7713350364998941058, guid: 347c64f5b3b91df43a38450f3af8b191, type: 3}
+          m_TargetAssemblyTypeName: QuestHandler, Assembly-CSharp
+          m_MethodName: QuestAccepted
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 7713350364998941058, guid: 347c64f5b3b91df43a38450f3af8b191, type: 3}
@@ -52,25 +57,16 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - sequenceType: 0
-    conditiontype: 0
-    conditionValue: 10.5
-    responseText: bing ba boom
-    gameDataConditionKey: 
-    npcLineID: 0
-    conditionToNodeID: 0
+  - responseText: No thanks...
+    condition:
+      gameDataConditionName: 
+      triggerCondition: 0
+      conditionToParse: 
+      gameDataKey: 0
+    npcLineID: 1
+    conditionToNodeID: 456372
     transitionNode: {fileID: 0}
-    isExitNode: 0
-    eventsList: []
-  - sequenceType: 0
-    conditiontype: 0
-    conditionValue: 
-    responseText: dangshan
-    gameDataConditionKey: 
-    npcLineID: 0
-    conditionToNodeID: 0
-    transitionNode: {fileID: 0}
-    isExitNode: 0
+    isExitNode: 1
     eventsList: []
   fmodEvent:
     Guid:
@@ -82,5 +78,6 @@ MonoBehaviour:
   transitionTo: {fileID: 0}
   tranistonCondition:
     gameDataConditionName: 
-    conditiontype: 0
+    triggerCondition: 0
+    conditionToParse: 
     gameDataKey: 0

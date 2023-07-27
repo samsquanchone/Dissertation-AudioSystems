@@ -7,6 +7,10 @@ using UnityEngine.UI;
 /// <summary>
 /// THIS STUFF SHOULD NOT BE ON UI 
 /// </summary>
+/// 
+
+
+///Refactor this with an event/observer system. UI handling getting a bit coupled and hard to maintain!
 public class PlayerResponseUI : MonoBehaviour
 {
 
@@ -26,8 +30,7 @@ public class PlayerResponseUI : MonoBehaviour
             //templateResponseText.SetActive(true);
             GameObject _text = Instantiate(templateResponseText, this.transform);
             responseText.Add(_text);
-            _text.SetActive(true);
-            
+            _text.SetActive(false);
         }
 
         
@@ -95,17 +98,9 @@ public class PlayerResponseUI : MonoBehaviour
 
             //This should be refactored out of here
             if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[0].transitionNode != null)
-            {  
-                //NOTE MAY NEED TO ADD CHECK NODE CONDITION AS WELL
-                //PUT THIS IN A CO-ROUTINE AS WELL AS ANY PARSING NOT AT START, AS IT CAN BE EXPENSIVE!!
-                currentResponseNode = currentResponseNode.playerResponses[0].transitionNode;
-                foreach (var response in currentResponseNode.playerResponses)
-                {
-                    //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
-                    response.condition.conditionValue = StringValidation.ConvertStringToDataType<dynamic>(response.condition.conditionToParse);
-                    Debug.Log(response.condition.conditionToParse);
-                }
+            {
 
+                SetNewResponses(0);
                 GeneratePlayerResponses(currentResponseNode);
                
             }
@@ -119,6 +114,28 @@ public class PlayerResponseUI : MonoBehaviour
             Dictionary<uint, Line> line = new();
             line.Add(0, npc.lines[currentResponseNode.playerResponses[1].npcLineID]);
             DialogueManager.Instance.PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent);
+
+            //This should be refactored out of here
+            if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[1].transitionNode != null)
+            {
+
+                SetNewResponses(1);
+                GeneratePlayerResponses(currentResponseNode);
+
+            }
+        }
+    }
+
+    private void SetNewResponses(int responseIndex)
+    {
+        //NOTE MAY NEED TO ADD CHECK NODE CONDITION AS WELL
+        //PUT THIS IN A CO-ROUTINE AS WELL AS ANY PARSING NOT AT START, AS IT CAN BE EXPENSIVE!!
+        currentResponseNode = currentResponseNode.playerResponses[responseIndex].transitionNode;
+        foreach (var response in currentResponseNode.playerResponses)
+        {
+            //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
+            response.condition.conditionValue = StringValidation.ConvertStringToDataType<dynamic>(response.condition.conditionToParse);
+            Debug.Log(response.condition.conditionToParse);
         }
     }
 
