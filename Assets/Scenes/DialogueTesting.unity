@@ -409,7 +409,7 @@ MonoBehaviour:
   origin: {fileID: 1787398920}
   debugDraw: 1
   debugColor: {r: 0.972549, g: 0, b: 0, a: 0.41568628}
-  playerResponseNodes: []
+  playerResponseNodes: {fileID: 0}
 --- !u!4 &284598950
 Transform:
   m_ObjectHideFlags: 0
@@ -977,7 +977,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerType: 1
   sequenceType: 2
-  xmlFileName: JohnDialogue
+  xmlFileName: NestedXML/NestedNested/JohnDialogue
   eventName:
     Guid:
       Data1: 1874741712
@@ -1001,8 +1001,7 @@ MonoBehaviour:
   origin: {fileID: 0}
   debugDraw: 0
   debugColor: {r: 0, g: 0, b: 0, a: 0}
-  playerResponseNodes:
-  - {fileID: 11400000, guid: 681c27dd60564864195be2ebdf61d37e, type: 2}
+  playerResponseNodes: {fileID: 11400000, guid: 681c27dd60564864195be2ebdf61d37e, type: 2}
 --- !u!136 &589645259
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2109,7 +2108,7 @@ MonoBehaviour:
   origin: {fileID: 0}
   debugDraw: 1
   debugColor: {r: 0.2043238, g: 1, b: 0.13679248, a: 0.8352941}
-  playerResponseNodes: []
+  playerResponseNodes: {fileID: 0}
 --- !u!4 &1535394426
 Transform:
   m_ObjectHideFlags: 0

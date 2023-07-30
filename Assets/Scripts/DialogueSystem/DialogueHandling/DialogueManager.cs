@@ -4,6 +4,15 @@ using DialogueUtility;
 
 
 
+/// <summary>
+/// The dialogue manager acts as the observer and will notify subjects on key events. Such as dialogue starting, dialogue ending ect. ect. 
+/// This will allow behaviour to be invoked in an event based fashion
+/// </summary>
+public interface DialogueObserver
+{
+    
+}
+
 
 /// <summary>
 /// This is where the handling of a sequence of dialogue is handled, e.g. if just a random the queue size would be one, 
@@ -54,7 +63,7 @@ public class DialogueManager : MonoBehaviour
         npcDialogueHashTable.hashTable.Add(uint.Parse(entity.id), entity);
 
         Entity _entity = (Entity)npcDialogueHashTable.hashTable[uint.Parse(entity.id)]; //NOTE NEED A BETTER WAY OF READING CONDITION ID: MAYBE ADD SOUND DESIGNER ID
-        Debug.Log("line id: " +  _entity.lines[(uint)1].lineID);
+       
     }
 
     /// <summary>
