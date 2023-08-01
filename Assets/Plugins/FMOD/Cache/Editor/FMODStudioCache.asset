@@ -51,6 +51,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 12000
+--- !u!114 &-4712335728044192018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/ProceduralAndOneShots/Shooting
+  m_EditorClassIdentifier: 
+  Path: event:/ProceduralAndOneShots/Shooting
+  Guid:
+    Data1: -1779565336
+    Data2: 1211193730
+    Data3: -1586467422
+    Data4: 1067695832
+  Banks:
+  - {fileID: -4165523360275725233}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 992693037466317983}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2450
 --- !u!114 &-4165523360275725233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,7 +94,7 @@ MonoBehaviour:
   Path: Assets/Banks/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638260804202960822
+  lastModified: 638265092859974950
   FileSizes: []
   Exists: 1
 --- !u!114 &-1908043936639208000
@@ -84,10 +112,10 @@ MonoBehaviour:
   Path: Assets/Banks/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638260804202970713
+  lastModified: 638265092859985567
   FileSizes:
   - Name: 
-    Value: 916
+    Value: 1026
   Exists: 1
 --- !u!114 &-324877287925893775
 MonoBehaviour:
@@ -136,13 +164,42 @@ MonoBehaviour:
   - {fileID: -324877287925893775}
   - {fileID: -5902726026392912893}
   - {fileID: 7311455152032304674}
+  - {fileID: -4712335728044192018}
   EditorParameters: []
   MasterBanks:
   - {fileID: -4165523360275725233}
   StringsBanks:
   - {fileID: -1908043936639208000}
-  cacheTime: 638260804202970713
+  cacheTime: 638265092859985567
   cacheVersion: 131603
+--- !u!114 &992693037466317983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Shooting/Surface
+  m_EditorClassIdentifier: 
+  Name: Surface
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 3
+  ID:
+    data1: 1370382716
+    data2: 3840911837
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Grass
+  - Mud
+  - Rock
+  - Concrete
+  Exists: 1
 --- !u!114 &7311455152032304674
 MonoBehaviour:
   m_ObjectHideFlags: 0
