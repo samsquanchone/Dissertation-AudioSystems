@@ -29,7 +29,7 @@ public class AudioPlayback : MonoBehaviour
         foreach (var (name, value) in parameters)
         {
             //Dynamic used so we can cast value function param input when this function is called
-            dynamic paramVal = value;
+            dynamic paramVal = value; //Should cast and not use generic 
 
             //If param value is of type string, set as labeled param 
             if (paramVal.GetType() == typeof(string))

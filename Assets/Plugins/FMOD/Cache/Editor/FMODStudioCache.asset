@@ -51,6 +51,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 12000
+--- !u!114 &-5585897393713745594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SpatialAudio/RoomTone
+  m_EditorClassIdentifier: 
+  Path: event:/SpatialAudio/RoomTone
+  Guid:
+    Data1: -808094241
+    Data2: 1192409348
+    Data3: 1890076579
+    Data4: -329758638
+  Banks:
+  - {fileID: -4165523360275725233}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 162426
 --- !u!114 &-4712335728044192018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,7 +121,7 @@ MonoBehaviour:
   Path: Assets/Banks/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638265092859974950
+  lastModified: 638265978905259390
   FileSizes: []
   Exists: 1
 --- !u!114 &-1908043936639208000
@@ -112,11 +139,63 @@ MonoBehaviour:
   Path: Assets/Banks/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638265092859985567
+  lastModified: 638265978905269564
   FileSizes:
   - Name: 
-    Value: 1026
+    Value: 1174
   Exists: 1
+--- !u!114 &-1494704466322584214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Voices-Occlusion/Occlusion
+  m_EditorClassIdentifier: 
+  Name: Occlusion
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 199697046
+    data2: 2372733290
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &-1247885093378240836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SpatialAudio/Voices-Occlusion
+  m_EditorClassIdentifier: 
+  Path: event:/SpatialAudio/Voices-Occlusion
+  Guid:
+    Data1: 1058711596
+    Data2: 1262403962
+    Data3: 1021583263
+    Data4: 483781965
+  Banks:
+  - {fileID: -4165523360275725233}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -1494704466322584214}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 190589
 --- !u!114 &-324877287925893775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +218,7 @@ MonoBehaviour:
   - {fileID: -4165523360275725233}
   IsStream: 1
   Is3D: 1
-  IsOneShot: 1
+  IsOneShot: 0
   Parameters:
   - {fileID: -8007992967205738522}
   MinDistance: 1
@@ -165,12 +244,14 @@ MonoBehaviour:
   - {fileID: -5902726026392912893}
   - {fileID: 7311455152032304674}
   - {fileID: -4712335728044192018}
+  - {fileID: -1247885093378240836}
+  - {fileID: -5585897393713745594}
   EditorParameters: []
   MasterBanks:
   - {fileID: -4165523360275725233}
   StringsBanks:
   - {fileID: -1908043936639208000}
-  cacheTime: 638265092859985567
+  cacheTime: 638265978905269564
   cacheVersion: 131603
 --- !u!114 &992693037466317983
 MonoBehaviour:

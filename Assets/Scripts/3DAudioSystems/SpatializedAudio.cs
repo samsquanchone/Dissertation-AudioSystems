@@ -3,14 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
+using UnityEditor;
+
+
+public enum AttenuationMode {Auto, User};
 
 public class SpatializedAudio : MonoBehaviour
 {
+    [Header("Attenuation Mode")]
+    public AttenuationMode attenuationMode;
+    [HideInInspector] public float overrideMaxDistance;
     [Header("FMOD Event")]
     [SerializeField]
     private EventReference audioRef;
     private EventInstance Audio;
     private EventDescription AudioDes;
+    [SerializeField] private string parameterName;
 
 
     [SerializeField] private StudioListener Listener;
@@ -32,9 +40,9 @@ public class SpatializedAudio : MonoBehaviour
     private float lineCastHitCount = 0f;
     private Color colour;
 
-     private float minDistance;
-   
+    private float minDistance;
 
+   
 
     private void Start()
     {
@@ -43,8 +51,18 @@ public class SpatializedAudio : MonoBehaviour
         Audio.start();
         Audio.release();
 
-        AudioDes = RuntimeManager.GetEventDescription(audioRef);
-        AudioDes.getMinMaxDistance(out minDistance, out MaxDistance);
+        /*If the designer is using a natural roll off, allow event description to handle min max distance.
+          Else if designer is overriding attenuation, then use override value for max distance */
+        if (this.attenuationMode == AttenuationMode.Auto)
+        {
+            AudioDes = RuntimeManager.GetEventDescription(audioRef);
+            AudioDes.getMinMaxDistance(out minDistance, out MaxDistance);
+        }
+        else if (this.attenuationMode == AttenuationMode.User)
+        {
+            MaxDistance = overrideMaxDistance;
+        }
+        
 
     }
 
@@ -101,6 +119,15 @@ public class SpatializedAudio : MonoBehaviour
         SetParameter();
     }
 
+    /// <summary>
+    /// This is used to update the attenuation mode if the game is running and debugging during run and not in the editor while the game is not running in the editor
+    /// </summary>
+    /// <param name="overrideDistance"></param>
+    public void UpdateDistanceOnOverride(float overrideDistance)
+    {
+        MaxDistance = overrideMaxDistance;
+    }
+
     private Vector3 CalculatePoint(Vector3 a, Vector3 b, float m, bool posOrneg)
     {
         float x;
@@ -136,6 +163,34 @@ public class SpatializedAudio : MonoBehaviour
 
     private void SetParameter()
     {
-        Audio.setParameterByName("Occlusion", lineCastHitCount / 11);
+        Audio.setParameterByName(parameterName, lineCastHitCount / 11);
     }
 }
+
+
+
+#if (UNITY_EDITOR)
+[CustomEditor(typeof(SpatializedAudio))]
+public class SpatializedAudioEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+
+        SpatializedAudio script = (SpatializedAudio)target;
+
+        switch(script.attenuationMode)
+        {
+            case AttenuationMode.User:
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Override Max Distance value", GUILayout.MaxWidth(180));
+                script.overrideMaxDistance = EditorGUILayout.FloatField(script.overrideMaxDistance);
+                EditorGUILayout.EndHorizontal();
+
+                script.UpdateDistanceOnOverride(script.overrideMaxDistance);
+                break;
+        }
+
+    }
+}
+#endif
