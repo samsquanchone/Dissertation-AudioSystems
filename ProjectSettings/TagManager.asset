@@ -9,6 +9,7 @@ TagManager:
   - BulletSpawn
   - LevelPart
   - Dummie
+  - ReverbZone
   layers:
   - Default
   - TransparentFX
