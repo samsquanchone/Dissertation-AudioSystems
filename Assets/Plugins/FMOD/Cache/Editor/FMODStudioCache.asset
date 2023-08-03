@@ -105,7 +105,7 @@ MonoBehaviour:
   - {fileID: 992693037466317983}
   MinDistance: 1
   MaxDistance: 20
-  Length: 2450
+  Length: 2267
 --- !u!114 &-4165523360275725233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
   Path: Assets/Banks/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638266000912676255
+  lastModified: 638266893831109079
   FileSizes: []
   Exists: 1
 --- !u!114 &-1908043936639208000
@@ -139,10 +139,10 @@ MonoBehaviour:
   Path: Assets/Banks/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638266000912686249
+  lastModified: 638266893831132391
   FileSizes:
   - Name: 
-    Value: 1226
+    Value: 1278
   Exists: 1
 --- !u!114 &-1494704466322584214
 MonoBehaviour:
@@ -196,6 +196,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 190589
+--- !u!114 &-674710067439248923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/ProceduralAndOneShots/Footsteps
+  m_EditorClassIdentifier: 
+  Path: event:/ProceduralAndOneShots/Footsteps
+  Guid:
+    Data1: 91169201
+    Data2: 1301892400
+    Data3: 1085804470
+    Data4: 1159739722
+  Banks:
+  - {fileID: -4165523360275725233}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 4935021268665076783}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2000
 --- !u!114 &-324877287925893775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,12 +275,13 @@ MonoBehaviour:
   - {fileID: -1247885093378240836}
   - {fileID: -5585897393713745594}
   - {fileID: 892758854784115779}
+  - {fileID: -674710067439248923}
   EditorParameters: []
   MasterBanks:
   - {fileID: -4165523360275725233}
   StringsBanks:
   - {fileID: -1908043936639208000}
-  cacheTime: 638266000912686249
+  cacheTime: 638266893831132391
   cacheVersion: 131603
 --- !u!114 &892758854784115779
 MonoBehaviour:
@@ -292,6 +321,34 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
   m_Name: parameter:/Shooting/Surface
+  m_EditorClassIdentifier: 
+  Name: Surface
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 3
+  ID:
+    data1: 1370382716
+    data2: 3840911837
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Grass
+  - Mud
+  - Rock
+  - Concrete
+  Exists: 1
+--- !u!114 &4935021268665076783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Footsteps/Surface
   m_EditorClassIdentifier: 
   Name: Surface
   StudioPath: 

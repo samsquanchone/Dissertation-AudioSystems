@@ -80,14 +80,14 @@ public class SpatializedAudio : MonoBehaviour
 
     private void OccludeBetween(Vector3 sound, Vector3 listener)
     {
-        Vector3 SoundLeft = CalculatePoint(sound, listener, SoundOcclusionWidening, true);
-        Vector3 SoundRight = CalculatePoint(sound, listener, SoundOcclusionWidening, false);
+        Vector3 SoundLeft = CalculateXZVector(sound, listener, SoundOcclusionWidening, true);
+        Vector3 SoundRight = CalculateXZVector(sound, listener, SoundOcclusionWidening, false);
 
         Vector3 SoundAbove = new Vector3(sound.x, sound.y + SoundOcclusionWidening, sound.z);
         Vector3 SoundBelow = new Vector3(sound.x, sound.y - SoundOcclusionWidening, sound.z);
 
-        Vector3 ListenerLeft = CalculatePoint(listener, sound, PlayerOcclusionWidening, true);
-        Vector3 ListenerRight = CalculatePoint(listener, sound, PlayerOcclusionWidening, false);
+        Vector3 ListenerLeft = CalculateXZVector(listener, sound, PlayerOcclusionWidening, true);
+        Vector3 ListenerRight = CalculateXZVector(listener, sound, PlayerOcclusionWidening, false);
 
         Vector3 ListenerAbove = new Vector3(listener.x, listener.y + PlayerOcclusionWidening * 0.5f, listener.z);
         Vector3 ListenerBelow = new Vector3(listener.x, listener.y - PlayerOcclusionWidening * 0.5f, listener.z);
@@ -122,19 +122,28 @@ public class SpatializedAudio : MonoBehaviour
     /// <summary>
     /// This is used to update the attenuation mode if the game is running and debugging during run and not in the editor while the game is not running in the editor
     /// </summary>
-    /// <param name="overrideDistance"></param>
+    /// <param name="overrideDistance"> Used for overriding the fmod defaul max distance for larger sounds</param>
     public void UpdateDistanceOnOverride(float overrideDistance)
     {
         MaxDistance = overrideMaxDistance;
     }
 
-    private Vector3 CalculatePoint(Vector3 a, Vector3 b, float m, bool posOrneg)
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="a"> used to represent </param>
+    /// <param name="b"></param>
+    /// <param name="m"></param>
+    /// <param name="absolute"></param>
+    /// <returns>(XYZ)</returns>
+    private Vector3 CalculateXZVector(Vector3 a, Vector3 b, float m, bool absolute)
     {
         float x;
         float z;
         float n = Vector3.Distance(new Vector3(a.x, 0f, a.z), new Vector3(b.x, 0f, b.z));
         float mn = (m / n);
-        if (posOrneg)
+        if (absolute)
         {
             x = a.x + (mn * (a.z - b.z));
             z = a.z - (mn * (a.x - b.x));
@@ -186,7 +195,6 @@ public class SpatializedAudioEditor : Editor
                 EditorGUILayout.LabelField("Override Max Distance value", GUILayout.MaxWidth(180));
                 script.overrideMaxDistance = EditorGUILayout.FloatField(script.overrideMaxDistance);
                 EditorGUILayout.EndHorizontal();
-
                 script.UpdateDistanceOnOverride(script.overrideMaxDistance);
                 break;
         }

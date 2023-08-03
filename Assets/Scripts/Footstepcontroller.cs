@@ -3,17 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
 using UnityEngine.Events;
+using FMOD.Studio;
 
 public class Footstepcontroller : MonoBehaviour
 {
-    [SerializeField] List<UnityEvent> eventList; //Move to dialogue system 
+    public float minimumVelocityWalkThreshold;
+    public float minumumVelocityRunThreshold;
+
+    public float walkCooldown;
+    public float runCooldown;
+
+    private float cooldown;
+
+
+    public EventReference foodstepSFX;
     [SerializeField] private Rigidbody rb;
-    private enum CURRENT_TERRAIN { GRASS, GRAVEL, WOOD_FLOOR, WATER };
+    public GameObject playerObject;
+    private enum CURRENT_TERRAIN { Grass, Rock, Mud, Concrete };
 
     [SerializeField]
     private CURRENT_TERRAIN currentTerrain;
 
     private FMOD.Studio.EventInstance foosteps;
+
+    private bool canTrigger = true;
 
 
     private void Start()
@@ -21,11 +34,21 @@ public class Footstepcontroller : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        if (rb.velocity.magnitude > 0)
-            Debug.Log("sadsdsa");
-        DetermineTerrain();
+
+        if (rb.velocity.magnitude > 2 && canTrigger)
+        {
+            cooldown = walkCooldown;
+            DetermineTerrain();
+            SelectAndPlayFootstep();
+        }
+        else if (rb.velocity.magnitude > 3 && canTrigger)
+        {
+            cooldown = runCooldown;
+            DetermineTerrain();
+            SelectAndPlayFootstep();
+        }
     }
 
     private void DetermineTerrain()
@@ -36,23 +59,23 @@ public class Footstepcontroller : MonoBehaviour
 
         foreach (RaycastHit rayhit in hit)
         {
-            if (rayhit.transform.gameObject.layer == LayerMask.NameToLayer("Gravel"))
+            if (rayhit.transform.gameObject.layer == LayerMask.NameToLayer("Rock"))
             {
-                currentTerrain = CURRENT_TERRAIN.GRAVEL;
+                currentTerrain = CURRENT_TERRAIN.Rock;
                 break;
             }
-            else if (rayhit.transform.gameObject.layer == LayerMask.NameToLayer("Wood"))
+            else if (rayhit.transform.gameObject.layer == LayerMask.NameToLayer("Mud"))
             {
-                currentTerrain = CURRENT_TERRAIN.WOOD_FLOOR;
+                currentTerrain = CURRENT_TERRAIN.Mud;
                 break;
             }
             else if (rayhit.transform.gameObject.layer == LayerMask.NameToLayer("Grass"))
             {
-                currentTerrain = CURRENT_TERRAIN.GRASS;
+                currentTerrain = CURRENT_TERRAIN.Grass;
             }
-            else if (rayhit.transform.gameObject.layer == LayerMask.NameToLayer("Water"))
+            else if (rayhit.transform.gameObject.layer == LayerMask.NameToLayer("Concrete"))
             {
-                currentTerrain = CURRENT_TERRAIN.WATER;
+                currentTerrain = CURRENT_TERRAIN.Concrete;
             }
         }
     }
@@ -61,34 +84,42 @@ public class Footstepcontroller : MonoBehaviour
     {
         switch (currentTerrain)
         {
-            case CURRENT_TERRAIN.GRAVEL:
-                PlayFootstep(1);
+            case CURRENT_TERRAIN.Rock:
+                PlayFootstep();
+                canTrigger = false;
                 break;
 
-            case CURRENT_TERRAIN.GRASS:
-                PlayFootstep(0);
+            case CURRENT_TERRAIN.Mud:
+                PlayFootstep();
+                canTrigger = false;
                 break;
 
-            case CURRENT_TERRAIN.WOOD_FLOOR:
-                PlayFootstep(2);
+            case CURRENT_TERRAIN.Grass:
+                PlayFootstep();
+                canTrigger = false;
                 break;
 
-            case CURRENT_TERRAIN.WATER:
-                PlayFootstep(3);
+            case CURRENT_TERRAIN.Concrete:
+                PlayFootstep();
+                canTrigger = false;
                 break;
 
             default:
-                PlayFootstep(0);
+                PlayFootstep();
+                canTrigger = false;
                 break;
         }
+        StartCoroutine(FootstepCooldownRoutine(cooldown));
     }
 
-    private void PlayFootstep(int terrain)
+    private void PlayFootstep()
     {
-        foosteps = FMODUnity.RuntimeManager.CreateInstance("event:/Footsteps");
-        foosteps.setParameterByName("Terrain", terrain);
-        foosteps.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(gameObject));
-        foosteps.start();
-        foosteps.release();
+       AudioPlayback.PlayOneShotWithParameters(foodstepSFX, this.transform, ("Surface", currentTerrain.ToString()));
+    }
+
+    private IEnumerator FootstepCooldownRoutine(float _cooldown)
+    {
+        yield return new WaitForSecondsRealtime(_cooldown);
+        canTrigger = true;
     }
 }

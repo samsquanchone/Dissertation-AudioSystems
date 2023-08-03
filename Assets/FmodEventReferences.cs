@@ -9,6 +9,7 @@ public class FmodEventReferences : MonoBehaviour
     private static FmodEventReferences m_instance;
 
     [SerializeField] public EventReference gunShotSFX;
+    public EventReference footstepSFX;
 
     private void Start()
     {

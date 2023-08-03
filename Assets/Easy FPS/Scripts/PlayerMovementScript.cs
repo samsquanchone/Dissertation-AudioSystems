@@ -106,35 +106,15 @@ public class PlayerMovementScript : MonoBehaviour {
 	* Checks if player is grounded and plays the sound accorindlgy to his speed
 	*/
 	void WalkingSound(){
-		if (_walkSound && _runSound) {
-			if (RayCastGrounded ()) { //for walk sounsd using this because suraface is not straigh			
-				if (currentSpeed > 1) {
-					//				print ("unutra sam");
-					if (maxSpeed == 3) {
-						//	print ("tu sem");
-						if (!_walkSound.isPlaying) {
-							//	print ("playam hod");
-							_walkSound.Play ();
-							_runSound.Stop ();
-						}					
-					} else if (maxSpeed == 5) {
-						//	print ("NE tu sem");
+		if (_walkSound && _runSound)
+		{
+			if (RayCastGrounded())
+			{ //for walk sounsd using this because suraface is not straigh			
+				if (currentSpeed > 1)
+				{
 
-						if (!_runSound.isPlaying) {
-							_walkSound.Stop ();
-							_runSound.Play ();
-						}
-					}
-				} else {
-					_walkSound.Stop ();
-					_runSound.Stop ();
 				}
-			} else {
-				_walkSound.Stop ();
-				_runSound.Stop ();
 			}
-		} else {
-			print ("Missing walk and running sounds.");
 		}
 
 	}
