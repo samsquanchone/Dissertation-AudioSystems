@@ -37,6 +37,7 @@ namespace DialogueSystem.EntityNPC
         [SerializeField] private List<UnityEvent> events;
 
 
+        [HideInInspector] public Transform objectToAttachTo = null;
         public GameObject player;
 
 
@@ -123,16 +124,12 @@ namespace DialogueSystem.EntityNPC
                 distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
 
 
-                if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < 12 && !hasGeneratedResponseInterface)
+                if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < radius && !hasGeneratedResponseInterface)
                 {
                     DialogueManager.Instance.ShowInteractUI();
                     if (Input.GetKeyDown(KeyCode.E))
                     {
-                        if (DialogueManager.Instance.CheckDialogueCondition<NodeCondition>(playerResponseNodes.tranistonCondition)) { playerResponseNodes = playerResponseNodes.transitionTo; } //IF the node condition is met then transition to the next response node
-                        DialogueManager.Instance.LookAtNPC(this.transform);
-                        DialogueManager.Instance.InstantiatePlayerResponseInterface(playerResponseNodes);
-                        hasGeneratedResponseInterface = true;
-
+                        PlayerInteract();
                     }
 
                 }
@@ -145,6 +142,15 @@ namespace DialogueSystem.EntityNPC
             }
         }
 
+        private void PlayerInteract()
+        {
+            if (DialogueManager.Instance.CheckDialogueCondition<NodeCondition>(playerResponseNodes.tranistonCondition)) { playerResponseNodes = playerResponseNodes.transitionTo; } //IF the node condition is met then transition to the next response node
+            DialogueManager.Instance.LookAtNPC(this.transform);
+            DialogueManager.Instance.InstantiatePlayerResponseInterface(playerResponseNodes);
+            hasGeneratedResponseInterface = true;
+
+        }
+
         public void OnNotify()
         {
 
@@ -154,7 +160,7 @@ namespace DialogueSystem.EntityNPC
         {
             if (collision.gameObject.name == collisionObject.name && triggerType == TriggerType.Collision)
             {
-                DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName);
+                DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
                 //programmerCallback = new (entity.lines[0].key, eventName, null);
             }
         }
@@ -163,7 +169,7 @@ namespace DialogueSystem.EntityNPC
         {
             if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerEnter)
             {
-                DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName);
+                DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
                 //programmerCallback = new(entity.lines[0].key, eventName, null);
             }
         }
@@ -172,7 +178,7 @@ namespace DialogueSystem.EntityNPC
         {
             if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerExit)
             {
-                DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName);
+                DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
                 // programmerCallback = new(entity.lines[0].key, eventName, null);
             }
         }
@@ -355,12 +361,18 @@ namespace DialogueSystem.EntityNPC
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Base Player response node", GUILayout.MaxWidth(180));
                 script.playerResponseNodes = EditorGUILayout.ObjectField(script.playerResponseNodes, typeof(PlayerResponse), true) as PlayerResponse;
+                script.triggerType = TriggerType.Radius;
                 EditorGUILayout.EndHorizontal();
             }
 
             if (script.is3D)
             {
                 //If dialogue is 3D then show the necessary parameters needed for setting up a 3D audio event in fmod
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Triggering Object", GUILayout.MaxWidth(180));
+                script.objectToAttachTo = EditorGUILayout.ObjectField(script.objectToAttachTo, typeof(Transform), true) as Transform;
+                EditorGUILayout.EndHorizontal();
+
             }
 
 

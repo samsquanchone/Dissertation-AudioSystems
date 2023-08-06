@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="1256" Name="Benjamin">
+  <Lines>
+    <Line id="101">
+      <Key>Ben-Oi</Key>
+      <LineText>Oi, you!</LineText>
+      <Conditions />
+    </Line>
+    <Line id="148">
+      <Key>Ben-OverHere</Key>
+      <LineText>Over here!</LineText>
+      <Conditions />
+    </Line>
+    <Line id="5678">
+      <Key>Ben-TalkingToYou</Key>
+      <LineText>I'm talking to you!</LineText>
+      <Conditions />
+    </Line>
+  </Lines>
+</Entity>

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="10987" Name="Alex">
+  <Lines>
+    <Line id="92305">
+      <Key>Alex-HowDareYou</Key>
+      <LineText>How dare you!</LineText>
+      <Conditions />
+    </Line>
+    <Line id="234782">
+      <Key>Alex-Ouch</Key>
+      <LineText>Ouch!</LineText>
+      <Conditions />
+    </Line>
+    <Line id="123006">
+      <Key>Alex-Dont</Key>
+      <LineText>Don't walk into me!</LineText>
+      <Conditions />
+    </Line>
+    <Line id="984">
+      <Key>Alex-PersonalSpace</Key>
+      <LineText>Do you understand personal space?</LineText>
+      <Conditions />
+    </Line>
+    <Line id="91234">
+      <Key>Alex-Invisible</Key>
+      <LineText>Am I invisible to you?</LineText>
+      <Conditions />
+    </Line>
+  </Lines>
+</Entity>

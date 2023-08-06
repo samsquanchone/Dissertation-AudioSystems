@@ -52,6 +52,12 @@ namespace DialogueUtility
             dialogueInstance.setUserData(GCHandle.ToIntPtr(stringHandle));
 
             dialogueInstance.setCallback(dialogueCallback);
+
+            if (emitterTransform != null)
+            {
+                FMODUnity.RuntimeManager.AttachInstanceToGameObject(dialogueInstance, emitterTransform);
+            }
+
             dialogueInstance.start();
             dialogueInstance.release();
         }

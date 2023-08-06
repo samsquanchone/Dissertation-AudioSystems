@@ -94,7 +94,7 @@ public class PlayerResponseUI : MonoBehaviour
             Entity npc = DialogueManager.Instance.GetNPCHashElement(currentResponseNode.npcID);
             Dictionary<uint, Line> line = new();
             line.Add(0 , npc.lines[currentResponseNode.playerResponses[0].npcLineID]);
-            DialogueManager.Instance.PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent);
+            DialogueManager.Instance.PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null);
 
             //This should be refactored out of here
             if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[0].transitionNode != null)
@@ -113,7 +113,7 @@ public class PlayerResponseUI : MonoBehaviour
             Entity npc = DialogueManager.Instance.GetNPCHashElement(currentResponseNode.npcID);
             Dictionary<uint, Line> line = new();
             line.Add(0, npc.lines[currentResponseNode.playerResponses[1].npcLineID]);
-            DialogueManager.Instance.PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent);
+            DialogueManager.Instance.PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
 
             //This should be refactored out of here
             if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[1].transitionNode != null)

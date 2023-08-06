@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DialogueUtility;
-
-
+using Unity.Collections;
+using Unity.Jobs;
 
 /// <summary>
 /// The dialogue manager acts as the observer and will notify subjects on key events. Such as dialogue starting, dialogue ending ect. ect. 
@@ -113,7 +113,7 @@ public class DialogueManager : MonoBehaviour
         subtitleManager.ShowSubtitleInterface();
     }
 
-    public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName)
+    public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName, Transform transformToAttachTo)
     {
 
 
@@ -122,15 +122,15 @@ public class DialogueManager : MonoBehaviour
         switch (sequenceType)
         {
             case SequenceType.Sequential:
-                StartCoroutine(DialogueSequenceTimer(entityName, lineSequence, eventName));
+                StartCoroutine(DialogueSequenceTimer(entityName, lineSequence, eventName, transformToAttachTo));
                 break;
 
             case SequenceType.RandomOneShot:
-                PlayRandomDialogue(entityName, lineSequence, eventName);
+                PlayRandomDialogue(entityName, lineSequence, eventName, transformToAttachTo);
                 break;
 
             case SequenceType.PlayerResponse:
-                StartCoroutine(DialogueResponseTimer(entityName, lineSequence[0], eventName)); //Is one shot with one element id set to 0
+                StartCoroutine(DialogueResponseTimer(entityName, lineSequence[0], eventName, transformToAttachTo)); //Is one shot with one element id set to 0
                 Debug.Log("Set up");
                 break;
         }
@@ -138,7 +138,7 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    private System.Collections.IEnumerator DialogueSequenceTimer(string _name, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName)
+    private System.Collections.IEnumerator DialogueSequenceTimer(string _name, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName, Transform transformToAttachTo)
     {
 
         foreach (var line in lineSequence)
@@ -152,12 +152,30 @@ public class DialogueManager : MonoBehaviour
                     i++;
                     if (i == line.Value.conditions.Count) //IF all conditions true i.e at end element + all conditions are met 
                     {
-                        //Play dialogue
-                        DialogueInfoHandler diaInfoCallback = new(line.Value.key, eventName);
+                        //Create native array to store threading result in
+                        NativeArray<float> result = new NativeArray<float>(1, Allocator.TempJob);
 
-                        double diaLength = diaInfoCallback.GetDialogueLength() / 1000; //This will return MS, for now we use seconds conversion, but if there are timing issues, maybe revert back to MS
+                        //Set up a new job system instance
+                        DialogueJobSystem jobSystem = new(line.Value.key, eventName);
+
+                       
+                       
+                        DialogueJobSystem.CalculateDialogueLength dialogueLength = new();
+                        dialogueLength.result = result;
+
+                        //Schedule thread
+                        JobHandle handle = dialogueLength.Schedule();
+
+                        //Wait for thread to complete 
+                        handle.Complete();
+
+                        //Store result of thread task and convert from MS to S
+                        float diaLength = result[0] / 1000;
+
+                        //Free memory 
+                        result.Dispose();
                         //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
-                        DialogueHandler programmerCallback = new(line.Value.key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
+                        DialogueHandler programmerCallback = new(line.Value.key, eventName, transformToAttachTo); //Make programmer deceleration in function, to make memory management better!!!
                         subtitleManager.QueueDialogue(line.Value.line, _name, (float)diaLength);
 
 
@@ -182,23 +200,43 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    private System.Collections.IEnumerator DialogueResponseTimer(string _name, Line npcLine, FMODUnity.EventReference eventName)
+    private System.Collections.IEnumerator DialogueResponseTimer(string _name, Line npcLine, FMODUnity.EventReference eventName, Transform transformToAttachTo)
     {
         playerResponseUI.HideCurrentResponseInterface();
 
+        //Create native array to store threading result in
+        NativeArray<float> result = new NativeArray<float>(1, Allocator.TempJob);
+
+        //Set up a new job system instance
+        DialogueJobSystem jobSystem = new(npcLine.key, eventName);
+        
+        //Create a dialogue length calc thread 
+        DialogueJobSystem.CalculateDialogueLength dialogueLength = new();
+        dialogueLength.result = result;
+
+        //Schedule thread
+        JobHandle handle = dialogueLength.Schedule();
+
+        //Wait for thread to complete 
+        handle.Complete();
+
+        //Store result of thread task and convert from MS to S
+        float diaLength = result[0] / 1000;
+
+        //Free memory 
+        result.Dispose();
+
 
         DialogueInfoHandler diaInfoCallback = new(npcLine.key, eventName);
-
-        double diaLength = diaInfoCallback.GetDialogueLength() / 1000; //This will return MS, for now we use seconds conversion, but if there are timing issues, maybe revert back to MS
 
 
         if (diaLength == 0) { diaLength = 2; } //On first trigger on occasion the callback with fmod does not happen, this just ensures there is a default val the first time
         Debug.Log("dialength: " + diaLength);
 
 
-        DialogueHandler programmerCallback = new(npcLine.key, eventName, null);
+        DialogueHandler programmerCallback = new(npcLine.key, eventName, transformToAttachTo);
 
-        subtitleManager.QueueDialogue(npcLine.line, _name, (float)diaLength);
+        subtitleManager.QueueDialogue(npcLine.line, _name, diaLength);
         yield return new WaitForSeconds((float)diaLength);
 
 
@@ -220,7 +258,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private void PlayRandomDialogue(string entityName, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName)
+    private void PlayRandomDialogue(string entityName, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName, Transform transformToAttachTo)
     {
         List<Line> triggerableLines = new();
 
@@ -237,7 +275,7 @@ public class DialogueManager : MonoBehaviour
         }
 
         int indexToPlay = Random.Range(0, triggerableLines.Count);
-        DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, null); //Make programmer deceleration in function, to make memory management better!!!
+        DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, transformToAttachTo); //Make programmer deceleration in function, to make memory management better!!!
         subtitleManager.QueueDialogue(triggerableLines[indexToPlay].line, entityName, 3f);
         //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
     }
