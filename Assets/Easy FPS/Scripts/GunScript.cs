@@ -32,6 +32,8 @@ public class GunScript : MonoBehaviour {
 
 	private PlayerMovementScript pmS;
 
+	private DetermineTerrain terrainDetector;
+
 	/*
 	 * Collection the variables upon awake that we need.
 	 */
@@ -54,6 +56,8 @@ public class GunScript : MonoBehaviour {
 
 		rotationLastY = mls.currentYRotation;
 		rotationLastX= mls.currentCameraXRotation;
+
+		terrainDetector = player.gameObject.GetComponent<DetermineTerrain>();
 
 	}
 
@@ -429,8 +433,7 @@ public class GunScript : MonoBehaviour {
 					print ("Missing the bullet prefab");
 				holdFlash = Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position /*- muzzelPosition*/, muzzelSpawn.transform.rotation * Quaternion.Euler(0,0,90) ) as GameObject;
 				holdFlash.transform.parent = muzzelSpawn.transform;
-				Debug.Log(player.gameObject.GetComponent<DetermineTerrain>().DetermineShellTerrain().ToString());
-				AudioPlayback.PlayOneShotWithParameters(FmodEventReferences.Instance.gunShotSFX, null, ("Surface", player.gameObject.GetComponent<DetermineTerrain>().DetermineShellTerrain().ToString()));
+				AudioPlayback.PlayOneShotWithParameters(FmodEventReferences.Instance.gunShotSFX, null, ("Surface", terrainDetector.DetermineShellTerrain().ToString()));
 				
 
 				RecoilMath();
@@ -440,10 +443,9 @@ public class GunScript : MonoBehaviour {
 			}
 				
 			else{
-				//if(!aiming)
+			
 				StartCoroutine("Reload_Animation");
-				//if(emptyClip_sound_source)
-				//	emptyClip_sound_source.Play();
+			
 			}
 
 		}

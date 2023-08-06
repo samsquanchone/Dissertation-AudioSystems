@@ -27,19 +27,18 @@ public class AudioPlayback : MonoBehaviour
         FMOD.Studio.EventInstance instance = FMODUnity.RuntimeManager.CreateInstance(fmodEvent);
 
         foreach (var (name, value) in parameters)
-        {
-            //Dynamic used so we can cast value function param input when this function is called
-            dynamic paramVal = value; //Should cast and not use generic 
+        {  
 
             //If param value is of type string, set as labeled param 
-            if (paramVal.GetType() == typeof(string))
+            if (value.GetType() == typeof(string))
             {
-                instance.setParameterByNameWithLabel(name, paramVal);
+                instance.setParameterByNameWithLabel(name, value.ToString());
             }
 
             //If param value is of type float or int, set param as continous or discrete 
-            else if (paramVal.GetType() == typeof(float) || paramVal.GetType() == typeof(int))
+            else if (value.GetType() == typeof(float) || value.GetType() == typeof(int))
             {
+                dynamic paramVal = value; //Use dynaic type so it can be int or float, without needing another if statement
                 instance.setParameterByName(name, paramVal);
             }
         }

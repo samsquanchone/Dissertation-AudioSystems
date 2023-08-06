@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="34345" Name="Benjamin">
+  <Lines>
+    <Line id="123123123">
+      <Key>What</Key>
+      <LineText>hey hey</LineText>
+        <Condition id="123123">
+          <TriggerCondition>&gt;10</TriggerCondition>
+          <GameDataName>Health</GameDataName>
+          <GameDataKey>23123123</GameDataKey>
+        </Condition>
+        <Condition id="123">
+          <TriggerCondition>&gt;230</TriggerCondition>
+          <GameDataName>adsaad</GameDataName>
+          <GameDataKey>233</GameDataKey>
+        </Condition>
+    </Line>
+  </Lines>
+</Entity>

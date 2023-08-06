@@ -161,7 +161,7 @@ public class DialogueManager : MonoBehaviour
                         subtitleManager.QueueDialogue(line.Value.line, _name, (float)diaLength);
 
 
-                        yield return new WaitForSeconds((float)diaLength); //We want a dialogue call back for info to get the length of an audio table clip.... UNITY WHY CANT I USE A DOUBLE >_< 
+                        yield return new WaitForSecondsRealtime((float)diaLength); //We want a dialogue call back for info to get the length of an audio table clip.... UNITY WHY CANT I USE A DOUBLE >_< 
                     }
 
 

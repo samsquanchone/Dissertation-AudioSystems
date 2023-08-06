@@ -31,7 +31,7 @@ public class SubtitleManager : MonoBehaviour
         dialogueLineText.text = line;
         entityNameText.text = npcName;
        
-        yield return new WaitForSeconds(length);
+        yield return new WaitForSecondsRealtime(length);
       
         dialogueContainer.SetActive(false);
     }

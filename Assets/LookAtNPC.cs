@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class LookAtNPC : MonoBehaviour
 {
+    public Transform mainCameraTransform;
     public float speed = 1f;
 
     private Coroutine lookAtCoroutine;
@@ -11,12 +14,14 @@ public class LookAtNPC : MonoBehaviour
 
     public void LookAtTarget(Transform playerPos, Transform target)
     {
+        playerPos = mainCameraTransform;
+
         if (lookAtCoroutine != null)
         {
-          //  StopCoroutine(lookAtCoroutine);
+           StopCoroutine(lookAtCoroutine);
         }
 
-       // lookAtCoroutine = StartCoroutine(LookAt(playerPos, target));
+       lookAtCoroutine = StartCoroutine(LookAt(playerPos, target));
     }
 
     private IEnumerator LookAt(Transform playerPos, Transform target)
