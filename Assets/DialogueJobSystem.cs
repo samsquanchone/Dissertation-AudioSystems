@@ -7,6 +7,8 @@ using UnityEngine;
 /// <summary>
 /// Due to the tricky timing of sequencing dialogue, threading is a required method for handling any concurrancy issues with the dialogue system.
 /// However, the Unity API is not thread safe, hence utilising the job system which is method provided by Unity to support multi-threading!
+/// 
+/// Note: a unity job cant have reference types in it, hence the little class and static class to be able to cache values from the dialogue job system class constructor!
 /// </summary>
 /// 
 public class DialogueJobSystem
@@ -22,9 +24,9 @@ public class DialogueJobSystem
         ThreadData.SetThreadData(key, eventName);
     }
 
-public struct CalculateDialogueLength : IJob
+    public struct CalculateDialogueLength : IJob
     {
-        
+
         public NativeArray<float> result;
 
         public void Execute()
@@ -34,7 +36,15 @@ public struct CalculateDialogueLength : IJob
         }
     }
 
-  
+    public struct TriggerDialogue : IJob
+    {
+        public void Execute()
+        {
+           
+        }
+    }
+
+
 }
 public static class ThreadData
 {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace DialogueUtility
 {
@@ -164,6 +165,9 @@ namespace DialogueUtility
 
             dialogueInstance.setCallback(dialogueInfoCallback);
 
+            //int ms = 10;
+            //Thread.Sleep(ms);
+
             dialogueInstance.start();
 
             dialogueInstance.release();
@@ -221,7 +225,7 @@ namespace DialogueUtility
                             var keyResult = FMODUnity.RuntimeManager.StudioSystem.getSoundInfo(key, out dialogueSoundInfo);
                             if (keyResult != FMOD.RESULT.OK)
                             {
-
+                                
                                 break;
                             }
                             FMOD.Sound dialogueSound;

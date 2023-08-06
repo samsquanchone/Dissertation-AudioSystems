@@ -50,7 +50,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 12000
+  Length: 27000
 --- !u!114 &-5585897393713745594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
   Path: Assets/Banks/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638266893831109079
+  lastModified: 638269563738279466
   FileSizes: []
   Exists: 1
 --- !u!114 &-1908043936639208000
@@ -139,10 +139,10 @@ MonoBehaviour:
   Path: Assets/Banks/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638266893831132391
+  lastModified: 638269563738305152
   FileSizes:
   - Name: 
-    Value: 1278
+    Value: 1314
   Exists: 1
 --- !u!114 &-1494704466322584214
 MonoBehaviour:
@@ -223,7 +223,7 @@ MonoBehaviour:
   - {fileID: 4935021268665076783}
   MinDistance: 1
   MaxDistance: 20
-  Length: 2000
+  Length: 2080
 --- !u!114 &-324877287925893775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,13 +276,41 @@ MonoBehaviour:
   - {fileID: -5585897393713745594}
   - {fileID: 892758854784115779}
   - {fileID: -674710067439248923}
+  - {fileID: 758314421029592730}
   EditorParameters: []
   MasterBanks:
   - {fileID: -4165523360275725233}
   StringsBanks:
   - {fileID: -1908043936639208000}
-  cacheTime: 638266893831132391
+  cacheTime: 638269563738305152
   cacheVersion: 131603
+--- !u!114 &758314421029592730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/ProceduralAndOneShots/Reload
+  m_EditorClassIdentifier: 
+  Path: event:/ProceduralAndOneShots/Reload
+  Guid:
+    Data1: -280559637
+    Data2: 1093713800
+    Data3: -1326059342
+    Data4: -1249658559
+  Banks:
+  - {fileID: -4165523360275725233}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &892758854784115779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,8 +353,8 @@ MonoBehaviour:
   Name: Surface
   StudioPath: 
   Min: 0
-  Max: 3
-  Default: 3
+  Max: 2
+  Default: 0
   ID:
     data1: 1370382716
     data2: 3840911837
@@ -335,7 +363,6 @@ MonoBehaviour:
   Labels:
   - Grass
   - Mud
-  - Rock
   - Concrete
   Exists: 1
 --- !u!114 &4935021268665076783
@@ -353,8 +380,8 @@ MonoBehaviour:
   Name: Surface
   StudioPath: 
   Min: 0
-  Max: 3
-  Default: 3
+  Max: 2
+  Default: 0
   ID:
     data1: 1370382716
     data2: 3840911837
@@ -363,7 +390,6 @@ MonoBehaviour:
   Labels:
   - Grass
   - Mud
-  - Rock
   - Concrete
   Exists: 1
 --- !u!114 &7311455152032304674

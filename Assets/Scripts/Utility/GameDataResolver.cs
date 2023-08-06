@@ -8,10 +8,14 @@ using UnityEngine;
 public enum GameDataReturnType { GameDataOk, GameDataDefault, GameDataUnknown };
 public class GameDataResolver : MonoBehaviour
 {
-   private HashTable gameDataHashTable = new();
+    public static GameDataResolver Instance => m_instance;
+    private static GameDataResolver m_instance;
+
+    private HashTable gameDataHashTable = new();
 
     private void Start()
     {
+        m_instance = this;
         GameDataValue test = new((uint)200);
         GameDataValue testBool = new((bool)false);
         gameDataHashTable.AddGameDataToHashTable((uint)1, test);
