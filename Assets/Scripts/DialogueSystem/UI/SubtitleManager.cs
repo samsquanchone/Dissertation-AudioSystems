@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-public class SubtitleManager : MonoBehaviour
+
+
+public class SubtitleManager : MonoBehaviour, IDialogueObserver
 {
     //For refactoring, maybe just make this a singleton so it can easily be accessed without references. There should be as little manual referencing as needed
 
@@ -15,28 +17,29 @@ public class SubtitleManager : MonoBehaviour
 
     private void Start()
     {
-       // subtitleContainer = this.gameObject;
+        DialogueManager.Instance.AddObserver(this);
         CloseSubtitleInterace();
     }
     public void QueueDialogue(string line, string name, float length) //Need to change to object so i can see multiple line attributes 
     {
-      
+
         StartCoroutine(LineTimer(line, name, length));
     }
 
     IEnumerator LineTimer(string line, string npcName, float length)
     {
-        ShowSubtitleInterface();
-        dialogueContainer.SetActive(true);
+
         dialogueLineText.text = line;
         entityNameText.text = npcName;
-       
+
+        ShowSubtitleInterface();
+
         yield return new WaitForSecondsRealtime(length);
-      
-        dialogueContainer.SetActive(false);
+
+        CloseSubtitleInterace();
     }
 
-    public void  HideAllUI()
+    public void HideAllUI()
     {
         dialogueContainer.SetActive(false);
         interactText.gameObject.SetActive(false);
@@ -56,11 +59,11 @@ public class SubtitleManager : MonoBehaviour
         interactText.gameObject.SetActive(false);
     }
 
-   
+
 
     public bool IsInteractPanelActive()
     {
-        if (interactText.isActiveAndEnabled || dialogueContainer.activeInHierarchy || DialogueManager.Instance.playerResponseUI.responsePanel.activeInHierarchy)
+        if (interactText.isActiveAndEnabled || dialogueContainer.activeInHierarchy)
         {
             return true;
         }
@@ -75,12 +78,50 @@ public class SubtitleManager : MonoBehaviour
     public void CloseSubtitleInterace()
     {
         subtitleContainer.SetActive(false);
+        dialogueContainer.SetActive(false);
     }
 
     public void ShowSubtitleInterface()
     {
         subtitleContainer.SetActive(true);
+        dialogueContainer.SetActive(true);
     }
 
+    /// <summary>
+    /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, we can invoke the respetive list of user defined evvents
+    /// </summary>
+    /// <param name="state"> Current state of the dialogue system</param>
+    public void OnNotify(DialogueState state)
+    {
+        switch (state)
+        {
+            case DialogueState.DialogueStart:
 
+                break;
+
+            case DialogueState.DialogueEnd:
+
+                break;
+
+            case DialogueState.ConversationStart:
+                HideInteractionUI();
+                ShowSubtitleInterface();
+                break;
+
+            case DialogueState.ConversationEnd:
+                HideAllUI();
+                break;
+
+            case DialogueState.InteractShow:
+                ShowNPCInteractUI();
+                break;
+        }
+    }
+}
+
+public class SubTitleData
+{
+    public string actorName;
+    public string lineText;
+    public float lineLength;
 }

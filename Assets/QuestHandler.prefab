@@ -44,3 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0700887dd7508a64f83cf29b53f93004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  qCubes: {fileID: 4507575390719910873, guid: ebdf84fecc469aa4984c26dacea671f4, type: 3}

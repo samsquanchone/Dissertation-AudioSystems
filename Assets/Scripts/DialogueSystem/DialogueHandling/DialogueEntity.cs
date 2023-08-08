@@ -1,18 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using DialogueUtility;
 using UnityEngine.Events;
-using System.IO;
 
+
+
+public interface IDialogueObserver
+{
+    public void OnNotify(DialogueState state);
+}
+
+
+//events with enum for different state of dialogue
 namespace DialogueSystem.EntityNPC
 {
     public enum TriggerType { TriggerEnter, Collision, Radius, TriggerExit } //Alow user to determine how the dialogue from the xml file is triggered within the game engine 
     public enum ColliderType { BoxCollider, SphereCollider, CapsuleCollider, Invalid } //Used to determine what collider type the user has attached to the triggerObject
 
 
-    public class DialogueEntity : MonoBehaviour
+    public class DialogueEntity : MonoBehaviour, IDialogueObserver
     {
         [Tooltip("This dictates how the dialogue is triggered. For trigger enter it will trigger when a specified object enters a specified box, or spherical collider. For trigger exit, it is the same as trigger enter but trigger when the specfied object leaves the trigger. Collision mode will trigger when a specified object collides with the object this script is attached to. Radius mode will trigger when the attached player object is in a specified radius, and the specified interact key is pressed. PLEASE NOTE: YOU WILL ONLY SEE PARAMETERS RELATED TO THE SELECTED TRIGGER TPYE, AS VARIABLES WILL BE OVERRIDEN IN THE INSPECTOR. PLEASE ENSURE TRIGGER PARAMETERS ARE DEFINED")]
         public TriggerType triggerType;
@@ -20,28 +27,26 @@ namespace DialogueSystem.EntityNPC
         [Tooltip("Dictates how dialogue is sequenced. For all dialogue in a XML file to be played in one sequence, select sequential. For a single trigger of a random line within the xml file, thats conditions are met, select random-one shot.   For player response sequence to dictate what line is played, select play response.")]
         public SequenceType sequenceType;
 
-
-
-
-        [Tooltip("This is the file name of the dialogue xml file for this entity. Please enter exactly the file name (case sensitive), without the file extention (.xml)")]
-        [SerializeField] string xmlFileName;
-
+        [Tooltip("The filepath to the XML file, use the XML file path button below to browse from file. (Note: XML file must be within StreamingAssets, it can however be nested in as many subfolders of StreamingAssets as desired))")]
+        [SerializeField] string xmlFilePath;
 
         [SerializeField] private FMODUnity.EventReference eventName;
 
-        [SerializeField] private string entityID;
-        [SerializeField] private string entityName;
-
+        [Tooltip("Object that XML file is de-serialized into. (Note: ID and name of entity from file show to give you indication of success of XML deserialization. Entity condition data is not shown within the inpsector, but can be seen while debugging in your IDE through inspecting the dialogue hash table in the dialogue mananager)")]
         [SerializeField] private Entity entity;
 
-        [SerializeField] private List<UnityEvent> events;
+        [Tooltip("Link functions you would like to trigger when a converstation starts e.g. locking player movement")]
+        [SerializeField] private List<UnityEvent> conversationStartEvent;
+        [Tooltip("Link functions you would like to trigger when a converstation ends e.g. unlocking player movement")]
+        [SerializeField] private List<UnityEvent> conversationEndEvent;
+        [Tooltip("Link functions you would like to trigger when a dialogue within the conversation starts e.g. starting animations")]
+        [SerializeField] private List<UnityEvent> dialogueStartEvents;
+        [Tooltip("Link functions you would like to trigger when a dialogue within the conversation starts e.g. ending animations")]
+        [SerializeField] private List<UnityEvent> dialogueEndEvents;
 
 
         [HideInInspector] public Transform objectToAttachTo = null;
         public GameObject player;
-
-
-        private DialogueHandler programmerCallback;
 
         public float distance;
         public bool is3D = false;
@@ -58,33 +63,27 @@ namespace DialogueSystem.EntityNPC
                                                                      // Start is called before the first frame update
         void Start()
         {
-            entity = DataManager.LoadXMLDialogueData(xmlFileName);
+            this.entity = DataManager.LoadXMLDialogueData(xmlFilePath);
             DialogueManager.Instance.AddEntityToHashTable(entity);
-            entityID = entity.id;
-            entityName = entity.name;
-
-            //Ditch the list idea and just have a parent bass node
+            
+            //Add the instance of an entity to the dialogue managers list of obserbers
+            DialogueManager.Instance.AddObserver(this);
+            
             if (this.sequenceType == SequenceType.PlayerResponse)
             {
 
                 //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
-                playerResponseNodes.tranistonCondition.conditionValue = StringValidation.ConvertStringToDataType<dynamic>(playerResponseNodes.tranistonCondition.conditionToParse);
+                this.playerResponseNodes.tranistonCondition.conditionValue = StringValidation.ConvertStringToDataType<dynamic>(playerResponseNodes.tranistonCondition.conditionToParse);
                 // Debug.Log(response.condition.conditionToParse);
 
             }
 
         }
 
-
         public void SetFileName(string fileName)
         {
-            xmlFileName = fileName;
+            xmlFilePath = fileName;
         }
-        void InitializeXMLFile()
-        {
-
-        }
-
         private void OnDrawGizmos()
         {
 
@@ -121,10 +120,10 @@ namespace DialogueSystem.EntityNPC
         {
             if (this.sequenceType == SequenceType.PlayerResponse)
             {
-                distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
+                this.distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
 
 
-                if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < radius && !hasGeneratedResponseInterface)
+                if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface)
                 {
                     DialogueManager.Instance.ShowInteractUI();
                     if (Input.GetKeyDown(KeyCode.E))
@@ -134,10 +133,25 @@ namespace DialogueSystem.EntityNPC
 
                 }
 
-                else if (DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, player.transform.position) > 12) || !DialogueManager.Instance.GetConversationState())
+                else if (DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, player.transform.position) > 12) || !DialogueManager.Instance.GetConversationState() && hasGeneratedResponseInterface)
                 {
-                    hasGeneratedResponseInterface = false;
+                    this.hasGeneratedResponseInterface = false;
                     DialogueManager.Instance.ExitConversation();
+                }
+            }
+
+            else if (this.sequenceType != SequenceType.PlayerResponse && this.triggerType == TriggerType.Radius)
+            {
+                this.distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
+
+
+                if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface)
+                {
+                    DialogueManager.Instance.ShowInteractUI();
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        
+                    }
                 }
             }
         }
@@ -147,40 +161,64 @@ namespace DialogueSystem.EntityNPC
             if (DialogueManager.Instance.CheckDialogueCondition<NodeCondition>(playerResponseNodes.tranistonCondition)) { playerResponseNodes = playerResponseNodes.transitionTo; } //IF the node condition is met then transition to the next response node
             DialogueManager.Instance.LookAtNPC(this.transform);
             DialogueManager.Instance.InstantiatePlayerResponseInterface(playerResponseNodes);
-            hasGeneratedResponseInterface = true;
+            this.hasGeneratedResponseInterface = true;
 
         }
 
-        public void OnNotify()
+        /// <summary>
+        /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, we can invoke the respetive list of user defined evvents
+        /// </summary>
+        /// <param name="state"> Current state of the dialogue system</param>
+        public void OnNotify(DialogueState state)
         {
+            switch (state)
+            {
+                case DialogueState.DialogueStart:
+                    foreach (var _event in dialogueStartEvents) { _event.Invoke(); }
+                    break;
 
+                case DialogueState.DialogueEnd:
+                    foreach (var _event in dialogueEndEvents) { _event.Invoke(); }
+                    break;
+
+                case DialogueState.ConversationStart:
+                    foreach (var _event in conversationStartEvent) { _event.Invoke(); }
+                    break;
+
+                case DialogueState.ConversationEnd:
+                    foreach (var _event in conversationEndEvent) { _event.Invoke(); }
+                    break;
+            }
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.name == collisionObject.name && triggerType == TriggerType.Collision)
-            {
-                DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
-                //programmerCallback = new (entity.lines[0].key, eventName, null);
-            }
+            if (this.triggerType == TriggerType.Collision)
+                if (collision.gameObject.name == this.collisionObject.name)
+                {
+                    DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
+
+                }
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerEnter)
-            {
-                DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
-                //programmerCallback = new(entity.lines[0].key, eventName, null);
-            }
+            if (this.triggerType == TriggerType.TriggerEnter)
+                if (other.transform == this.triggeringObject.transform)
+                {
+                    DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
+
+                }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.transform == triggeringObject.transform && triggerType == TriggerType.TriggerExit)
-            {
-                DialogueManager.Instance.PlayDialogueSequence(this.entityName, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
-                // programmerCallback = new(entity.lines[0].key, eventName, null);
-            }
+            if (this.triggerType == TriggerType.TriggerExit)
+                if (other.transform == triggeringObject.transform)
+                {
+                    DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
+
+                }
         }
 
 
@@ -206,9 +244,6 @@ namespace DialogueSystem.EntityNPC
                 return ColliderType.Invalid;
             }
         }
-
-
-
     }
 
     public class LineData
@@ -217,169 +252,5 @@ namespace DialogueSystem.EntityNPC
         public string line;
         public List<string> conditionsList;
     }
-
-
-
-
-#if (UNITY_EDITOR)
-    /// <summary>
-    /// This is used to override which inspector variables are shown depending on what trigger type the user selects for the enum
-    /// Note: Editor only and pust be contained within the if unity editor, or you will be unable to build your project!
-    /// </summary>
-    [CustomEditor(typeof(DialogueEntity))]
-    public class TestXMLEditor : Editor
-    {
-
-        public override void OnInspectorGUI()
-        {
-            // Call normal GUI 
-            base.OnInspectorGUI();
-
-            // Reference the variables in the script
-            DialogueEntity script = (DialogueEntity)target;
-
-
-
-            //When GUI button is pressed in inspector, open directory where streaming assets are
-            if (GUILayout.Button("XML Path"))
-            {
-                string path = EditorUtility.OpenFilePanel("Select XML File", Application.streamingAssetsPath, "xml");
-
-                string pathWithoutExt = Path.ChangeExtension(path, null);
-                string[] directories = pathWithoutExt.Split('/');
-                List<string> trimmedDirs = new();
-
-
-                //Normal file paths dont work in build, hence the need for some string manipulation to sort dirs into array and then add '/' chars back and combine into filepath
-                bool shouldAdd = false;
-                foreach (var dir in directories)
-                {
-                    if (dir == "StreamingAssets")
-                    {
-                        //Start adding dirs to list once it reaches streaming assets
-                        shouldAdd = true;
-                    }
-
-                    else if (shouldAdd && dir != "StreamingAssets")
-                    {
-                        trimmedDirs.Add(dir);
-                    }
-
-                }
-                string combinedPath = "";
-                foreach (var trimmedDir in trimmedDirs)
-                {
-
-                    combinedPath = combinedPath + trimmedDir + "/";
-
-                }
-
-                combinedPath = combinedPath.Remove(combinedPath.Length - 1);
-                script.SetFileName(combinedPath);
-
-            }
-
-            EditorGUILayout.LabelField("Trigger Parameters", EditorStyles.boldLabel); //Set header within the inspector
-
-
-
-            // Set up the shown variables relating to trigger enter enum type
-            switch (script.triggerType)
-            {
-
-                case TriggerType.TriggerEnter:
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Trigger Object", GUILayout.MaxWidth(180));
-                    script.triggerObject = EditorGUILayout.ObjectField(script.triggerObject, typeof(Transform), true) as Transform;
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Triggering Object", GUILayout.MaxWidth(180));
-                    script.triggeringObject = EditorGUILayout.ObjectField(script.triggeringObject, typeof(Transform), true) as Transform;
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Debug", GUILayout.MaxWidth(180));
-                    script.debugDraw = EditorGUILayout.Toggle(script.debugDraw);
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Debug Colour", GUILayout.MaxWidth(180));
-                    script.debugColor = EditorGUILayout.ColorField(script.debugColor);
-                    EditorGUILayout.EndHorizontal();
-                    break;
-
-                case TriggerType.Collision:
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Collision Object", GUILayout.MaxWidth(180));
-                    script.collisionObject = EditorGUILayout.ObjectField(script.collisionObject, typeof(Transform), true) as Transform;
-                    EditorGUILayout.EndHorizontal();
-                    break;
-
-                case TriggerType.Radius:
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Radius", GUILayout.MaxWidth(180));
-                    script.radius = EditorGUILayout.FloatField(script.radius);
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Origin Object", GUILayout.MaxWidth(180));
-                    script.triggerObject = EditorGUILayout.ObjectField(script.triggerObject, typeof(Transform), true) as Transform;
-                    EditorGUILayout.EndHorizontal();
-                    break;
-
-                case TriggerType.TriggerExit:
-                    // Set up the shown variables relating to trigger enter enum type
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Trigger Object", GUILayout.MaxWidth(180));
-                    script.triggerObject = EditorGUILayout.ObjectField(script.triggerObject, typeof(Transform), true) as Transform;
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Triggering Object", GUILayout.MaxWidth(180));
-                    script.origin = EditorGUILayout.ObjectField(script.origin, typeof(Transform), true) as Transform;
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Debug", GUILayout.MaxWidth(180));
-                    script.debugDraw = EditorGUILayout.Toggle(script.debugDraw);
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Debug Colour", GUILayout.MaxWidth(180));
-                    script.debugColor = EditorGUILayout.ColorField(script.debugColor);
-                    EditorGUILayout.EndHorizontal();
-
-
-                    break;
-
-            }
-
-            if (script.sequenceType == SequenceType.PlayerResponse)
-            {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Base Player response node", GUILayout.MaxWidth(180));
-                script.playerResponseNodes = EditorGUILayout.ObjectField(script.playerResponseNodes, typeof(PlayerResponse), true) as PlayerResponse;
-                script.triggerType = TriggerType.Radius;
-                EditorGUILayout.EndHorizontal();
-            }
-
-            if (script.is3D)
-            {
-                //If dialogue is 3D then show the necessary parameters needed for setting up a 3D audio event in fmod
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Triggering Object", GUILayout.MaxWidth(180));
-                script.objectToAttachTo = EditorGUILayout.ObjectField(script.objectToAttachTo, typeof(Transform), true) as Transform;
-                EditorGUILayout.EndHorizontal();
-
-            }
-
-
-        }
-
-    }
-
-#endif
 
 }

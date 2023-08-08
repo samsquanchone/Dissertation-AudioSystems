@@ -5,40 +5,37 @@ using Unity.Collections;
 using Unity.Jobs;
 
 /// <summary>
-/// The dialogue manager acts as the observer and will notify subjects on key events. Such as dialogue starting, dialogue ending ect. ect. 
-/// This will allow behaviour to be invoked in an event based fashion
+/// Enum used with the event system so difffrent parts of the code base can make decisions on an event invoke based on the enum state passed with the invoke of dialogue obserbers
 /// </summary>
-public interface DialogueObserver
+public enum DialogueState {ConversationStart, ConversationEnd, DialogueStart, DialogueEnd, TransitionNode, InteractShow, PlayerResponse};
+
+
+public interface DialogueSubject
 {
+    List<IDialogueObserver> dialogueObservers { get; set; }
+
+    public void AddObserver(IDialogueObserver observer);
+    public void RemoveObserver(IDialogueObserver observer);
+
+    public void NotifyObservers(DialogueState state);
     
 }
-
 
 /// <summary>
 /// This is where the handling of a sequence of dialogue is handled, e.g. if just a random the queue size would be one, 
 /// where with sequence it would be either: time of clip + buffer, or on input e.g. space 
 /// </summary>
-public class DialogueManager : MonoBehaviour
+public class DialogueManager : MonoBehaviour, DialogueSubject
 {
     public static DialogueManager Instance => m_instance;
     private static DialogueManager m_instance;
-
- 
-
+    public List<IDialogueObserver> dialogueObservers { get; set; }
     public SubtitleManager subtitleManager;
-    public PlayerResponseUI playerResponseUI;
-
-
     private LookAtNPC lookAt;
-
     public Transform player;
 
-
-    
+    DialogueState state = DialogueState.ConversationEnd;
     private HashTable npcDialogueHashTable = new();
-
-  
-
     private PlayerResponse currentResponseNode; //Not implement but should maybe handle this here instead of response UI script
     PlayerResponseData currentResponse;
 
@@ -47,18 +44,20 @@ public class DialogueManager : MonoBehaviour
     private void Awake()
     {
         m_instance = this;
+        dialogueObservers = new();
     }
 
     private void Start()
     {
-        playerResponseUI.Initialize();
+      
+       
         lookAt = GetComponent<LookAtNPC>();
 
     }
 
     private void Update()
     {
-
+        if(state == DialogueState.PlayerResponse)
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             if (currentResponseNode.playerResponses.Count > 0)
@@ -70,12 +69,12 @@ public class DialogueManager : MonoBehaviour
                 line.Add(0, npc.lines[currentResponseNode.playerResponses[0].npcLineID]);
                 PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null);
 
-                //This should be refactored out of here
+                //Transition node
                 if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[0].transitionNode != null)
                 {
 
                     SetNewResponses(0);
-                    playerResponseUI.GeneratePlayerResponses(currentResponseNode);
+                    NotifyObservers(DialogueState.TransitionNode);
 
                 }
             }
@@ -96,7 +95,7 @@ public class DialogueManager : MonoBehaviour
                 {
 
                     SetNewResponses(1);
-                    playerResponseUI.GeneratePlayerResponses(currentResponseNode);
+                    NotifyObservers(DialogueState.TransitionNode);
 
                 }
             }
@@ -118,7 +117,7 @@ public class DialogueManager : MonoBehaviour
                 {
 
                     SetNewResponses(2);
-                    playerResponseUI.GeneratePlayerResponses(currentResponseNode);
+                    NotifyObservers(DialogueState.TransitionNode);
 
                 }
             }
@@ -140,7 +139,7 @@ public class DialogueManager : MonoBehaviour
                 {
 
                     SetNewResponses(3);
-                    playerResponseUI.GeneratePlayerResponses(currentResponseNode);
+                    NotifyObservers(DialogueState.TransitionNode);
 
                 }
             }
@@ -162,7 +161,7 @@ public class DialogueManager : MonoBehaviour
                 {
 
                     SetNewResponses(4);
-                    playerResponseUI.GeneratePlayerResponses(currentResponseNode);
+                    NotifyObservers(DialogueState.TransitionNode);
 
                 }
             }
@@ -184,10 +183,14 @@ public class DialogueManager : MonoBehaviour
                 {
 
                     SetNewResponses(5);
-                    playerResponseUI.GeneratePlayerResponses(currentResponseNode);
+                    NotifyObservers(DialogueState.TransitionNode);
 
                 }
             }
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ExitConversation();
         }
     }
 
@@ -230,16 +233,16 @@ public class DialogueManager : MonoBehaviour
     public void ExitConversation()
     {
         isConversationActive = false;
-        subtitleManager.HideAllUI();
-        Debug.Log("QUIT");
-
+        state = DialogueState.ConversationEnd;
+        NotifyObservers(DialogueState.ConversationEnd);
+        
     }
 
 
     public void ShowInteractUI()
     {
-
-        subtitleManager.ShowNPCInteractUI();
+        NotifyObservers(DialogueState.InteractShow);
+        ///subtitleManager.ShowNPCInteractUI();
     }
 
     public bool GetConversationState()
@@ -253,12 +256,14 @@ public class DialogueManager : MonoBehaviour
     }
     public void InstantiatePlayerResponseInterface(PlayerResponse playerResponseNode)
     {
+        
         isConversationActive = true;
         currentResponseNode = playerResponseNode;
-        subtitleManager.HideInteractionUI();
-        playerResponseUI.GeneratePlayerResponses(playerResponseNode);
-        playerResponseUI.ShowCurrentResponseInterface();
-        subtitleManager.ShowSubtitleInterface();
+       
+        NotifyObservers(DialogueState.ConversationStart);
+        state = DialogueState.PlayerResponse;
+       
+  
     }
 
     public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName, Transform transformToAttachTo)
@@ -342,17 +347,28 @@ public class DialogueManager : MonoBehaviour
         yield return 0;
     }
 
-    
 
+    public void SetState(DialogueState _state)
+    {
+        state = _state;
+    }
     public void SetCurrentResponse(PlayerResponseData response)
     {
         currentResponse = response;
 
     }
 
+    public PlayerResponse GetCurrentResponseNode()
+    {
+        return currentResponseNode;
+    }
+
     private System.Collections.IEnumerator DialogueResponseTimer(string _name, Line npcLine, FMODUnity.EventReference eventName, Transform transformToAttachTo)
     {
-        playerResponseUI.HideCurrentResponseInterface();
+
+        NotifyObservers(DialogueState.DialogueStart);
+        state = DialogueState.DialogueStart;
+       // playerResponseUI.HideCurrentResponseInterface();
 
         //Create native array to store threading result in
         NativeArray<float> result = new NativeArray<float>(1, Allocator.TempJob);
@@ -396,13 +412,13 @@ public class DialogueManager : MonoBehaviour
             _event.Invoke();
         }
 
-        if (!playerResponseUI.IsExitResponse(currentResponse))
+        if (!currentResponse.isExitNode)
         {
-
-            playerResponseUI.ShowCurrentResponseInterface();
+            NotifyObservers(DialogueState.DialogueEnd);
+            state = DialogueState.PlayerResponse;
         }
 
-        else if (playerResponseUI.IsExitResponse(currentResponse))
+        else if (currentResponse.isExitNode)
         {
             ExitConversation();
         }
@@ -422,7 +438,15 @@ public class DialogueManager : MonoBehaviour
                     Debug.Log("Key for lne: " + line.Value.key);
                 }
             }
+
+            //If line has no conditions then add 
+            if (line.Value.conditions.Count == 0)
+            {
+                triggerableLines.Add(line.Value);
+            }
         }
+
+        
 
         int indexToPlay = Random.Range(0, triggerableLines.Count);
         DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, transformToAttachTo); //Make programmer deceleration in function, to make memory management better!!!
@@ -447,7 +471,6 @@ public class DialogueManager : MonoBehaviour
             condition = (NodeCondition)(object)diaCondition;
         }
 
-        //GameDataResolver resolver = new();
         GameDataReturnType dataResolveType = GameDataResolver.Instance.QuerryGameData<dynamic>(condition.gameDataKey, out dynamic gameDataVal);
 
         switch (condition.triggerCondition)
@@ -471,5 +494,23 @@ public class DialogueManager : MonoBehaviour
 
         Debug.Log("Resolution: " + dataResolveType.ToString() + " /  gameDataVal: " + gameDataVal + "ConditionVAL: " + condition.conditionValue);
         return false;
+    }
+
+    public void AddObserver(IDialogueObserver observer)
+    {
+        dialogueObservers.Add(observer);
+    }
+
+    public void RemoveObserver(IDialogueObserver observer)
+    {
+        dialogueObservers.Remove(observer);
+    }
+
+    public void NotifyObservers(DialogueState state)
+    {
+        foreach (var observer in dialogueObservers)
+        {
+            observer.OnNotify(state);
+        }
     }
 }

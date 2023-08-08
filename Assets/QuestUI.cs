@@ -10,6 +10,8 @@ public class QuestUI : MonoBehaviour
 
     public TMP_Text questNameText;
     public TMP_Text questObjectiveText;
+
+    QuestData _questData;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +21,14 @@ public class QuestUI : MonoBehaviour
     // Update is called once per frame
     public void SetQuestUI(QuestData questData)
     {
+        _questData = questData;
         questNameText.text = questData.questName;
-        questObjectiveText.text = questData.questObjective;
+        questObjectiveText.text = questData.questObjective + ":  0/" + questData.cubeAmount;
     }
+
+    public void UpdateQuestUI(int cubesCollected)
+    {
+        questObjectiveText.text = _questData.questObjective + $":  {cubesCollected}/" + _questData.cubeAmount;
+    }
+
 }

@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 
 ///Refactor this with an event/observer system. UI handling getting a bit coupled and hard to maintain!
-public class PlayerResponseUI : MonoBehaviour
+public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
 {
 
    public PlayerResponse currentResponseNode;
@@ -21,7 +21,12 @@ public class PlayerResponseUI : MonoBehaviour
 
     private List<GameObject> responseText = new();
 
-    public void Initialize()
+
+    void Start()
+    {
+        Initialize();
+    }
+    private void Initialize()
     {
         templateResponseText.SetActive(false);
         responseText.Capacity = 6; //Set max response size
@@ -36,8 +41,40 @@ public class PlayerResponseUI : MonoBehaviour
         
     }
 
-    public void GeneratePlayerResponses(PlayerResponse playerResponseNode)
+    /// <summary>
+    /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, we can invoke the respetive list of user defined evvents
+    /// </summary>
+    /// <param name="state"> Current state of the dialogue system</param>
+    public void OnNotify(DialogueState state)
     {
+        switch (state)
+        {
+            case DialogueState.DialogueStart:
+                HideCurrentResponseInterface();
+                break;
+
+            case DialogueState.DialogueEnd:
+                ShowCurrentResponseInterface();
+                break;
+
+            case DialogueState.ConversationStart:
+                GeneratePlayerResponses();
+                ShowCurrentResponseInterface();
+                break;
+
+            case DialogueState.ConversationEnd:
+               
+                break;
+
+            case DialogueState.TransitionNode:
+                GeneratePlayerResponses();
+                break;
+        }
+    }
+
+    private void GeneratePlayerResponses()
+    {
+        PlayerResponse playerResponseNode = DialogueManager.Instance.GetCurrentResponseNode();
         currentResponseNode = playerResponseNode;
         Cursor.lockState = CursorLockMode.Confined;
         int x = 1;
@@ -50,31 +87,19 @@ public class PlayerResponseUI : MonoBehaviour
        // responsePanel.SetActive(true);
     }
 
-    public void HideCurrentResponseInterface()
+    private void HideCurrentResponseInterface()
     {
         responsePanel.SetActive(false);
     }
-    public void ShowCurrentResponseInterface()
+    private void ShowCurrentResponseInterface()
     {
+
         responsePanel.SetActive(true);
     }
-    public void ClearPlayerResponses()
+    private void ClearPlayerResponses()
     {
         //Remove from memory when this script is destroyed
         responseText.Clear();
-    }
-
-    public bool IsExitResponse(PlayerResponseData response)
-    {
-        switch (response.isExitNode)
-        {
-            case true:
-
-                return true;
-
-            case false:
-                return false;
-        }
     }
 
     private void OnDestroy()
