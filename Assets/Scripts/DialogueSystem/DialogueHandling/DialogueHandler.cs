@@ -21,28 +21,11 @@ namespace DialogueUtility
             this.dialogueKey = key;
             this.fmodEvent = eventName;
             this.emitterTransform = _emitterTransform;
-            dialogueCallback = new FMOD.Studio.EVENT_CALLBACK(DialogueEventCallback); //Will need to call this from sending script if trying to make this a static helper class
+            dialogueCallback = new FMOD.Studio.EVENT_CALLBACK(DialogueEventCallback);  
 
             PlayDialogue(dialogueKey, fmodEvent, emitterTransform);
         }
 
-
-
-
-#if UNITY_EDITOR
-        void Reset()
-        {
-            //EventName = FMODUnity.EventReference.Find("event:/Character/Radio/Command");
-        }
-#endif
-
-        void Start()
-        {
-
-            // Explicitly create the delegate object and assign it to a member so it doesn't get freed
-            // by the garbage collected while it's being used
-            //  dialogueCallback = new FMOD.Studio.EVENT_CALLBACK(DialogueEventCallback); //Will need to call this from sending script if trying to make this a static helper class
-        }
 
         public void PlayDialogue(string key, FMODUnity.EventReference eventName, Transform emitterTransform)
         {
@@ -215,6 +198,7 @@ namespace DialogueUtility
                             if (soundResult == FMOD.RESULT.OK)
                             {
                                 parameter.sound = dialogueSound.handle;
+                                dialogueSound.setMode(FMOD.MODE.ACCURATETIME);
                                 parameter.subsoundIndex = -1;
                                 Marshal.StructureToPtr(parameter, parameterPtr, false);
                             }
@@ -232,10 +216,11 @@ namespace DialogueUtility
                             var soundResult = FMODUnity.RuntimeManager.CoreSystem.createSound(dialogueSoundInfo.name_or_data, soundMode | dialogueSoundInfo.mode, ref dialogueSoundInfo.exinfo, out dialogueSound);
                             if (soundResult == FMOD.RESULT.OK)
                             {
-                                FMOD.Sound subSound;
+                                FMOD.Sound subSound;;
                                 parameter.sound = dialogueSound.handle;
                                 parameter.subsoundIndex = dialogueSoundInfo.subsoundindex;
                                 dialogueSound.getSubSound(dialogueSoundInfo.subsoundindex, out subSound);
+                                subSound.setMode(FMOD.MODE.ACCURATETIME);
                                 subSound.getLength(out uint length, FMOD.TIMEUNIT.MS);
                                 Debug.Log("Length: " + length);
                                 SetDialogueLength(length);

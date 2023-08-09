@@ -3,43 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 /// <summary>
-/// THIS STUFF SHOULD NOT BE ON UI 
+/// This class sets up UI elements relating to player responses and sets relevant UI to enabled/disabled.
+/// The behaviour for this class is handled through the OnNotify function that is called by the subject (DialogueSystem) when anything of note happens
+/// The enum dialogue state is passed when subscribed events are invoked (Such as this one) and switch case with dialogue state is used to delegate behaviour within the script
 /// </summary>
-/// 
-
-
-///Refactor this with an event/observer system. UI handling getting a bit coupled and hard to maintain!
 public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
 {
-
-   public PlayerResponse currentResponseNode;
-    bool he = false;
-    public GameObject templateResponseText;
+    [SerializeField] private GameObject templateResponseText;
     public GameObject responsePanel;
 
     private List<GameObject> responseText = new();
 
-
-    void Start()
-    {
-        Initialize();
-    }
-    private void Initialize()
-    {
-        templateResponseText.SetActive(false);
-        responseText.Capacity = 6; //Set max response size
-        for (int i = 0; i < responseText.Capacity; i++)
-        {
-            //templateResponseText.SetActive(true);
-            GameObject _text = Instantiate(templateResponseText, this.transform);
-            responseText.Add(_text);
-            _text.SetActive(false);
-        }
-
-        
-    }
 
     /// <summary>
     /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, we can invoke the respetive list of user defined evvents
@@ -63,28 +38,54 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
                 break;
 
             case DialogueState.ConversationEnd:
-               
+
                 break;
 
             case DialogueState.TransitionNode:
                 GeneratePlayerResponses();
                 break;
+
+            case DialogueState.PlayerResponse:
+                ShowCurrentResponseInterface();
+                break;
         }
+    }
+
+    void Start()
+    {
+
+        DialogueManager.Instance.AddObserver(this); //Add self to dialogue managers list of observers
+        Initialize();
+
+    }
+    private void Initialize()
+    {
+        templateResponseText.SetActive(false);
+        responseText.Capacity = 6; //Set max response size
+        for (int i = 0; i < responseText.Capacity; i++)
+        {
+            //templateResponseText.SetActive(true);
+            GameObject _text = Instantiate(templateResponseText, this.transform);
+            responseText.Add(_text);
+            _text.SetActive(false);
+        }
+
+        responsePanel.SetActive(false);
     }
 
     private void GeneratePlayerResponses()
     {
         PlayerResponse playerResponseNode = DialogueManager.Instance.GetCurrentResponseNode();
-        currentResponseNode = playerResponseNode;
+
         Cursor.lockState = CursorLockMode.Confined;
         int x = 1;
-        foreach (var response in currentResponseNode.playerResponses)
+        foreach (var response in playerResponseNode.playerResponses)
         {
             responseText[x - 1].SetActive(true);
             responseText[x - 1].GetComponent<TMPro.TMP_Text>().text = x + ".) " + response.responseText;
             x++;
         }
-       // responsePanel.SetActive(true);
+
     }
 
     private void HideCurrentResponseInterface()

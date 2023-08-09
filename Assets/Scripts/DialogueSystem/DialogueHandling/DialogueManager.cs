@@ -34,6 +34,9 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     private LookAtNPC lookAt;
     public Transform player;
 
+    [SerializeField] List<KeyCode> responseInputKeys = new(6);
+    [SerializeField] KeyCode escDialogueKey;
+
     DialogueState state = DialogueState.ConversationEnd;
     private HashTable npcDialogueHashTable = new();
     private PlayerResponse currentResponseNode; //Not implement but should maybe handle this here instead of response UI script
@@ -49,149 +52,149 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
     private void Start()
     {
-      
-       
+
+
         lookAt = GetComponent<LookAtNPC>();
 
     }
 
     private void Update()
     {
-        if(state == DialogueState.PlayerResponse)
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (currentResponseNode.playerResponses.Count > 0)
+        if (state == DialogueState.PlayerResponse)
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                SetCurrentResponse(currentResponseNode.playerResponses[0]);
-                //For now as there is one switch case in dalogue manager handling what to call, crate a temp single entry dic so we can pass that to the switch case function
-                Entity npc = GetNPCHashElement(currentResponseNode.npcID);
-                Dictionary<uint, Line> line = new();
-                line.Add(0, npc.lines[currentResponseNode.playerResponses[0].npcLineID]);
-                PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null);
-
-                //Transition node
-                if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[0].transitionNode != null)
+                if (currentResponseNode.playerResponses.Count > 0)
                 {
+                    SetCurrentResponse(currentResponseNode.playerResponses[0]);
+                    //For now as there is one switch case in dalogue manager handling what to call, crate a temp single entry dic so we can pass that to the switch case function
+                    Entity npc = GetNPCHashElement(currentResponseNode.npcID);
+                    Dictionary<uint, Line> line = new();
+                    line.Add(0, npc.lines[currentResponseNode.playerResponses[0].npcLineID]);
+                    PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null);
 
-                    SetNewResponses(0);
-                    NotifyObservers(DialogueState.TransitionNode);
+                    //Transition node
+                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[0].transitionNode != null)
+                    {
 
+                        SetNewResponses(0);
+                        NotifyObservers(DialogueState.TransitionNode);
+
+                    }
                 }
             }
-        }
 
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            if (currentResponseNode.playerResponses.Count > 1)
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                SetCurrentResponse(currentResponseNode.playerResponses[1]);
-                Entity npc = GetNPCHashElement(currentResponseNode.npcID);
-                Dictionary<uint, Line> line = new();
-                line.Add(0, npc.lines[currentResponseNode.playerResponses[1].npcLineID]);
-                PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
-
-                //This should be refactored out of here
-                if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[1].transitionNode != null)
+                if (currentResponseNode.playerResponses.Count > 1)
                 {
+                    SetCurrentResponse(currentResponseNode.playerResponses[1]);
+                    Entity npc = GetNPCHashElement(currentResponseNode.npcID);
+                    Dictionary<uint, Line> line = new();
+                    line.Add(0, npc.lines[currentResponseNode.playerResponses[1].npcLineID]);
+                    PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
 
-                    SetNewResponses(1);
-                    NotifyObservers(DialogueState.TransitionNode);
+                    //This should be refactored out of here
+                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[1].transitionNode != null)
+                    {
 
+                        SetNewResponses(1);
+                        NotifyObservers(DialogueState.TransitionNode);
+
+                    }
                 }
             }
-        }
 
 
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            if (currentResponseNode.playerResponses.Count > 2)
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                SetCurrentResponse(currentResponseNode.playerResponses[2]);
-                Entity npc = GetNPCHashElement(currentResponseNode.npcID);
-                Dictionary<uint, Line> line = new();
-                line.Add(0, npc.lines[currentResponseNode.playerResponses[2].npcLineID]);
-                PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
-
-                //This should be refactored out of here
-                if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[2].transitionNode != null)
+                if (currentResponseNode.playerResponses.Count > 2)
                 {
+                    SetCurrentResponse(currentResponseNode.playerResponses[2]);
+                    Entity npc = GetNPCHashElement(currentResponseNode.npcID);
+                    Dictionary<uint, Line> line = new();
+                    line.Add(0, npc.lines[currentResponseNode.playerResponses[2].npcLineID]);
+                    PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
 
-                    SetNewResponses(2);
-                    NotifyObservers(DialogueState.TransitionNode);
+                    //This should be refactored out of here
+                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[2].transitionNode != null)
+                    {
 
+                        SetNewResponses(2);
+                        NotifyObservers(DialogueState.TransitionNode);
+
+                    }
                 }
             }
-        }
 
 
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            if (currentResponseNode.playerResponses.Count > 3)
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                SetCurrentResponse(currentResponseNode.playerResponses[3]);
-                Entity npc = GetNPCHashElement(currentResponseNode.npcID);
-                Dictionary<uint, Line> line = new();
-                line.Add(0, npc.lines[currentResponseNode.playerResponses[3].npcLineID]);
-                PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
-
-                //This should be refactored out of here
-                if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[3].transitionNode != null)
+                if (currentResponseNode.playerResponses.Count > 3)
                 {
+                    SetCurrentResponse(currentResponseNode.playerResponses[3]);
+                    Entity npc = GetNPCHashElement(currentResponseNode.npcID);
+                    Dictionary<uint, Line> line = new();
+                    line.Add(0, npc.lines[currentResponseNode.playerResponses[3].npcLineID]);
+                    PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
 
-                    SetNewResponses(3);
-                    NotifyObservers(DialogueState.TransitionNode);
+                    //This should be refactored out of here
+                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[3].transitionNode != null)
+                    {
 
+                        SetNewResponses(3);
+                        NotifyObservers(DialogueState.TransitionNode);
+
+                    }
                 }
             }
-        }
 
 
-        else if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            if (currentResponseNode.playerResponses.Count > 4)
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
-                SetCurrentResponse(currentResponseNode.playerResponses[4]);
-                Entity npc = GetNPCHashElement(currentResponseNode.npcID);
-                Dictionary<uint, Line> line = new();
-                line.Add(0, npc.lines[currentResponseNode.playerResponses[4].npcLineID]);
-                PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
-
-                //This should be refactored out of here
-                if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[4].transitionNode != null)
+                if (currentResponseNode.playerResponses.Count > 4)
                 {
+                    SetCurrentResponse(currentResponseNode.playerResponses[4]);
+                    Entity npc = GetNPCHashElement(currentResponseNode.npcID);
+                    Dictionary<uint, Line> line = new();
+                    line.Add(0, npc.lines[currentResponseNode.playerResponses[4].npcLineID]);
+                    PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
 
-                    SetNewResponses(4);
-                    NotifyObservers(DialogueState.TransitionNode);
+                    //This should be refactored out of here
+                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[4].transitionNode != null)
+                    {
 
+                        SetNewResponses(4);
+                        NotifyObservers(DialogueState.TransitionNode);
+
+                    }
                 }
             }
-        }
 
 
-        else if (Input.GetKeyDown(KeyCode.Alpha6))
-        {
-            if (currentResponseNode.playerResponses.Count > 5)
+            else if (Input.GetKeyDown(KeyCode.Alpha6))
             {
-                SetCurrentResponse(currentResponseNode.playerResponses[5]);
-                Entity npc = GetNPCHashElement(currentResponseNode.npcID);
-                Dictionary<uint, Line> line = new();
-                line.Add(0, npc.lines[currentResponseNode.playerResponses[5].npcLineID]);
-                PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
-
-                //This should be refactored out of here
-                if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[5].transitionNode != null)
+                if (currentResponseNode.playerResponses.Count > 5)
                 {
+                    SetCurrentResponse(currentResponseNode.playerResponses[5]);
+                    Entity npc = GetNPCHashElement(currentResponseNode.npcID);
+                    Dictionary<uint, Line> line = new();
+                    line.Add(0, npc.lines[currentResponseNode.playerResponses[5].npcLineID]);
+                    PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null); //NEED TO MOV THIS OR SORT TRANSFORM
 
-                    SetNewResponses(5);
-                    NotifyObservers(DialogueState.TransitionNode);
+                    //This should be refactored out of here
+                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[5].transitionNode != null)
+                    {
 
+                        SetNewResponses(5);
+                        NotifyObservers(DialogueState.TransitionNode);
+
+                    }
                 }
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ExitConversation();
-        }
+            else if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                ExitConversation();
+            }
     }
 
 
@@ -209,12 +212,12 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     }
 
     public void AddEntityToHashTable(Entity entity)
-    { 
+    {
         //Add an entitys dialogue information within the scene to the hash table 
         npcDialogueHashTable.hashTable.Add(uint.Parse(entity.id), entity);
 
         Entity _entity = (Entity)npcDialogueHashTable.hashTable[uint.Parse(entity.id)]; //NOTE NEED A BETTER WAY OF READING CONDITION ID: MAYBE ADD SOUND DESIGNER ID
-       
+
     }
 
     /// <summary>
@@ -235,14 +238,14 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         isConversationActive = false;
         state = DialogueState.ConversationEnd;
         NotifyObservers(DialogueState.ConversationEnd);
-        
+
     }
 
 
     public void ShowInteractUI()
     {
         NotifyObservers(DialogueState.InteractShow);
-        ///subtitleManager.ShowNPCInteractUI();
+       
     }
 
     public bool GetConversationState()
@@ -256,14 +259,15 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     }
     public void InstantiatePlayerResponseInterface(PlayerResponse playerResponseNode)
     {
-        
+
         isConversationActive = true;
         currentResponseNode = playerResponseNode;
-       
+
         NotifyObservers(DialogueState.ConversationStart);
+        NotifyObservers(DialogueState.PlayerResponse);
         state = DialogueState.PlayerResponse;
-       
-  
+
+
     }
 
     public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName, Transform transformToAttachTo)
@@ -284,7 +288,6 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
             case SequenceType.PlayerResponse:
                 StartCoroutine(DialogueResponseTimer(entityName, lineSequence[0], eventName, transformToAttachTo)); //Is one shot with one element id set to 0
-                Debug.Log("Set up");
                 break;
         }
 
@@ -311,8 +314,8 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                         //Set up a new job system instance
                         DialogueJobSystem jobSystem = new(line.Value.key, eventName);
 
-                       
-                       
+
+
                         DialogueJobSystem.CalculateDialogueLength dialogueLength = new();
                         dialogueLength.result = result;
 
@@ -330,7 +333,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                         //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
                         DialogueHandler programmerCallback = new(line.Value.key, eventName, transformToAttachTo); //Make programmer deceleration in function, to make memory management better!!!
                         subtitleManager.QueueDialogue(line.Value.line, _name, diaLength);
-
+                        NotifyObservers(DialogueState.DialogueStart);
 
                         yield return new WaitForSecondsRealtime((float)diaLength); //We want a dialogue call back for info to get the length of an audio table clip.... UNITY WHY CANT I USE A DOUBLE >_< 
                     }
@@ -366,16 +369,17 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     private System.Collections.IEnumerator DialogueResponseTimer(string _name, Line npcLine, FMODUnity.EventReference eventName, Transform transformToAttachTo)
     {
 
-        NotifyObservers(DialogueState.DialogueStart);
         state = DialogueState.DialogueStart;
-       // playerResponseUI.HideCurrentResponseInterface();
+
+
+       
 
         //Create native array to store threading result in
         NativeArray<float> result = new NativeArray<float>(1, Allocator.TempJob);
 
         //Set up a new job system instance
         DialogueJobSystem jobSystem = new(npcLine.key, eventName);
-        
+
         //Create a dialogue length calc thread 
         DialogueJobSystem.CalculateDialogueLength dialogueLength = new();
         dialogueLength.result = result;
@@ -392,17 +396,14 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         //Free memory 
         result.Dispose();
 
-
-        DialogueInfoHandler diaInfoCallback = new(npcLine.key, eventName);
-
-
-        if (diaLength == 0) { diaLength = 2; } //On first trigger on occasion the callback with fmod does not happen, this just ensures there is a default val the first time
+        if (diaLength == 0) { diaLength = 2; } //On first trigger on occasion the callback with fmod does not calculate accurate length,  this just ensures there is a default val the first time
         Debug.Log("dialength: " + diaLength);
 
 
         DialogueHandler programmerCallback = new(npcLine.key, eventName, transformToAttachTo);
 
         subtitleManager.QueueDialogue(npcLine.line, _name, diaLength);
+        NotifyObservers(DialogueState.DialogueStart);
         yield return new WaitForSeconds((float)diaLength);
 
 
@@ -415,6 +416,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         if (!currentResponse.isExitNode)
         {
             NotifyObservers(DialogueState.DialogueEnd);
+            NotifyObservers(DialogueState.PlayerResponse);
             state = DialogueState.PlayerResponse;
         }
 
@@ -446,15 +448,18 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
         }
 
-        
 
+        
         int indexToPlay = Random.Range(0, triggerableLines.Count);
         DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, transformToAttachTo); //Make programmer deceleration in function, to make memory management better!!!
         subtitleManager.QueueDialogue(triggerableLines[indexToPlay].line, entityName, 3f);
-        //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
+        NotifyObservers(DialogueState.DialogueStart);
     }
 
-    
+    public void DialogueEnded()
+    {
+        NotifyObservers(DialogueState.DialogueEnd);
+    }
 
     public bool CheckDialogueCondition<T>(T diaCondition)
     {

@@ -15,7 +15,7 @@ public interface IDialogueObserver
 //events with enum for different state of dialogue
 namespace DialogueSystem.EntityNPC
 {
-    public enum TriggerType { TriggerEnter, Collision, Radius, TriggerExit } //Alow user to determine how the dialogue from the xml file is triggered within the game engine 
+    public enum TriggerType { TriggerEnter, Collision, Radius, TriggerExit, Custom } //Alow user to determine how the dialogue from the xml file is triggered within the game engine 
     public enum ColliderType { BoxCollider, SphereCollider, CapsuleCollider, Invalid } //Used to determine what collider type the user has attached to the triggerObject
 
 
@@ -51,6 +51,9 @@ namespace DialogueSystem.EntityNPC
         public float distance;
         public bool is3D = false;
         bool hasGeneratedResponseInterface = false;
+
+        public UnityEvent<string> customEventTrigger;
+        private UnityAction<string> custiomTriggerAction;
         //Dynamic parameters
         [HideInInspector] public Transform triggerObject;
         [HideInInspector] public Transform triggeringObject;
@@ -68,6 +71,11 @@ namespace DialogueSystem.EntityNPC
             
             //Add the instance of an entity to the dialogue managers list of obserbers
             DialogueManager.Instance.AddObserver(this);
+
+            custiomTriggerAction += InvokeCustomDialogueTrigger;
+
+         
+            customEventTrigger.AddListener(custiomTriggerAction);
             
             if (this.sequenceType == SequenceType.PlayerResponse)
             {
@@ -113,9 +121,7 @@ namespace DialogueSystem.EntityNPC
         }
 
 
-        /// <summary>
-        /// THIS DEFFO NEEDS REFACTORING! MAYBE EVENT BASED, AS WELL AS NOT AS MANY NESTED STATEMENTS!!!!!
-        /// </summary>
+        
         private void Update()
         {
             if (this.sequenceType == SequenceType.PlayerResponse)
@@ -146,10 +152,11 @@ namespace DialogueSystem.EntityNPC
 
 
                 if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface)
-                {
+                {                  
                     DialogueManager.Instance.ShowInteractUI();
                     if (Input.GetKeyDown(KeyCode.E))
                     {
+                       
                         
                     }
                 }
@@ -165,6 +172,11 @@ namespace DialogueSystem.EntityNPC
 
         }
 
+
+        private void InvokeCustomDialogueTrigger(string dialogueKey)
+        {
+            Debug.Log("CUSTOM EVENT TRIGGERING!" + dialogueKey);
+        }
         /// <summary>
         /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, we can invoke the respetive list of user defined evvents
         /// </summary>
@@ -251,6 +263,16 @@ namespace DialogueSystem.EntityNPC
         public string key;
         public string line;
         public List<string> conditionsList;
+    }
+
+
+    /// <summary>
+    /// This is just a data object to be able to have a GUI overload list in the GUI override script for this script.
+    /// Object will be instantiated on UI when Custom trigger mode is selecter (To allow programmers to manually dictate when dialogue is triggered)
+    /// </summary>
+    public class CustomEventList
+    {
+        public List<UnityEvent> triggerEvents;
     }
 
 }
