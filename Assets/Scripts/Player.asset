@@ -14,29 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: Alex
   responseNodeName: GetQuest
-  responseNodeID: 5421
   nodeTransitionMode: 0
   npcID: 1041
   playerResponses:
   - responseText: Hey, how is it going?
-    condition:
-      gameDataConditionName: 
-      triggerCondition: 0
-      conditionToParse: 
-      gameDataKey: 0
+    condition: []
     npcLineID: 1234
-    conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 0
     eventsList: []
   - responseText: Know of anything I can do round here?
-    condition:
-      gameDataConditionName: 
-      triggerCondition: 0
-      conditionToParse: 
-      gameDataKey: 0
+    condition: []
     npcLineID: 4567
-    conditionToNodeID: 0
     transitionNode: {fileID: 11400000, guid: 1b00f9c23eb8e5041aa5347d3ff7bdeb, type: 2}
     isExitNode: 0
     eventsList: []
@@ -51,5 +40,5 @@ MonoBehaviour:
   tranistonCondition:
     gameDataConditionName: QuestAccepted
     triggerCondition: 2
-    conditionToParse: true
+    conditionToParse: True
     gameDataKey: 2

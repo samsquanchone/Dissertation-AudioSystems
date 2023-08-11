@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="90018745" Name="Dorothy">
+  <Lines>
+    <Line id="1203">
+      <Key>Doro-WatchIt</Key>
+      <LineText>Watch where you are going!</LineText>
+      <Conditions />
+    </Line>
+    <Line id="2013678">
+      <Key>Doro-PersonalSpace</Key>
+      <LineText>Do you know what personal space is?</LineText>
+      <Conditions />
+    </Line>
+    <Line id="669014">
+      <Key>Doro-Stop</Key>
+      <LineText>Can you please stop walking into me!</LineText>
+      <Conditions>
+        <Condition id="203015">
+          <TriggerCondition>&gt;3</TriggerCondition>
+          <GameDataName>WalkedInto</GameDataName>
+          <GameDataKey>7</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+  </Lines>
+</Entity>

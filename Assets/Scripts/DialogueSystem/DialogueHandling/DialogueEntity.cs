@@ -48,11 +48,11 @@ namespace DialogueSystem.EntityNPC
         [HideInInspector] public Transform objectToAttachTo = null;
         public GameObject player;
 
-        public float distance;
+        [HideInInspector] public float distance;
         public bool is3D = false;
         bool hasGeneratedResponseInterface = false;
 
-        public UnityEvent<string> customEventTrigger;
+      //  public UnityEvent<string> customEventTrigger;
         private UnityAction<string> custiomTriggerAction;
         //Dynamic parameters
         [HideInInspector] public Transform triggerObject;
@@ -75,13 +75,13 @@ namespace DialogueSystem.EntityNPC
             custiomTriggerAction += InvokeCustomDialogueTrigger;
 
          
-            customEventTrigger.AddListener(custiomTriggerAction);
+            //customEventTrigger.AddListener(custiomTriggerAction);
             
             if (this.sequenceType == SequenceType.PlayerResponse)
             {
 
                 //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
-                this.playerResponseNodes.tranistonCondition.conditionValue = StringValidation.ConvertStringToDataType<dynamic>(playerResponseNodes.tranistonCondition.conditionToParse);
+                this.playerResponseNodes.tranistonCondition.conditionValue = StringValidation.ConvertStringToDataType<dynamic>(this.playerResponseNodes.tranistonCondition.conditionToParse);
                 // Debug.Log(response.condition.conditionToParse);
 
             }
@@ -128,13 +128,13 @@ namespace DialogueSystem.EntityNPC
             {
                 this.distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
 
-
+             if(Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius)
                 if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface)
                 {
                     DialogueManager.Instance.ShowInteractUI();
                     if (Input.GetKeyDown(KeyCode.E))
                     {
-                        PlayerInteract();
+                        this.PlayerInteract();
                     }
 
                 }
@@ -165,9 +165,13 @@ namespace DialogueSystem.EntityNPC
 
         private void PlayerInteract()
         {
-            if (DialogueManager.Instance.CheckDialogueCondition<NodeCondition>(playerResponseNodes.tranistonCondition)) { playerResponseNodes = playerResponseNodes.transitionTo; } //IF the node condition is met then transition to the next response node
+            if (this.playerResponseNodes.transitionTo != null)
+            {
+                if (DialogueManager.Instance.CheckDialogueCondition<NodeCondition>(this.playerResponseNodes.tranistonCondition)) { this.playerResponseNodes = this.playerResponseNodes.transitionTo; } //IF the node condition is met then transition to the next response node
+            }
+          
             DialogueManager.Instance.LookAtNPC(this.transform);
-            DialogueManager.Instance.InstantiatePlayerResponseInterface(playerResponseNodes);
+            DialogueManager.Instance.InstantiatePlayerResponseInterface(this.playerResponseNodes);
             this.hasGeneratedResponseInterface = true;
 
         }

@@ -21,14 +21,20 @@ public class GameDataResolver : MonoBehaviour
         GameDataValue spokenToBenBool = new((bool)false);
         GameDataValue questCompletedBool = new((bool)false);
 
-        gameDataHashTable.AddGameDataToHashTable((uint)1, test);
-        gameDataHashTable.AddGameDataToHashTable((uint)2, questAcceptedBool);
-        gameDataHashTable.AddGameDataToHashTable((uint)3, spokenToBenBool);
-        gameDataHashTable.AddGameDataToHashTable((uint)4, questCompletedBool);
+        gameDataHashTable.AddDataToHashTable((uint)1, test);
+        gameDataHashTable.AddDataToHashTable((uint)2, questAcceptedBool);
+        gameDataHashTable.AddDataToHashTable((uint)3, spokenToBenBool);
+        gameDataHashTable.AddDataToHashTable((uint)4, questCompletedBool);
 
         SetGameDataVariable((uint)1, 25);
        
     }
+
+    public void AddGameDataToHashTable<T>(uint id, T initialValue)
+    {
+        gameDataHashTable.AddDataToHashTable(id, initialValue);
+    }
+
 
    public void SetGameDataVariable<T>(uint key, in T inValue)
    {

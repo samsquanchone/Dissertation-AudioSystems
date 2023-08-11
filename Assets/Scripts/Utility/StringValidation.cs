@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public enum ConditionalLogicType { GreaterThan, LessThan, True, False, Unknown };
 
@@ -7,15 +8,12 @@ public static class StringValidation
 {
     const string lessThan = "<";
     const string greaterThan = ">";
-    const string isTrue = "true";
-    const string isFalse = "false";
-    
+
     public static ConditionalLogicType GetConditionLogicType(string conditionString, out string trimmedString)
     {
+        ConditionalLogicType conditon = ConditionalLogicType.Unknown;
 
-        ConditionalLogicType conditon = ConditionalLogicType.Unknown; 
-
-        if(conditionString.Contains(lessThan))
+        if (conditionString.Contains(lessThan))
         {
             conditon = ConditionalLogicType.LessThan;
             conditionString = conditionString.Trim('<');
@@ -25,19 +23,23 @@ public static class StringValidation
             conditon = ConditionalLogicType.GreaterThan;
             conditionString = conditionString.Trim('>');
         }
-        if (conditionString.Contains(isFalse))
+
+        //Try parse bool
+        if (bool.TryParse(conditionString, out bool result))
         {
-            conditon = ConditionalLogicType.False;
-           // conditionString = conditionString.Remove(0, 5); //Dont need to remove anything? Can just return the string as passed 
+            //If bool val true set to condition true type and vice versa
+            if (result)
+            {
+                conditon = ConditionalLogicType.True;
+            }
+            else
+            {
+                conditon = ConditionalLogicType.False;
+            }
         }
-        if (conditionString.Contains(isTrue))
+        else
         {
-            conditon = ConditionalLogicType.True;
-            //conditionString = conditionString.Remove(0, 4); //Dont need to remove anything? Can just return the string as passed 
-        }
-        else 
-        {
-            trimmedString = conditionString;  
+            trimmedString = conditionString;
         }
 
         trimmedString = conditionString;
@@ -47,7 +49,7 @@ public static class StringValidation
 
     public static T ConvertStringToDataType<T>(string value)
     {
-      
+
         if (int.TryParse(value, out int intVal))
         {
             return (T)(object)intVal;
@@ -62,9 +64,9 @@ public static class StringValidation
         }
         else
         {
-            //Throw error that data type is not supported 
+            //Debug Log that data type is not supported 
+            Debug.Log("Data type not supported! Please use a supported data types: float, int and string");
             return (T)(object)value;
         }
-
     }
 }

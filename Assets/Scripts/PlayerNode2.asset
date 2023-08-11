@@ -14,18 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: Alex
   responseNodeName: GetQuest2
-  responseNodeID: 5422
   nodeTransitionMode: 0
   npcID: 1041
   playerResponses:
   - responseText: Ok, count me in!
-    condition:
-      gameDataConditionName: 
-      triggerCondition: 0
-      conditionToParse: 
-      gameDataKey: 0
+    condition: []
     npcLineID: 343411
-    conditionToNodeID: 456372
     transitionNode: {fileID: 0}
     isExitNode: 1
     eventsList:
@@ -58,13 +52,8 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
   - responseText: No thanks...
-    condition:
-      gameDataConditionName: 
-      triggerCondition: 0
-      conditionToParse: 
-      gameDataKey: 0
+    condition: []
     npcLineID: 3334
-    conditionToNodeID: 456372
     transitionNode: {fileID: 0}
     isExitNode: 1
     eventsList: []

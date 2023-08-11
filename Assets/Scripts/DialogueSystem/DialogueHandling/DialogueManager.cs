@@ -7,7 +7,7 @@ using Unity.Jobs;
 /// <summary>
 /// Enum used with the event system so difffrent parts of the code base can make decisions on an event invoke based on the enum state passed with the invoke of dialogue obserbers
 /// </summary>
-public enum DialogueState {ConversationStart, ConversationEnd, DialogueStart, DialogueEnd, TransitionNode, InteractShow, PlayerResponse};
+public enum DialogueState { ConversationStart, ConversationEnd, DialogueStart, DialogueEnd, TransitionNode, InteractShow, PlayerResponse };
 
 
 public interface DialogueSubject
@@ -18,7 +18,7 @@ public interface DialogueSubject
     public void RemoveObserver(IDialogueObserver observer);
 
     public void NotifyObservers(DialogueState state);
-    
+
 }
 
 /// <summary>
@@ -63,7 +63,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         if (state == DialogueState.PlayerResponse)
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                if (currentResponseNode.playerResponses.Count > 0)
+                if (currentResponseNode.playerResponses.Count > 0 && currentResponseNode.playerResponses[0].conditionsTrue)
                 {
                     SetCurrentResponse(currentResponseNode.playerResponses[0]);
                     //For now as there is one switch case in dalogue manager handling what to call, crate a temp single entry dic so we can pass that to the switch case function
@@ -85,7 +85,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                if (currentResponseNode.playerResponses.Count > 1)
+                if (currentResponseNode.playerResponses.Count > 1 && currentResponseNode.playerResponses[1].conditionsTrue)
                 {
                     SetCurrentResponse(currentResponseNode.playerResponses[1]);
                     Entity npc = GetNPCHashElement(currentResponseNode.npcID);
@@ -107,7 +107,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                if (currentResponseNode.playerResponses.Count > 2)
+                if (currentResponseNode.playerResponses.Count > 2 && currentResponseNode.playerResponses[2].conditionsTrue)
                 {
                     SetCurrentResponse(currentResponseNode.playerResponses[2]);
                     Entity npc = GetNPCHashElement(currentResponseNode.npcID);
@@ -129,7 +129,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                if (currentResponseNode.playerResponses.Count > 3)
+                if (currentResponseNode.playerResponses.Count > 3 && currentResponseNode.playerResponses[3].conditionsTrue)
                 {
                     SetCurrentResponse(currentResponseNode.playerResponses[3]);
                     Entity npc = GetNPCHashElement(currentResponseNode.npcID);
@@ -151,7 +151,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
             else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
-                if (currentResponseNode.playerResponses.Count > 4)
+                if (currentResponseNode.playerResponses.Count > 4 && currentResponseNode.playerResponses[4].conditionsTrue)
                 {
                     SetCurrentResponse(currentResponseNode.playerResponses[4]);
                     Entity npc = GetNPCHashElement(currentResponseNode.npcID);
@@ -173,7 +173,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
             else if (Input.GetKeyDown(KeyCode.Alpha6))
             {
-                if (currentResponseNode.playerResponses.Count > 5)
+                if (currentResponseNode.playerResponses.Count > 5 && currentResponseNode.playerResponses[5].conditionsTrue)
                 {
                     SetCurrentResponse(currentResponseNode.playerResponses[5]);
                     Entity npc = GetNPCHashElement(currentResponseNode.npcID);
@@ -200,23 +200,38 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
     public void SetNewResponses(int responseIndex)
     {
-        //NOTE MAY NEED TO ADD CHECK NODE CONDITION AS WELL
-        //PUT THIS IN A CO-ROUTINE AS WELL AS ANY PARSING NOT AT START, AS IT CAN BE EXPENSIVE!!
+
         currentResponseNode = currentResponseNode.playerResponses[responseIndex].transitionNode;
+        int i = 0;
         foreach (var response in currentResponseNode.playerResponses)
         {
-            //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
-            response.condition.conditionValue = StringValidation.ConvertStringToDataType<dynamic>(response.condition.conditionToParse);
-            Debug.Log(response.condition.conditionToParse);
+            response.conditionsTrue = false;
+            if (response.condition.Count == 0)
+            {
+
+                response.conditionsTrue = true;
+
+            }
+
+            else if (response.condition[i] != null)
+            {
+                //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
+                response.condition[i].conditionValue = StringValidation.ConvertStringToDataType<dynamic>(response.condition[i].conditionToParse);
+                if (CheckDialogueCondition<dynamic>(response.condition[i]))
+                {
+                    response.conditionsTrue = true;
+
+                }
+            }
         }
     }
 
     public void AddEntityToHashTable(Entity entity)
     {
         //Add an entitys dialogue information within the scene to the hash table 
-        npcDialogueHashTable.hashTable.Add(uint.Parse(entity.id), entity);
+        npcDialogueHashTable.hashTable.Add(entity.id, entity);
 
-        Entity _entity = (Entity)npcDialogueHashTable.hashTable[uint.Parse(entity.id)]; //NOTE NEED A BETTER WAY OF READING CONDITION ID: MAYBE ADD SOUND DESIGNER ID
+        Entity _entity = (Entity)npcDialogueHashTable.hashTable[entity.id]; //NOTE NEED A BETTER WAY OF READING CONDITION ID: MAYBE ADD SOUND DESIGNER ID
 
     }
 
@@ -238,14 +253,12 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         isConversationActive = false;
         state = DialogueState.ConversationEnd;
         NotifyObservers(DialogueState.ConversationEnd);
-
     }
 
 
     public void ShowInteractUI()
     {
         NotifyObservers(DialogueState.InteractShow);
-       
     }
 
     public bool GetConversationState()
@@ -262,6 +275,29 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
         isConversationActive = true;
         currentResponseNode = playerResponseNode;
+
+
+        int i = 0;
+
+        //Check conditions for all new responses, then add to new list if condtitions met, then use altered list as new node respone list
+        foreach (var response in playerResponseNode.playerResponses)
+        {
+            //As utilising SO, they have a serializable nature, hence needing to reset them 
+            response.conditionsTrue = false;
+            //If no conditions for response then set the UI
+            if (response.condition.Count == 0)
+            {
+                response.conditionsTrue = true;
+            }
+
+            // Check conditions of current responses about to be generated
+            else if (DialogueManager.Instance.CheckDialogueCondition<dynamic>(response.condition[i]))
+            {
+                response.conditionsTrue = true;
+                i++;
+            }
+
+        }
 
         NotifyObservers(DialogueState.ConversationStart);
         NotifyObservers(DialogueState.PlayerResponse);
@@ -337,11 +373,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
                         yield return new WaitForSecondsRealtime((float)diaLength); //We want a dialogue call back for info to get the length of an audio table clip.... UNITY WHY CANT I USE A DOUBLE >_< 
                     }
-
-
                 }
-
-
             }
         }
 
@@ -372,7 +404,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         state = DialogueState.DialogueStart;
 
 
-       
+
 
         //Create native array to store threading result in
         NativeArray<float> result = new NativeArray<float>(1, Allocator.TempJob);
@@ -449,7 +481,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         }
 
 
-        
+
         int indexToPlay = Random.Range(0, triggerableLines.Count);
         DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, transformToAttachTo); //Make programmer deceleration in function, to make memory management better!!!
         subtitleManager.QueueDialogue(triggerableLines[indexToPlay].line, entityName, 3f);
@@ -495,9 +527,10 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             case ConditionalLogicType.False:
                 if (!gameDataVal) { return true; }
                 break;
+
         }
 
-        Debug.Log("Resolution: " + dataResolveType.ToString() + " /  gameDataVal: " + gameDataVal + "ConditionVAL: " + condition.conditionValue);
+
         return false;
     }
 

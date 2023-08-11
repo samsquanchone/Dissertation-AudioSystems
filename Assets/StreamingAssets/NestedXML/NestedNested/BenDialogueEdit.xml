@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="1256" Name="Benjamin">
+  <Lines>
+    <Line id="106621">
+      <Key>Ben-HiThere</Key>
+      <LineText>Hi there! I am Ben, nice to meet you!</LineText>
+      <Conditions>
+        <Condition id="201">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>TalkedToBen</GameDataName>
+          <GameDataKey>3</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+    <Line id="1230042">
+      <Key>Ben-NewAroundHere</Key>
+      <LineText>Nice to see a new face. Unfortanetly there is not much to do around here...</LineText>
+      <Conditions>
+        <Condition id="201">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>TalkedToBen</GameDataName>
+          <GameDataKey>3</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+    <Line id="900182">
+      <Key>Ben-MyFriendJohn</Key>
+      <LineText>However, my friend John, the green fellow up the other end may need some help. </LineText>
+      <Conditions>
+        <Condition id="201">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>TalkedToBen</GameDataName>
+          <GameDataKey>3</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+    <Line id="2139120">
+      <Key>Ben-Cya</Key>
+      <LineText>Maybe he can find you something to do? Cya!</LineText>
+      <Conditions>
+        <Condition id="201">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>TalkedToBen</GameDataName>
+          <GameDataKey>3</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+  </Lines>
+</Entity>

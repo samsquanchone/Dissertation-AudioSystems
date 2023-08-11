@@ -55,6 +55,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
     {
         DialogueManager.Instance.AddObserver(this);
         CloseSubtitleInterace();
+        CloseParentInterface();
     }
     public void QueueDialogue(string line, string name, float length) //Need to change to object so i can see multiple line attributes 
     {
@@ -110,15 +111,19 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
 
     private void CloseSubtitleInterace()
     {
-       // subtitleContainer.SetActive(false);
         dialogueContainer.SetActive(false);
+    }
+
+    private void CloseParentInterface()
+    {
+        subtitleContainer.SetActive(false);
     }
 
     private void ShowSubtitleInterface()
     {
-        
-        dialogueContainer.SetActive(true);
         subtitleContainer.SetActive(true);
+        dialogueContainer.SetActive(true);
+        
        
     }
 }

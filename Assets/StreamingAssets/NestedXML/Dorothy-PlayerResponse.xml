@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Entity ID="900187457" Name="Dorothy">
+  <Lines>
+    <Line id="23456">
+      <Key>Doro-NiceToMeetYou</Key>
+      <LineText>Hi, I am Dorothy. Nice to meet you!</LineText>
+      <Conditions />
+    </Line>
+    <Line id="90192">
+      <Key>Doro-Mistaken</Key>
+      <LineText>Oh, I must be mistaken. Sorry.</LineText>
+      <Conditions>
+        <Condition id="2034">
+          <TriggerCondition>True</TriggerCondition>
+          <GameDataName>QuestAccepted</GameDataName>
+          <GameDataKey>2</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+    <Line id="902837">
+      <Key>Doro-Boxes</Key>
+      <LineText>Did John ask you to find his boxes?</LineText>
+      <Conditions>
+        <Condition id="3029">
+          <TriggerCondition>True</TriggerCondition>
+          <GameDataName>QuestAccepted</GameDataName>
+          <GameDataKey>1</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+    <Line id="2390451">
+      <Key>Doro-BoxesForMe</Key>
+      <LineText>Well, I need them more. Why don't you bring them to me instead?</LineText>
+      <Conditions>
+        <Condition id="202312">
+          <TriggerCondition>True</TriggerCondition>
+          <GameDataName>QuestAccepted</GameDataName>
+          <GameDataKey>1</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+    <Line id="1009023">
+      <Key>Doro-RightChoice</Key>
+      <LineText>Great, you made the right choice!</LineText>
+      <Conditions>
+        <Condition id="23102">
+          <TriggerCondition>True</TriggerCondition>
+          <GameDataName>QuestAccepted</GameDataName>
+          <GameDataKey>1</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+    <Line id="99990231">
+      <Key>Doro-YourLoss</Key>
+      <LineText>Your loss...</LineText>
+      <Conditions>
+        <Condition id="2312340">
+          <TriggerCondition>True</TriggerCondition>
+          <GameDataName>QuestAccepted</GameDataName>
+          <GameDataKey>1</GameDataKey>
+        </Condition>
+      </Conditions>
+    </Line>
+  </Lines>
+</Entity>

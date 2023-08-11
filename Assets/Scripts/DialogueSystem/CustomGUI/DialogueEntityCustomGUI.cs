@@ -112,6 +112,12 @@ public class TestXMLEditor : Editor
                 EditorGUILayout.LabelField("Origin Object", GUILayout.MaxWidth(180));
                 script.triggerObject = EditorGUILayout.ObjectField(script.triggerObject, typeof(Transform), true) as Transform;
                 EditorGUILayout.EndHorizontal();
+
+
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Player Distance", GUILayout.MaxWidth(180));
+                script.distance = EditorGUILayout.FloatField(script.distance);
+                EditorGUILayout.EndHorizontal();
                 break;
 
             case TriggerType.TriggerExit:

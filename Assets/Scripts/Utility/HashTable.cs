@@ -8,7 +8,7 @@ public class HashTable
         //Create a new hash table when we crearte an instance of this object
         hashTable = new();
     }
-    public void AddGameDataToHashTable<T>(uint key, T data)
+    public void AddDataToHashTable<T>(uint key, T data)
     {
        hashTable.Add(key, data);
     }

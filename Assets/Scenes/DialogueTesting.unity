@@ -367,6 +367,7 @@ GameObject:
   - component: {fileID: 274970691}
   - component: {fileID: 274970694}
   - component: {fileID: 274970695}
+  - component: {fileID: 274970696}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Dummie
@@ -465,9 +466,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e64771eb909bec4598a1fb649c09a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerType: 0
+  triggerType: 1
   sequenceType: 0
-  xmlFilePath: NestedXML/NestedNested/AlexCollision
+  xmlFilePath: NestedXML/Dorothy-Collision
   eventName:
     Guid:
       Data1: -653277270
@@ -476,7 +477,7 @@ MonoBehaviour:
       Data4: 1969343076
     Path: event:/Talking
   entity:
-    id: 
+    id: 0
     name: 
   conversationStartEvent: []
   conversationEndEvent: []
@@ -486,9 +487,6 @@ MonoBehaviour:
   player: {fileID: 963194225}
   distance: 0
   is3D: 0
-  customEventTrigger:
-    m_PersistentCalls:
-      m_Calls: []
   triggerObject: {fileID: 1162175810}
   triggeringObject: {fileID: 1787398920}
   collisionObject: {fileID: 1787398920}
@@ -513,6 +511,47 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &274970696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 274970689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e64771eb909bec4598a1fb649c09a17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerType: 2
+  sequenceType: 2
+  xmlFilePath: NestedXML/Dorothy-PlayerResponse
+  eventName:
+    Guid:
+      Data1: -653277270
+      Data2: 1174471842
+      Data3: 16416897
+      Data4: 1969343076
+    Path: event:/Talking
+  entity:
+    id: 0
+    name: 
+  conversationStartEvent: []
+  conversationEndEvent: []
+  dialogueStartEvents: []
+  dialogueEndEvents: []
+  objectToAttachTo: {fileID: 0}
+  player: {fileID: 1787398919}
+  distance: 0
+  is3D: 0
+  triggerObject: {fileID: 274970690}
+  triggeringObject: {fileID: 0}
+  collisionObject: {fileID: 0}
+  radius: 5
+  origin: {fileID: 0}
+  debugDraw: 0
+  debugColor: {r: 0, g: 0, b: 0, a: 0}
+  playerResponseNodes: {fileID: 11400000, guid: 8b69f84eea726e24f9bec2870db6c101, type: 2}
 --- !u!1 &284598948
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,7 +594,7 @@ MonoBehaviour:
       Data4: 1974046216
     Path: event:/3DDialogue
   entity:
-    id: 
+    id: 0
     name: 
   conversationStartEvent: []
   conversationEndEvent: []
@@ -565,9 +604,6 @@ MonoBehaviour:
   player: {fileID: 8458217}
   distance: 0
   is3D: 1
-  customEventTrigger:
-    m_PersistentCalls:
-      m_Calls: []
   triggerObject: {fileID: 284598950}
   triggeringObject: {fileID: 1787398920}
   collisionObject: {fileID: 0}
@@ -628,7 +664,7 @@ MonoBehaviour:
       Data4: 1974046216
     Path: event:/3DDialogue
   entity:
-    id: 
+    id: 0
     name: 
   conversationStartEvent: []
   conversationEndEvent: []
@@ -638,9 +674,6 @@ MonoBehaviour:
   player: {fileID: 963194225}
   distance: 0
   is3D: 1
-  customEventTrigger:
-    m_PersistentCalls:
-      m_Calls: []
   triggerObject: {fileID: 284598950}
   triggeringObject: {fileID: 1787398920}
   collisionObject: {fileID: 0}
@@ -909,8 +942,8 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1240,7 +1273,7 @@ MonoBehaviour:
       Data4: 706363311
     Path: event:/Double
   entity:
-    id: 
+    id: 0
     name: 
   conversationStartEvent:
   - m_PersistentCalls:
@@ -1277,10 +1310,7 @@ MonoBehaviour:
   objectToAttachTo: {fileID: 0}
   player: {fileID: 963194225}
   distance: 0
-  is3D: 1
-  customEventTrigger:
-    m_PersistentCalls:
-      m_Calls: []
+  is3D: 0
   triggerObject: {fileID: 589645253}
   triggeringObject: {fileID: 0}
   collisionObject: {fileID: 1787398920}
@@ -2008,6 +2038,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1162175810}
   - component: {fileID: 1162175811}
+  - component: {fileID: 1162175812}
   m_Layer: 0
   m_Name: NPC2 (1)
   m_TagString: Dummie
@@ -2039,11 +2070,52 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1162175807}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 12.68142
-  m_Center: {x: -7.701686, y: 1.3326912, z: 0.78142357}
+  m_Radius: 9.742539
+  m_Center: {x: -5.1856403, y: 1.3326912, z: 1.2042799}
+--- !u!114 &1162175812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162175807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e64771eb909bec4598a1fb649c09a17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerType: 0
+  sequenceType: 0
+  xmlFilePath: NestedXML/Dorothy-TriggerEnter
+  eventName:
+    Guid:
+      Data1: 1074696398
+      Data2: 1193490060
+      Data3: -1245834079
+      Data4: 1974046216
+    Path: event:/3DDialogue
+  entity:
+    id: 0
+    name: 
+  conversationStartEvent: []
+  conversationEndEvent: []
+  dialogueStartEvents: []
+  dialogueEndEvents: []
+  objectToAttachTo: {fileID: 274970690}
+  player: {fileID: 8458217}
+  distance: 0
+  is3D: 1
+  triggerObject: {fileID: 1162175810}
+  triggeringObject: {fileID: 1787398920}
+  collisionObject: {fileID: 0}
+  radius: 0
+  origin: {fileID: 0}
+  debugDraw: 1
+  debugColor: {r: 0, g: 0, b: 0, a: 0.3882353}
+  playerResponseNodes: {fileID: 0}
 --- !u!1 &1163643303
 GameObject:
   m_ObjectHideFlags: 0
@@ -2385,7 +2457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e64771eb909bec4598a1fb649c09a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerType: 3
+  triggerType: 2
   sequenceType: 0
   xmlFilePath: 
   eventName:
@@ -2396,7 +2468,7 @@ MonoBehaviour:
       Data4: 1974046216
     Path: event:/3DDialogue
   entity:
-    id: 
+    id: 0
     name: 
   conversationStartEvent: []
   conversationEndEvent: []
@@ -2406,21 +2478,6 @@ MonoBehaviour:
   player: {fileID: 963194225}
   distance: 0
   is3D: 1
-  customEventTrigger:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 541046072}
-        m_TargetAssemblyTypeName: TestCustomDialogueTrigger, Assembly-CSharp
-        m_MethodName: CustomDialogueTriggerExample
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   triggerObject: {fileID: 1535394426}
   triggeringObject: {fileID: 1787398920}
   collisionObject: {fileID: 0}

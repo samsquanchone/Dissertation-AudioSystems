@@ -38,7 +38,7 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
                 break;
 
             case DialogueState.ConversationEnd:
-
+                HideCurrentResponseInterface();
                 break;
 
             case DialogueState.TransitionNode:
@@ -79,13 +79,18 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
 
         Cursor.lockState = CursorLockMode.Confined;
         int x = 1;
+
         foreach (var response in playerResponseNode.playerResponses)
         {
-            responseText[x - 1].SetActive(true);
-            responseText[x - 1].GetComponent<TMPro.TMP_Text>().text = x + ".) " + response.responseText;
-            x++;
-        }
+            //If the responses conditions are true then generate the UI response
+            if (response.conditionsTrue)
+            {
+                responseText[x - 1].SetActive(true);
+                responseText[x - 1].GetComponent<TMPro.TMP_Text>().text = x + ".) " + response.responseText;
+                x++;
+            }
 
+        }
     }
 
     private void HideCurrentResponseInterface()

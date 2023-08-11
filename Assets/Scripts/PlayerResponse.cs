@@ -9,7 +9,6 @@ public class PlayerResponse : ScriptableObject
 {
     public string playerName;
     public string responseNodeName;
-    public uint responseNodeID;
     public NodeTransitionMode nodeTransitionMode; //Maybe just get rid of this, can have natural node progression and line back and fourth, back to bass node
     public uint npcID;
     
@@ -19,13 +18,7 @@ public class PlayerResponse : ScriptableObject
     public PlayerResponse transitionTo;
     public NodeCondition tranistonCondition;
 
-  
-
-
-
-    
-
-
+ 
 }
 
 
@@ -37,12 +30,12 @@ public class PlayerResponseData
    
     
     public string responseText;
-    public NodeCondition condition;
+    public List<NodeCondition> condition;
     public uint npcLineID;
-    public uint conditionToNodeID;
     public PlayerResponse transitionNode;
     public bool isExitNode;
     public List<UnityEvent> eventsList; //Use this to be able to give quest ect ect
+    [HideInInspector] public bool conditionsTrue = false;
 
 }
 
