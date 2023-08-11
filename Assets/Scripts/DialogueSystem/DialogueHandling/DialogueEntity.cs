@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 public interface IDialogueObserver
 {
-    public void OnNotify(DialogueState state);
+    public void OnNotify(DialogueState state, SequenceType sequeneType, int InstanceID);
 }
 
 
@@ -128,22 +128,31 @@ namespace DialogueSystem.EntityNPC
             {
                 this.distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
 
-             if(Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius)
-                if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface)
+                if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) < this.radius)
                 {
-                    DialogueManager.Instance.ShowInteractUI();
-                    if (Input.GetKeyDown(KeyCode.E))
+                    if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface)
                     {
-                        this.PlayerInteract();
+                        DialogueManager.Instance.ShowInteractUI();
+                        if (Input.GetKeyDown(KeyCode.E))
+                        {
+                            this.PlayerInteract();
+                        }
+
                     }
 
+                    else if (DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius || !DialogueManager.Instance.GetConversationState() && hasGeneratedResponseInterface))
+                    {
+                        this.hasGeneratedResponseInterface = false;
+                        DialogueManager.Instance.ExitConversation();
+                    }
                 }
 
-                else if (DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, player.transform.position) > 12) || !DialogueManager.Instance.GetConversationState() && hasGeneratedResponseInterface)
+                else if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius && DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
                 {
-                    this.hasGeneratedResponseInterface = false;
-                    DialogueManager.Instance.ExitConversation();
+                    DialogueManager.Instance.HideInteractUI();
                 }
+
+                
             }
 
             else if (this.sequenceType != SequenceType.PlayerResponse && this.triggerType == TriggerType.Radius)
@@ -171,7 +180,7 @@ namespace DialogueSystem.EntityNPC
             }
           
             DialogueManager.Instance.LookAtNPC(this.transform);
-            DialogueManager.Instance.InstantiatePlayerResponseInterface(this.playerResponseNodes);
+            DialogueManager.Instance.InstantiatePlayerResponseInterface(this.playerResponseNodes, this.GetInstanceID());
             this.hasGeneratedResponseInterface = true;
 
         }
@@ -185,24 +194,25 @@ namespace DialogueSystem.EntityNPC
         /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, we can invoke the respetive list of user defined evvents
         /// </summary>
         /// <param name="state"> Current state of the dialogue system</param>
-        public void OnNotify(DialogueState state)
+        public void OnNotify(DialogueState state, SequenceType sequenceType, int instanceID)
         {
+            if(this.GetInstanceID() == instanceID) //We need to check that this instance is the current dialogue entity in convo, otherwise events will invoke for all instances!
             switch (state)
             {
                 case DialogueState.DialogueStart:
-                    foreach (var _event in dialogueStartEvents) { _event.Invoke(); }
+                    foreach (var _event in this.dialogueStartEvents) { _event.Invoke(); }
                     break;
 
                 case DialogueState.DialogueEnd:
-                    foreach (var _event in dialogueEndEvents) { _event.Invoke(); }
+                    foreach (var _event in this.dialogueEndEvents) { _event.Invoke(); }
                     break;
 
                 case DialogueState.ConversationStart:
-                    foreach (var _event in conversationStartEvent) { _event.Invoke(); }
+                    foreach (var _event in this.conversationStartEvent) { _event.Invoke(); }
                     break;
 
                 case DialogueState.ConversationEnd:
-                    foreach (var _event in conversationEndEvent) { _event.Invoke(); }
+                    foreach (var _event in this.conversationEndEvent) { _event.Invoke(); }
                     break;
             }
         }
@@ -212,7 +222,7 @@ namespace DialogueSystem.EntityNPC
             if (this.triggerType == TriggerType.Collision)
                 if (collision.gameObject.name == this.collisionObject.name)
                 {
-                    DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
+                    DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo, this.GetInstanceID());
 
                 }
         }
@@ -222,7 +232,7 @@ namespace DialogueSystem.EntityNPC
             if (this.triggerType == TriggerType.TriggerEnter)
                 if (other.transform == this.triggeringObject.transform)
                 {
-                    DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
+                    DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo, this.GetInstanceID());
 
                 }
         }
@@ -232,7 +242,7 @@ namespace DialogueSystem.EntityNPC
             if (this.triggerType == TriggerType.TriggerExit)
                 if (other.transform == triggeringObject.transform)
                 {
-                    DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo);
+                    DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo, this.GetInstanceID());
 
                 }
         }

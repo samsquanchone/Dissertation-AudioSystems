@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using DialogueUtility;
 
 public class SubtitleManager : MonoBehaviour, IDialogueObserver
 {
@@ -19,7 +19,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
     /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, we can invoke the respetive list of user defined evvents
     /// </summary>
     /// <param name="state"> Current state of the dialogue system</param>
-    public void OnNotify(DialogueState state)
+    public void OnNotify(DialogueState state, SequenceType sequenceType, int instanceID)
     {
         switch (state)
         {
@@ -29,6 +29,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
 
             case DialogueState.DialogueEnd:
                 CloseSubtitleInterace();
+                CloseParentInterface();
                 break;
 
             case DialogueState.ConversationStart:
@@ -44,10 +45,15 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
                 ShowNPCInteractUI();
                 break;
 
-            case DialogueState.PlayerResponse:
+            case DialogueState.InteractHide:
+                HideInteractionUI();
+                break;
 
+            case DialogueState.PlayerResponse:
+                OpenParentInterface();
                 CloseSubtitleInterace();
                 break;
+            
         }
     }
 
@@ -57,13 +63,13 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
         CloseSubtitleInterace();
         CloseParentInterface();
     }
-    public void QueueDialogue(string line, string name, float length) //Need to change to object so i can see multiple line attributes 
+    public void QueueDialogue(string line, string name, float length, SequenceType sequenceType) //Need to change to object so i can see multiple line attributes 
     {
 
-        StartCoroutine(LineTimer(line, name, length));
+        StartCoroutine(LineTimer(line, name, length, sequenceType));
     }
 
-    IEnumerator LineTimer(string line, string npcName, float length)
+    IEnumerator LineTimer(string line, string npcName, float length, SequenceType sequenceType)
     {
         dialogueLineText.text = line;
         entityNameText.text = npcName;
@@ -73,7 +79,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
         CloseSubtitleInterace();
 
         //Tell the dialogue manager the line has ended so event system can be invoked
-        DialogueManager.Instance.DialogueEnded();
+        DialogueManager.Instance.DialogueEnded(sequenceType);
     }
 
     private void HideAllUI()
@@ -97,7 +103,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
     }
     public bool IsInteractPanelActive()
     {
-        if (interactText.isActiveAndEnabled || dialogueContainer.activeInHierarchy)
+        if (interactText.isActiveAndEnabled)
         {
             return true;
         }
@@ -117,6 +123,11 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
     private void CloseParentInterface()
     {
         subtitleContainer.SetActive(false);
+    }
+
+    private void OpenParentInterface()
+    {
+        subtitleContainer.SetActive(true);
     }
 
     private void ShowSubtitleInterface()

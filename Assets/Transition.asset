@@ -14,32 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: Ben
   responseNodeName: Berty2
-  responseNodeID: 245
   nodeTransitionMode: 1
   npcID: 1041
   playerResponses:
   - responseText: I have completed the quest!
-    condition:
-      gameDataConditionName: 
-      triggerCondition: 0
-      conditionToParse: 
-      gameDataKey: 0
+    condition: []
     npcLineID: 234511
-    conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 0
     eventsList: []
+    conditionsTrue: 0
   - responseText: What do I have to do again?
-    condition:
-      gameDataConditionName: 
-      triggerCondition: 0
-      conditionToParse: 
-      gameDataKey: 0
+    condition: []
     npcLineID: 1111
-    conditionToNodeID: 0
     transitionNode: {fileID: 0}
     isExitNode: 0
     eventsList: []
+    conditionsTrue: 0
   fmodEvent:
     Guid:
       Data1: -653277270

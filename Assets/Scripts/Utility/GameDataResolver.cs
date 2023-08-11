@@ -13,21 +13,9 @@ public class GameDataResolver : MonoBehaviour
 
     private HashTable gameDataHashTable = new();
 
-    private void Start()
+    private void Awake()
     {
         m_instance = this;
-        GameDataValue test = new((uint)200);
-        GameDataValue questAcceptedBool = new((bool)false);
-        GameDataValue spokenToBenBool = new((bool)false);
-        GameDataValue questCompletedBool = new((bool)false);
-
-        gameDataHashTable.AddDataToHashTable((uint)1, test);
-        gameDataHashTable.AddDataToHashTable((uint)2, questAcceptedBool);
-        gameDataHashTable.AddDataToHashTable((uint)3, spokenToBenBool);
-        gameDataHashTable.AddDataToHashTable((uint)4, questCompletedBool);
-
-        SetGameDataVariable((uint)1, 25);
-       
     }
 
     public void AddGameDataToHashTable<T>(uint id, T initialValue)
@@ -36,14 +24,14 @@ public class GameDataResolver : MonoBehaviour
     }
 
 
-   public void SetGameDataVariable<T>(uint key, in T inValue)
-   {
+    public void SetGameDataVariable<T>(uint key, in T inValue)
+    {
         GameDataValue value = (GameDataValue)gameDataHashTable.hashTable[key];
 
         value.m_current = inValue;
         value.m_set = true;
 
-   }
+    }
 
     public GameDataReturnType QuerryGameData<T>(uint key, out T outValue)
     {
@@ -69,7 +57,7 @@ public class GameDataResolver : MonoBehaviour
         else
         {
             //Return default of the passed type, as we cant assume the type as it is generic
-            outValue = default(T); 
+            outValue = default(T);
             return GameDataReturnType.GameDataUnknown;
         }
     }

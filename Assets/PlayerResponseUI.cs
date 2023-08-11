@@ -1,3 +1,4 @@
+using DialogueUtility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,8 +21,9 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
     /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, we can invoke the respetive list of user defined evvents
     /// </summary>
     /// <param name="state"> Current state of the dialogue system</param>
-    public void OnNotify(DialogueState state)
+    public void OnNotify(DialogueState state, SequenceType sequenceType, int instanceID)
     {
+        if(sequenceType == SequenceType.PlayerResponse)
         switch (state)
         {
             case DialogueState.DialogueStart:
