@@ -125,27 +125,27 @@ namespace DialogueSystem.EntityNPC
                 if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) < this.radius)
                 {
                    
-                    if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface && !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
+                    if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius)// && !this.hasGeneratedResponseInterface) //&& !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
                     {
+                        DialogueManager.Instance.SetInteractNPCID(this.GetInstanceID());
                         DialogueManager.Instance.ShowInteractUI();
                         if (Input.GetKeyDown(KeyCode.E))
                         {
                             this.PlayerInteract();
                         }
-
                     }
 
-                    /*else if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius)) //|| hasGeneratedResponseInterface))
+                    else if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius)) //|| hasGeneratedResponseInterface))
                     {
                         this.hasGeneratedResponseInterface = false;
                         DialogueManager.Instance.ExitConversation();
                     }
-                    */
+                    
                 }
 
-                else if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius && DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
+                else if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius  && this.GetInstanceID() == DialogueManager.Instance.GetCurrentInteractNPCID()/*&& DialogueManager.Instance.subtitleManager.IsInteractPanelActive()*/)
                 {
-                    DialogueManager.Instance.HideInteractUI();
+                     DialogueManager.Instance.HideInteractUI();
                 }
 
                 
@@ -154,7 +154,6 @@ namespace DialogueSystem.EntityNPC
             else if (this.sequenceType != SequenceType.PlayerResponse && this.triggerType == TriggerType.Radius && !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
             {
                 this.distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
-
 
                 if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) < this.radius)
                 {                  

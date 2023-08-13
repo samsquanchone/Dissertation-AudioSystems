@@ -34,6 +34,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
 
             case DialogueState.ConversationStart:
                 HideInteractionUI();
+                if(sequenceType != SequenceType.PlayerResponse)
                 ShowSubtitleInterface();
                 break;
 
@@ -98,7 +99,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
 
     private void HideInteractionUI()
     {
-        subtitleContainer.SetActive(false);
+         //subtitleContainer.SetActive(false);
         interactText.gameObject.SetActive(false);
     }
     public bool IsInteractPanelActive()

@@ -59,6 +59,21 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
     }
 
+    /// <summary>
+    /// Aims to avoid concurrancy issues with UI showing / Hiding for mutliple entity objects. 
+    /// If ID matches currently interacted ID then only code will be executated for that script instance!
+    /// </summary>
+    /// <param name="id"></param>
+    public void SetInteractNPCID(int id)
+    {
+        currentEntityID = id;
+    }
+
+    public int GetCurrentInteractNPCID()
+    {
+        return currentEntityID;
+    }
+
     private void Update()
     {
         if (state == DialogueState.PlayerResponse)
@@ -78,7 +93,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     {
 
                         SetNewResponses(0);
-                        NotifyObservers(DialogueState.TransitionNode, SequenceType.PlayerResponse, currentEntityID);
+                        NotifyObservers(DialogueState.DialogueStart, SequenceType.PlayerResponse, currentEntityID);
 
                     }
                 }
@@ -99,7 +114,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     {
 
                         SetNewResponses(1);
-                        NotifyObservers(DialogueState.TransitionNode, SequenceType.PlayerResponse, currentEntityID);
+                        NotifyObservers(DialogueState.DialogueStart, SequenceType.PlayerResponse, currentEntityID);
 
                     }
                 }
@@ -121,7 +136,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     {
 
                         SetNewResponses(2);
-                        NotifyObservers(DialogueState.TransitionNode, SequenceType.PlayerResponse, currentEntityID);
+                        NotifyObservers(DialogueState.DialogueStart, SequenceType.PlayerResponse, currentEntityID);
 
                     }
                 }
@@ -143,7 +158,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     {
 
                         SetNewResponses(3);
-                        NotifyObservers(DialogueState.TransitionNode, SequenceType.PlayerResponse, currentEntityID);
+                        NotifyObservers(DialogueState.DialogueStart, SequenceType.PlayerResponse, currentEntityID);
 
                     }
                 }
@@ -165,7 +180,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     {
 
                         SetNewResponses(4);
-                        NotifyObservers(DialogueState.TransitionNode, SequenceType.PlayerResponse, currentEntityID);
+                        NotifyObservers(DialogueState.DialogueStart, SequenceType.PlayerResponse, currentEntityID);
 
                     }
                 }
@@ -187,7 +202,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     {
 
                         SetNewResponses(5);
-                        NotifyObservers(DialogueState.TransitionNode, SequenceType.PlayerResponse, currentEntityID);
+                        NotifyObservers(DialogueState.DialogueStart, SequenceType.PlayerResponse, currentEntityID);
 
                     }
                 }
@@ -287,14 +302,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                 conditionsTrueAmount++;
                 response.conditionsTrue = true;
                 conditionsMetResponses.Add(response);
-                /*
-                if (conditionsTrueAmount == response.condition.Count - 1)
-                {
-                    
-                    conditionsMetResponses.Add(response);
-                    i++;
-                }
-                */
+             
             }
 
             else
@@ -314,7 +322,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         currentResponseNode.playerResponses = conditionsMetResponses;
 
         NotifyObservers(DialogueState.ConversationStart, SequenceType.PlayerResponse, currentEntityID);
-        NotifyObservers(DialogueState.PlayerResponse, SequenceType.PlayerResponse, currentEntityID);
+       // NotifyObservers(DialogueState.PlayerResponse, SequenceType.PlayerResponse, currentEntityID);
         state = DialogueState.PlayerResponse;
 
 

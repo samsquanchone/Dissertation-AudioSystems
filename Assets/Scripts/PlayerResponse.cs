@@ -9,7 +9,7 @@ public class PlayerResponse : ScriptableObject
 {
     public string playerName;
     public string responseNodeName;
-    public NodeTransitionMode nodeTransitionMode; //Maybe just get rid of this, can have natural node progression and line back and fourth, back to bass node
+    public NodeTransitionMode nodeTransitionMode;
     public uint npcID;
     
     public List<PlayerResponseData> playerResponses;

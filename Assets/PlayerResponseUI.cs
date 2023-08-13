@@ -32,6 +32,8 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
                     break;
 
                 case DialogueState.DialogueEnd:
+
+                    //GeneratePlayerResponses();
                     ShowCurrentResponseInterface();
                     break;
 
@@ -45,11 +47,11 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
                     break;
 
                 case DialogueState.TransitionNode:
-                    GeneratePlayerResponses();
+                   // GeneratePlayerResponses();
                     break;
 
                 case DialogueState.PlayerResponse:
-                    ShowCurrentResponseInterface();
+                    //ShowCurrentResponseInterface();
                     break;
             }
         }
@@ -79,20 +81,34 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
 
     private void GeneratePlayerResponses()
     {
-        PlayerResponse playerResponseNode = DialogueManager.Instance.GetCurrentResponseNode();
 
         Cursor.lockState = CursorLockMode.Confined;
         int x = 1;
 
-        foreach (var response in playerResponseNode.playerResponses)
+        ClearPlayerResponses(); //Reset responses to be re-written
+
+        foreach (var response in DialogueManager.Instance.GetCurrentResponseNode().playerResponses)
         {
             //If the responses conditions are true then generate the UI response
             if (response.conditionsTrue)
             {
+
                 responseText[x - 1].SetActive(true);
                 responseText[x - 1].GetComponent<TMPro.TMP_Text>().text = x + ".) " + response.responseText;
                 x++;
             }
+
+        }
+    }
+
+    private void ClearPlayerResponses()
+    {
+        foreach (var response in responseText)
+        {
+            //If the responses conditions are true then generate the UI response
+            response.SetActive(true);
+            response.GetComponent<TMPro.TMP_Text>().text = "";
+            response.SetActive(false);
 
         }
     }
@@ -105,15 +121,11 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
     {
 
         responsePanel.SetActive(true);
-    }
-    private void ClearPlayerResponses()
-    {
-        //Remove from memory when this script is destroyed
-        responseText.Clear();
+        GeneratePlayerResponses();
     }
 
     private void OnDestroy()
     {
-        ClearPlayerResponses();
+        //ClearPlayerResponses();
     }
 }
