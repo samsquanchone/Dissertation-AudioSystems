@@ -130,9 +130,8 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
     /// </summary>
     private void HideInteractionUI()
     {
-    
         interactText.gameObject.SetActive(false);
-        if(!dialogueContainer.activeInHierarchy || !responsePanel.activeInHierarchy)
+        if(!dialogueContainer.activeInHierarchy && !responsePanel.activeInHierarchy)
         subtitleContainer.SetActive(false);
     }
     public bool IsInteractPanelActive()
