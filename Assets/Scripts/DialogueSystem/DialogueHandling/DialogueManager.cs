@@ -62,7 +62,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     private void Update()
     {
         if (state == DialogueState.PlayerResponse)
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (Input.GetKeyDown(responseInputKeys[0]))
             {
                 if (currentResponseNode.playerResponses.Count > 0 && currentResponseNode.playerResponses[0].conditionsTrue)
                 {
@@ -84,7 +84,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                 }
             }
 
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            else if (Input.GetKeyDown(responseInputKeys[1]))
             {
                 if (currentResponseNode.playerResponses.Count > 1 && currentResponseNode.playerResponses[1].conditionsTrue)
                 {
@@ -106,7 +106,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
 
 
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            else if (Input.GetKeyDown(responseInputKeys[2]))
             {
                 if (currentResponseNode.playerResponses.Count > 2 && currentResponseNode.playerResponses[2].conditionsTrue)
                 {
@@ -128,7 +128,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
 
 
-            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            else if (Input.GetKeyDown(responseInputKeys[3]))
             {
                 if (currentResponseNode.playerResponses.Count > 3 && currentResponseNode.playerResponses[3].conditionsTrue)
                 {
@@ -150,7 +150,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
 
 
-            else if (Input.GetKeyDown(KeyCode.Alpha5))
+            else if (Input.GetKeyDown(responseInputKeys[4]))
             {
                 if (currentResponseNode.playerResponses.Count > 4 && currentResponseNode.playerResponses[4].conditionsTrue)
                 {
@@ -172,7 +172,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
 
 
-            else if (Input.GetKeyDown(KeyCode.Alpha6))
+            else if (Input.GetKeyDown(responseInputKeys[5]))
             {
                 if (currentResponseNode.playerResponses.Count > 5 && currentResponseNode.playerResponses[5].conditionsTrue)
                 {
@@ -192,7 +192,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     }
                 }
             }
-            else if (Input.GetKeyDown(KeyCode.Escape))
+            else if (Input.GetKeyDown(escDialogueKey))
             {
                 ExitConversation();
             }
@@ -203,28 +203,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     {
 
         currentResponseNode = currentResponseNode.playerResponses[responseIndex].transitionNode;
-        int i = 0;
-        foreach (var response in currentResponseNode.playerResponses)
-        {
-            response.conditionsTrue = false;
-            if (response.condition.Count == 0)
-            {
-
-                response.conditionsTrue = true;
-
-            }
-
-            else if (response.condition[i] != null)
-            {
-                //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
-                response.condition[i].conditionValue = StringValidation.ConvertStringToDataType<dynamic>(response.condition[i].conditionToParse);
-                if (CheckDialogueCondition<dynamic>(response.condition[i]))
-                {
-                    response.conditionsTrue = true;
-
-                }
-            }
-        }
+        InstantiatePlayerResponseInterface(currentResponseNode, currentEntityID);
     }
 
     public void AddEntityToHashTable(Entity entity)
@@ -284,26 +263,55 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
 
         int i = 0;
+        int conditionsTrueAmount = 0;
+        List<PlayerResponseData> conditionsMetResponses = new();
+        List<PlayerResponseData> conditionsNotMetResponses = new();
 
         //Check conditions for all new responses, then add to new list if condtitions met, then use altered list as new node respone list
         foreach (var response in playerResponseNode.playerResponses)
         {
             //As utilising SO, they have a serializable nature, hence needing to reset them 
             response.conditionsTrue = false;
+            conditionsTrueAmount = 0;
             //If no conditions for response then set the UI
             if (response.condition.Count == 0)
             {
                 response.conditionsTrue = true;
+                conditionsMetResponses.Add(response);
             }
+
 
             // Check conditions of current responses about to be generated
-            else if (DialogueManager.Instance.CheckDialogueCondition<dynamic>(response.condition[i]))
+            else if (CheckDialogueCondition<dynamic>(response.condition[i]))
             {
+                conditionsTrueAmount++;
                 response.conditionsTrue = true;
-                i++;
+                conditionsMetResponses.Add(response);
+                /*
+                if (conditionsTrueAmount == response.condition.Count - 1)
+                {
+                    
+                    conditionsMetResponses.Add(response);
+                    i++;
+                }
+                */
             }
 
+            else
+            {
+                conditionsNotMetResponses.Add(response);
+            }
+
+
         }
+
+        foreach (var response in conditionsNotMetResponses)
+        {
+            conditionsMetResponses.Add(response);
+        }
+
+        Debug.Log(conditionsMetResponses);
+        currentResponseNode.playerResponses = conditionsMetResponses;
 
         NotifyObservers(DialogueState.ConversationStart, SequenceType.PlayerResponse, currentEntityID);
         NotifyObservers(DialogueState.PlayerResponse, SequenceType.PlayerResponse, currentEntityID);
@@ -518,9 +526,10 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             if (diaLength == 0) { diaLength = 2; } //On first trigger on occasion the callback with fmod does not calculate accurate length,  this just ensures there is a default val the first time
             Debug.Log("dialength: " + diaLength);
 
-            DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, transformToAttachTo); //Make programmer deceleration in function, to make memory management better!!!
-            subtitleManager.QueueDialogue(triggerableLines[indexToPlay].line, entityName, diaLength, SequenceType.RandomOneShot);
+            DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, transformToAttachTo);
             NotifyObservers(DialogueState.DialogueStart, SequenceType.RandomOneShot, currentEntityID);
+            subtitleManager.QueueDialogue(triggerableLines[indexToPlay].line, entityName, diaLength, SequenceType.RandomOneShot);
+          
         }
     }
 
@@ -529,6 +538,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         NotifyObservers(DialogueState.DialogueEnd, sequenceType, currentEntityID);
     }
 
+ 
     public bool CheckDialogueCondition<T>(T diaCondition)
     {
 

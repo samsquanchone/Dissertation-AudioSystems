@@ -11,7 +11,7 @@ using System.IO;
 /// This is used to override which inspector variables are shown depending on what trigger type the user selects for the enum
 /// Note: Editor only and pust be contained within the if unity editor, or you will be unable to build your project!
 /// </summary>
-[CustomEditor(typeof(DialogueEntity))]
+[CustomEditor(typeof(DialogueEntity)), CanEditMultipleObjects]
 public class TestXMLEditor : Editor
 {
 

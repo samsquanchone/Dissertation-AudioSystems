@@ -135,7 +135,6 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
         subtitleContainer.SetActive(true);
         dialogueContainer.SetActive(true);
         
-       
     }
 }
 

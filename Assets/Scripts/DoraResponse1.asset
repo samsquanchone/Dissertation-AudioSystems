@@ -17,29 +17,29 @@ MonoBehaviour:
   nodeTransitionMode: 0
   npcID: 900187457
   playerResponses:
-  - responseText: Hi, who are you?
+  - responseText: Who are you?
     condition: []
     npcLineID: 23456
     transitionNode: {fileID: 0}
     isExitNode: 0
     eventsList: []
     conditionsTrue: 1
-  - responseText: Yes, what is it?
+  - responseText: Sorry don't have time to chat
+    condition: []
+    npcLineID: 99990231
+    transitionNode: {fileID: 0}
+    isExitNode: 1
+    eventsList: []
+    conditionsTrue: 1
+  - responseText: What is it?
     condition:
     - gameDataConditionName: QuestAccepted
       triggerCondition: 2
-      conditionToParse: True
+      conditionToParse: true
       gameDataKey: 2
     npcLineID: 902837
     transitionNode: {fileID: 11400000, guid: a12d9eef7d8c94344a062652595534d7, type: 2}
     isExitNode: 0
-    eventsList: []
-    conditionsTrue: 0
-  - responseText: Sorry don't have time to chat
-    condition: []
-    npcLineID: 0
-    transitionNode: {fileID: 0}
-    isExitNode: 1
     eventsList: []
     conditionsTrue: 1
   fmodEvent:

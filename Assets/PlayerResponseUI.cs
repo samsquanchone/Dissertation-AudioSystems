@@ -23,33 +23,35 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
     /// <param name="state"> Current state of the dialogue system</param>
     public void OnNotify(DialogueState state, SequenceType sequenceType, int instanceID)
     {
-        if(sequenceType == SequenceType.PlayerResponse)
-        switch (state)
+        if (sequenceType == SequenceType.PlayerResponse)
         {
-            case DialogueState.DialogueStart:
-                HideCurrentResponseInterface();
-                break;
+            switch (state)
+            {
+                case DialogueState.DialogueStart:
+                    HideCurrentResponseInterface();
+                    break;
 
-            case DialogueState.DialogueEnd:
-                ShowCurrentResponseInterface();
-                break;
+                case DialogueState.DialogueEnd:
+                    ShowCurrentResponseInterface();
+                    break;
 
-            case DialogueState.ConversationStart:
-                GeneratePlayerResponses();
-                ShowCurrentResponseInterface();
-                break;
+                case DialogueState.ConversationStart:
+                    GeneratePlayerResponses();
+                    ShowCurrentResponseInterface();
+                    break;
 
-            case DialogueState.ConversationEnd:
-                HideCurrentResponseInterface();
-                break;
+                case DialogueState.ConversationEnd:
+                    HideCurrentResponseInterface();
+                    break;
 
-            case DialogueState.TransitionNode:
-                GeneratePlayerResponses();
-                break;
+                case DialogueState.TransitionNode:
+                    GeneratePlayerResponses();
+                    break;
 
-            case DialogueState.PlayerResponse:
-                ShowCurrentResponseInterface();
-                break;
+                case DialogueState.PlayerResponse:
+                    ShowCurrentResponseInterface();
+                    break;
+            }
         }
     }
 

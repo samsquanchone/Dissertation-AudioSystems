@@ -52,8 +52,7 @@ namespace DialogueSystem.EntityNPC
         public bool is3D = false;
         bool hasGeneratedResponseInterface = false;
 
-      //  public UnityEvent<string> customEventTrigger;
-        private UnityAction<string> custiomTriggerAction;
+  
         //Dynamic parameters
         [HideInInspector] public Transform triggerObject;
         [HideInInspector] public Transform triggeringObject;
@@ -66,24 +65,19 @@ namespace DialogueSystem.EntityNPC
                                                                      // Start is called before the first frame update
         void Start()
         {
+            this.hasGeneratedResponseInterface = false;
             this.entity = DataManager.LoadXMLDialogueData(xmlFilePath);
             DialogueManager.Instance.AddEntityToHashTable(entity);
             
             //Add the instance of an entity to the dialogue managers list of obserbers
             DialogueManager.Instance.AddObserver(this);
 
-            custiomTriggerAction += InvokeCustomDialogueTrigger;
-
-         
-            //customEventTrigger.AddListener(custiomTriggerAction);
+           
             
             if (this.sequenceType == SequenceType.PlayerResponse)
             {
-
                 //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
                 this.playerResponseNodes.tranistonCondition.conditionValue = StringValidation.ConvertStringToDataType<dynamic>(this.playerResponseNodes.tranistonCondition.conditionToParse);
-                // Debug.Log(response.condition.conditionToParse);
-
             }
 
         }
@@ -126,11 +120,12 @@ namespace DialogueSystem.EntityNPC
         {
             if (this.sequenceType == SequenceType.PlayerResponse)
             {
-                this.distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
+                this.distance = Vector3.Distance(this.gameObject.transform.position, this.player.transform.position);
 
                 if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) < this.radius)
                 {
-                    if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface)
+                   
+                    if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface && !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
                     {
                         DialogueManager.Instance.ShowInteractUI();
                         if (Input.GetKeyDown(KeyCode.E))
@@ -140,11 +135,12 @@ namespace DialogueSystem.EntityNPC
 
                     }
 
-                    else if (DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius || !DialogueManager.Instance.GetConversationState() && hasGeneratedResponseInterface))
+                    /*else if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius)) //|| hasGeneratedResponseInterface))
                     {
                         this.hasGeneratedResponseInterface = false;
                         DialogueManager.Instance.ExitConversation();
                     }
+                    */
                 }
 
                 else if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius && DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
@@ -155,12 +151,12 @@ namespace DialogueSystem.EntityNPC
                 
             }
 
-            else if (this.sequenceType != SequenceType.PlayerResponse && this.triggerType == TriggerType.Radius)
+            else if (this.sequenceType != SequenceType.PlayerResponse && this.triggerType == TriggerType.Radius && !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
             {
                 this.distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
 
 
-                if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius && !this.hasGeneratedResponseInterface)
+                if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) < this.radius)
                 {                  
                     DialogueManager.Instance.ShowInteractUI();
                     if (Input.GetKeyDown(KeyCode.E))
@@ -191,7 +187,7 @@ namespace DialogueSystem.EntityNPC
             Debug.Log("CUSTOM EVENT TRIGGERING!" + dialogueKey);
         }
         /// <summary>
-        /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, we can invoke the respetive list of user defined evvents
+        /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, sequence type and entity ID, we can invoke the respetive list of user defined evvents of that instance
         /// </summary>
         /// <param name="state"> Current state of the dialogue system</param>
         public void OnNotify(DialogueState state, SequenceType sequenceType, int instanceID)
@@ -212,6 +208,7 @@ namespace DialogueSystem.EntityNPC
                     break;
 
                 case DialogueState.ConversationEnd:
+                        if (sequenceType == SequenceType.PlayerResponse) { this.hasGeneratedResponseInterface = false; }
                     foreach (var _event in this.conversationEndEvent) { _event.Invoke(); }
                     break;
             }
@@ -240,7 +237,7 @@ namespace DialogueSystem.EntityNPC
         private void OnTriggerExit(Collider other)
         {
             if (this.triggerType == TriggerType.TriggerExit)
-                if (other.transform == triggeringObject.transform)
+                if (other.transform == this.triggeringObject.transform)
                 {
                     DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo, this.GetInstanceID());
 

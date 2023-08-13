@@ -21,7 +21,7 @@ public class DialogueJobSystem
         key = _key;
         eventName = _eventName;
 
-        ThreadData.SetThreadData(key, eventName);
+        DialogueThreadData.SetThreadData(key, eventName);
     }
 
     public struct CalculateDialogueLength : IJob
@@ -31,7 +31,7 @@ public class DialogueJobSystem
 
         public void Execute()
         {
-            DialogueInfoHandler diaInfoCallback = new(ThreadData.GetKey(), ThreadData.GetEvent());
+            DialogueInfoHandler diaInfoCallback = new(DialogueThreadData.GetKey(), DialogueThreadData.GetEvent());
             result[0] = diaInfoCallback.GetDialogueLength();
         }
     }
@@ -43,10 +43,9 @@ public class DialogueJobSystem
            
         }
     }
-
-
 }
-public static class ThreadData
+//Job structs can't have reference types so use of static class to pass info to thread
+public static class DialogueThreadData
 {
     private static string key;
     private static FMODUnity.EventReference eventName;
@@ -64,5 +63,31 @@ public static class ThreadData
     public static FMODUnity.EventReference GetEvent()
     {
         return eventName;
+    }
+}
+
+public class ConditionValidationJobSystem<T>
+{
+    public ConditionValidationJobSystem(T condition)
+    {
+        ConditionThreadData.SetConditionData(condition);
+    }
+
+    public struct CheckCondition : IJob
+    {
+        public void Execute()
+        {
+            
+        }
+    }
+}
+
+public static class ConditionThreadData
+{
+    static dynamic conditionData;
+
+    public static void SetConditionData<T>(T condition)
+    {
+        conditionData = condition;
     }
 }
