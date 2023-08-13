@@ -146,6 +146,7 @@ namespace DialogueSystem.EntityNPC
                 else if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius  && this.GetInstanceID() == DialogueManager.Instance.GetCurrentInteractNPCID()/*&& DialogueManager.Instance.subtitleManager.IsInteractPanelActive()*/)
                 {
                      DialogueManager.Instance.HideInteractUI();
+                    DialogueManager.Instance.ExitConversation();
                 }
 
                 

@@ -474,10 +474,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             state = DialogueState.PlayerResponse;
         }
 
-        else if (currentResponse.isExitNode)
-        {
-            ExitConversation();
-        }
+       
     }
 
     private void PlayRandomDialogue(string entityName, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName, Transform transformToAttachTo)
@@ -544,6 +541,12 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     public void DialogueEnded(SequenceType sequenceType)
     {
         NotifyObservers(DialogueState.DialogueEnd, sequenceType, currentEntityID);
+
+        if(currentResponse != null)
+        if (currentResponse.isExitNode && sequenceType == SequenceType.PlayerResponse)
+        {
+            NotifyObservers(DialogueState.ConversationEnd, sequenceType, currentEntityID);
+        }
     }
 
  
