@@ -52,7 +52,7 @@ namespace DialogueSystem.EntityNPC
         public bool is3D = false;
         bool hasGeneratedResponseInterface = false;
 
-  
+        private bool canInteract = true;
         //Dynamic parameters
         [HideInInspector] public Transform triggerObject;
         [HideInInspector] public Transform triggeringObject;
@@ -68,12 +68,12 @@ namespace DialogueSystem.EntityNPC
             this.hasGeneratedResponseInterface = false;
             this.entity = DataManager.LoadXMLDialogueData(xmlFilePath);
             DialogueManager.Instance.AddEntityToHashTable(entity);
-            
+
             //Add the instance of an entity to the dialogue managers list of obserbers
             DialogueManager.Instance.AddObserver(this);
 
-           
-            
+
+
             if (this.sequenceType == SequenceType.PlayerResponse)
             {
                 //Pass value that game designer has inputted into the private dynamic (dynamics cant be shown inspector, hence this method around it)
@@ -115,43 +115,51 @@ namespace DialogueSystem.EntityNPC
         }
 
 
-        
+
         private void Update()
         {
-            if (this.sequenceType == SequenceType.PlayerResponse)
+            if (this.triggerType == TriggerType.Radius)
             {
                 this.distance = Vector3.Distance(this.gameObject.transform.position, this.player.transform.position);
 
-                if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) < this.radius)
+
+
+                if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius) //&& !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
                 {
+                    DialogueManager.Instance.SetInteractNPCID(this.GetInstanceID());
+
+
                    
-                    if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius)// && !this.hasGeneratedResponseInterface) //&& !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
-                    {
-                        DialogueManager.Instance.SetInteractNPCID(this.GetInstanceID());
                         DialogueManager.Instance.ShowInteractUI();
+
+
                         if (Input.GetKeyDown(KeyCode.E))
                         {
                             this.PlayerInteract();
+                            DialogueManager.Instance.HideInteractUI();
                         }
-                    }
 
-                    else if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius)) //|| hasGeneratedResponseInterface))
-                    {
-                        this.hasGeneratedResponseInterface = false;
-                        DialogueManager.Instance.ExitConversation();
-                    }
+                        if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius)) //|| hasGeneratedResponseInterface))
+                        {
+                            this.hasGeneratedResponseInterface = false;
+                            DialogueManager.Instance.ExitConversation();
+                        }
+
                     
+
+
                 }
 
-                else if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius  && this.GetInstanceID() == DialogueManager.Instance.GetCurrentInteractNPCID()/*&& DialogueManager.Instance.subtitleManager.IsInteractPanelActive()*/)
+                else if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius && this.GetInstanceID() == DialogueManager.Instance.GetCurrentInteractNPCID() && DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
                 {
-                     DialogueManager.Instance.HideInteractUI();
-                    DialogueManager.Instance.ExitConversation();
+                    DialogueManager.Instance.HideInteractUI();
+
                 }
 
-                
+
             }
 
+            /*
             else if (this.sequenceType != SequenceType.PlayerResponse && this.triggerType == TriggerType.Radius && !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
             {
                 this.distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
@@ -166,17 +174,22 @@ namespace DialogueSystem.EntityNPC
                     }
                 }
             }
+            */
         }
 
         private void PlayerInteract()
         {
-            if (this.playerResponseNodes.transitionTo != null)
+
+            if (sequenceType == SequenceType.PlayerResponse)
             {
-                if (DialogueManager.Instance.CheckDialogueCondition<NodeCondition>(this.playerResponseNodes.tranistonCondition)) { this.playerResponseNodes = this.playerResponseNodes.transitionTo; } //IF the node condition is met then transition to the next response node
+                if (this.playerResponseNodes.transitionTo != null)
+                {
+                    if (DialogueManager.Instance.CheckDialogueCondition<NodeCondition>(this.playerResponseNodes.tranistonCondition)) { this.playerResponseNodes = this.playerResponseNodes.transitionTo; } //IF the node condition is met then transition to the next response node
+                }
+
+                DialogueManager.Instance.LookAtNPC(this.transform);
+                DialogueManager.Instance.InstantiatePlayerResponseInterface(this.playerResponseNodes, this.GetInstanceID());
             }
-          
-            DialogueManager.Instance.LookAtNPC(this.transform);
-            DialogueManager.Instance.InstantiatePlayerResponseInterface(this.playerResponseNodes, this.GetInstanceID());
             this.hasGeneratedResponseInterface = true;
 
         }
@@ -192,26 +205,34 @@ namespace DialogueSystem.EntityNPC
         /// <param name="state"> Current state of the dialogue system</param>
         public void OnNotify(DialogueState state, SequenceType sequenceType, int instanceID)
         {
-            if(this.GetInstanceID() == instanceID) //We need to check that this instance is the current dialogue entity in convo, otherwise events will invoke for all instances!
-            switch (state)
-            {
-                case DialogueState.DialogueStart:
-                    foreach (var _event in this.dialogueStartEvents) { _event.Invoke(); }
-                    break;
+            if (this.GetInstanceID() == instanceID) //We need to check that this instance is the current dialogue entity in convo, otherwise events will invoke for all instances!
+                switch (state)
+                {
+                    case DialogueState.DialogueStart:
+                        foreach (var _event in this.dialogueStartEvents) { _event.Invoke(); }
+                        break;
 
-                case DialogueState.DialogueEnd:
-                    foreach (var _event in this.dialogueEndEvents) { _event.Invoke(); }
-                    break;
+                    case DialogueState.DialogueEnd:
+                        foreach (var _event in this.dialogueEndEvents) { _event.Invoke(); }
+                        break;
 
-                case DialogueState.ConversationStart:
-                    foreach (var _event in this.conversationStartEvent) { _event.Invoke(); }
-                    break;
+                    case DialogueState.ConversationStart:
+                        foreach (var _event in this.conversationStartEvent) { _event.Invoke(); }
+                        break;
 
-                case DialogueState.ConversationEnd:
-                        if (sequenceType == SequenceType.PlayerResponse) { this.hasGeneratedResponseInterface = false; }
-                    foreach (var _event in this.conversationEndEvent) { _event.Invoke(); }
-                    break;
-            }
+                    case DialogueState.ConversationEnd:
+                        foreach (var _event in this.conversationEndEvent) { _event.Invoke(); }
+                        break;
+
+                    case DialogueState.InteractShow:
+                        if (sequenceType == SequenceType.PlayerResponse) { canInteract = true; }
+                        break;
+
+                    case DialogueState.InteractHide:
+                        if (sequenceType == SequenceType.PlayerResponse) { canInteract = false; }
+                        break;
+
+                }
         }
 
         private void OnCollisionEnter(Collision collision)

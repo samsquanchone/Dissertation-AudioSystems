@@ -25,7 +25,7 @@
     </Line>
     <Line id="12345901">
       <Key>Doro-WorthIt</Key>
-      <LineText>Overe here, it will be worth your timePst!</LineText>
+      <LineText>Over here, it will be worth your time!</LineText>
       <Conditions>
         <Condition id="309018">
           <TriggerCondition>True</TriggerCondition>

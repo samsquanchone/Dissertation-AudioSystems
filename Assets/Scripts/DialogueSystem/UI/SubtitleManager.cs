@@ -12,6 +12,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
     [SerializeField] private TMP_Text dialogueLineText;
     [SerializeField] private TMP_Text interactText;
     [SerializeField] private GameObject playerResponseObject;
+    [SerializeField] private GameObject responsePanel;
 
 
 
@@ -29,11 +30,14 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
 
             case DialogueState.DialogueEnd:
                 CloseSubtitleInterace();
+
+                if(sequenceType != SequenceType.PlayerResponse)
                 CloseParentInterface();
                 break;
 
             case DialogueState.ConversationStart:
                 HideInteractionUI();
+                OpenParentInterface();
                 if(sequenceType != SequenceType.PlayerResponse)
                 ShowSubtitleInterface();
                 break;
@@ -64,12 +68,29 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
         CloseSubtitleInterace();
         CloseParentInterface();
     }
+
+    /// <summary>
+    /// This function interacts with the dialogue manager and is used to send required data for sequencing subtitle for dialogue
+    /// </summary>
+    /// <param name="line"> The text of the dialogue line from the dialogue line being triggered</param>
+    /// <param name="name"> Name of the NPC that the dialogue is being triggered for</param>
+    /// <param name="length"> The length of the dialogue file calcualted by fmods sound.getLength </param>
+    /// <param name="sequenceType"> The type of sequence the dialogue entity triggering the dialogue uses </param>
     public void QueueDialogue(string line, string name, float length, SequenceType sequenceType) //Need to change to object so i can see multiple line attributes 
     {
-
         StartCoroutine(LineTimer(line, name, length, sequenceType));
     }
 
+    /// <summary>
+    /// Sets the UI for the line and then waits the dialogue length and then notifys the dialogue manager that the dialogue has finised
+    /// 
+    /// Same parameters as QueueDialogue function
+    /// </summary>
+    /// <param name="line"></param>
+    /// <param name="npcName"></param>
+    /// <param name="length"></param>
+    /// <param name="sequenceType"></param>
+    /// <returns></returns>
     IEnumerator LineTimer(string line, string npcName, float length, SequenceType sequenceType)
     {
         dialogueLineText.text = line;
@@ -83,6 +104,9 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
         DialogueManager.Instance.DialogueEnded(sequenceType);
     }
 
+    /// <summary>
+    /// Hides all UI in this script, used for when a conversation ends
+    /// </summary>
     private void HideAllUI()
     {
         dialogueContainer.SetActive(false);
@@ -91,16 +115,25 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
         subtitleContainer.SetActive(false);
     }
 
+    /// <summary>
+    /// Shows the interact UI when the player is within range of a dialogue entity that uses a Radius trigger type
+    /// </summary>
     private void ShowNPCInteractUI()
     {
-        subtitleContainer.SetActive(true);
-        interactText.gameObject.SetActive(true);
-    }
 
+        subtitleContainer.SetActive(true);
+        if (!responsePanel.activeInHierarchy && !dialogueContainer.activeInHierarchy)
+            interactText.gameObject.SetActive(true);
+    }
+    /// <summary>
+    /// Hides the interact UI when the player is within range of a dialogue entity that uses a Radius trigger type
+    /// </summary>
     private void HideInteractionUI()
     {
-         //subtitleContainer.SetActive(false);
+    
         interactText.gameObject.SetActive(false);
+        if(!dialogueContainer.activeInHierarchy || !responsePanel.activeInHierarchy)
+        subtitleContainer.SetActive(false);
     }
     public bool IsInteractPanelActive()
     {
@@ -126,7 +159,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
         subtitleContainer.SetActive(false);
     }
 
-    private void OpenParentInterface()
+    public void OpenParentInterface()
     {
         subtitleContainer.SetActive(true);
     }

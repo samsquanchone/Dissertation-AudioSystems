@@ -33,6 +33,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     private LookAtNPC lookAt;
     public Transform player;
 
+
     [SerializeField] List<KeyCode> responseInputKeys = new(6);
     [SerializeField] KeyCode escDialogueKey;
 
@@ -268,7 +269,8 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
     public void LookAtNPC(Transform npcTransform)
     {
-        lookAt.LookAtTarget(player, npcTransform);
+        Transform playerPos = player.transform;
+        lookAt.LookAtTarget(playerPos, npcTransform);
     }
     public void InstantiatePlayerResponseInterface(PlayerResponse playerResponseNode, int instanceID)
     {
@@ -302,7 +304,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                 conditionsTrueAmount++;
                 response.conditionsTrue = true;
                 conditionsMetResponses.Add(response);
-             
+
             }
 
             else
@@ -322,7 +324,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         currentResponseNode.playerResponses = conditionsMetResponses;
 
         NotifyObservers(DialogueState.ConversationStart, SequenceType.PlayerResponse, currentEntityID);
-       // NotifyObservers(DialogueState.PlayerResponse, SequenceType.PlayerResponse, currentEntityID);
+        // NotifyObservers(DialogueState.PlayerResponse, SequenceType.PlayerResponse, currentEntityID);
         state = DialogueState.PlayerResponse;
 
 
@@ -474,7 +476,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             state = DialogueState.PlayerResponse;
         }
 
-       
+
     }
 
     private void PlayRandomDialogue(string entityName, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName, Transform transformToAttachTo)
@@ -534,7 +536,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, transformToAttachTo);
             NotifyObservers(DialogueState.DialogueStart, SequenceType.RandomOneShot, currentEntityID);
             subtitleManager.QueueDialogue(triggerableLines[indexToPlay].line, entityName, diaLength, SequenceType.RandomOneShot);
-          
+
         }
     }
 
@@ -542,14 +544,16 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     {
         NotifyObservers(DialogueState.DialogueEnd, sequenceType, currentEntityID);
 
-        if(currentResponse != null)
-        if (currentResponse.isExitNode && sequenceType == SequenceType.PlayerResponse)
-        {
-            NotifyObservers(DialogueState.ConversationEnd, sequenceType, currentEntityID);
-        }
+
+
+        if (currentResponse != null)
+            if (currentResponse.isExitNode && sequenceType == SequenceType.PlayerResponse)
+            {
+                NotifyObservers(DialogueState.ConversationEnd, sequenceType, currentEntityID);
+            }
     }
 
- 
+
     public bool CheckDialogueCondition<T>(T diaCondition)
     {
 

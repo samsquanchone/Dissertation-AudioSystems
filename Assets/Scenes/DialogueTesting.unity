@@ -253,6 +253,7 @@ MonoBehaviour:
   dialogueLineText: {fileID: 229207904}
   interactText: {fileID: 448749424}
   playerResponseObject: {fileID: 602379611}
+  responsePanel: {fileID: 602379611}
 --- !u!114 &111335788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -550,8 +551,36 @@ MonoBehaviour:
   entity:
     id: 0
     name: 
-  conversationStartEvent: []
-  conversationEndEvent: []
+  conversationStartEvent:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8458218}
+        m_TargetAssemblyTypeName: FPSController, Assembly-CSharp
+        m_MethodName: LockPlayerControls
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  conversationEndEvent:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8458218}
+        m_TargetAssemblyTypeName: FPSController, Assembly-CSharp
+        m_MethodName: UnlockPlayerControls
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   dialogueStartEvents: []
   dialogueEndEvents: []
   objectToAttachTo: {fileID: 0}
@@ -890,7 +919,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 448749422}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1532,13 +1561,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 5
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -3691,6 +3720,10 @@ PrefabInstance:
       propertyPath: responsePanel
       value: 
       objectReference: {fileID: 602379611}
+    - target: {fileID: 7129040551476978325, guid: 9309636841348da4d985e4983a42725a, type: 3}
+      propertyPath: playerNameText
+      value: 
+      objectReference: {fileID: 719453929}
     - target: {fileID: 7129040551476978327, guid: 9309636841348da4d985e4983a42725a, type: 3}
       propertyPath: m_Name
       value: PlayerResponsePanel

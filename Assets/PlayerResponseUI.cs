@@ -1,8 +1,7 @@
 using DialogueUtility;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// This class sets up UI elements relating to player responses and sets relevant UI to enabled/disabled.
@@ -15,6 +14,7 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
     public GameObject responsePanel;
 
     private List<GameObject> responseText = new();
+    [SerializeField] private TMP_Text playerNameText;
 
 
     /// <summary>
@@ -32,8 +32,6 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
                     break;
 
                 case DialogueState.DialogueEnd:
-
-                    //GeneratePlayerResponses();
                     ShowCurrentResponseInterface();
                     break;
 
@@ -46,13 +44,6 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
                     HideCurrentResponseInterface();
                     break;
 
-                case DialogueState.TransitionNode:
-                   // GeneratePlayerResponses();
-                    break;
-
-                case DialogueState.PlayerResponse:
-                    //ShowCurrentResponseInterface();
-                    break;
             }
         }
     }
@@ -86,6 +77,8 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
         int x = 1;
 
         ClearPlayerResponses(); //Reset responses to be re-written
+
+        playerNameText.text = DialogueManager.Instance.GetCurrentResponseNode().playerName;
 
         foreach (var response in DialogueManager.Instance.GetCurrentResponseNode().playerResponses)
         {
@@ -122,10 +115,5 @@ public class PlayerResponseUI : MonoBehaviour, IDialogueObserver
 
         responsePanel.SetActive(true);
         GeneratePlayerResponses();
-    }
-
-    private void OnDestroy()
-    {
-        //ClearPlayerResponses();
     }
 }
