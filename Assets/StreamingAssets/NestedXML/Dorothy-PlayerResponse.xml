@@ -10,55 +10,42 @@
       <Key>Doro-Mistaken</Key>
       <LineText>Oh, I must be mistaken. Sorry.</LineText>
       <Conditions>
-        <Condition id="2034">
-          <TriggerCondition>True</TriggerCondition>
-          <GameDataName>QuestAccepted</GameDataName>
-          <GameDataKey>2</GameDataKey>
-        </Condition>
       </Conditions>
     </Line>
     <Line id="902837">
       <Key>Doro-Boxes</Key>
       <LineText>Did John ask you to find his boxes?</LineText>
       <Conditions>
-        <Condition id="3029">
-          <TriggerCondition>True</TriggerCondition>
-          <GameDataName>QuestAccepted</GameDataName>
-          <GameDataKey>1</GameDataKey>
-        </Condition>
       </Conditions>
     </Line>
     <Line id="2390451">
       <Key>Doro-BoxesForMe</Key>
       <LineText>Well, I need them more. Why don't you bring them to me instead?</LineText>
       <Conditions>
-        <Condition id="202312">
-          <TriggerCondition>True</TriggerCondition>
-          <GameDataName>QuestAccepted</GameDataName>
-          <GameDataKey>1</GameDataKey>
-        </Condition>
       </Conditions>
     </Line>
     <Line id="1009023">
       <Key>Doro-RightChoice</Key>
       <LineText>Great, you made the right choice!</LineText>
       <Conditions>
-        <Condition id="23102">
-          <TriggerCondition>True</TriggerCondition>
-          <GameDataName>QuestAccepted</GameDataName>
-          <GameDataKey>1</GameDataKey>
-        </Condition>
       </Conditions>
     </Line>
     <Line id="99990231">
       <Key>Doro-YourLoss</Key>
       <LineText>Your loss...</LineText>
       <Conditions>
-        <Condition id="2312340">
-          <TriggerCondition>True</TriggerCondition>
-          <GameDataName>QuestAccepted</GameDataName>
-          <GameDataKey>1</GameDataKey>
-        </Condition>
+      </Conditions>
+    </Line>
+    <Line id="192312">
+      <Key>Doro-Thanks</Key>
+      <LineText>Thank you so much!</LineText>
+      <Conditions>
+      </Conditions>
+    </Line>
+    <Line id="123412">
+      <Key>Doro-GoAway</Key>
+      <LineText>You gave the boxes to someone else... Go away!</LineText>
+      <Conditions>
       </Conditions>
     </Line>
   </Lines>

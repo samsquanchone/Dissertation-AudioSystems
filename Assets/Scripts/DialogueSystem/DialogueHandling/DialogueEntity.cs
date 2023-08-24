@@ -189,8 +189,15 @@ namespace DialogueSystem.EntityNPC
 
                 DialogueManager.Instance.LookAtNPC(this.transform);
                 DialogueManager.Instance.InstantiatePlayerResponseInterface(this.playerResponseNodes, this.GetInstanceID());
+                this.hasGeneratedResponseInterface = true;
             }
-            this.hasGeneratedResponseInterface = true;
+            
+            else
+            {
+                DialogueManager.Instance.LookAtNPC(this.transform);
+                DialogueManager.Instance.PlayDialogueSequence(this.entity.name, entity.lines, this.sequenceType, this.eventName, objectToAttachTo, this.GetInstanceID());
+
+            }
 
         }
 

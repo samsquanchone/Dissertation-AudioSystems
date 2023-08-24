@@ -290,6 +290,8 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             //As utilising SO, they have a serializable nature, hence needing to reset them 
             response.conditionsTrue = false;
             conditionsTrueAmount = 0;
+           
+
             //If no conditions for response then set the UI
             if (response.condition.Count == 0)
             {
@@ -297,37 +299,42 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                 conditionsMetResponses.Add(response);
             }
 
-
-            // Check conditions of current responses about to be generated
-            else if (CheckDialogueCondition<dynamic>(response.condition[i]))
+            //We need to ensure every condition is true to allow a response to show
+            foreach (var condition in response.condition)
             {
-                conditionsTrueAmount++;
-                response.conditionsTrue = true;
-                conditionsMetResponses.Add(response);
+
+
+                //Check current condition of current responses about to be generated
+                if (CheckDialogueCondition<dynamic>(condition))
+                {
+                    conditionsTrueAmount++;
+
+                }
+                if (conditionsTrueAmount == response.condition.Count) //IF conditions true amount == conditions amount then we can trigger
+                {
+                    response.conditionsTrue = true;
+                    conditionsMetResponses.Add(response);
+                }
+
 
             }
 
-            else
+            if (conditionsTrueAmount != response.condition.Count && response.condition.Count != 0)
             {
                 conditionsNotMetResponses.Add(response);
             }
 
-
         }
 
-        foreach (var response in conditionsNotMetResponses)
+        foreach (var _response in conditionsNotMetResponses)
         {
-            conditionsMetResponses.Add(response);
+            conditionsMetResponses.Add(_response);
         }
-
-        Debug.Log(conditionsMetResponses);
         currentResponseNode.playerResponses = conditionsMetResponses;
 
         NotifyObservers(DialogueState.ConversationStart, SequenceType.PlayerResponse, currentEntityID);
-        // NotifyObservers(DialogueState.PlayerResponse, SequenceType.PlayerResponse, currentEntityID);
+        
         state = DialogueState.PlayerResponse;
-
-
     }
 
     public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName, Transform transformToAttachTo, int instanceID)
@@ -485,17 +492,23 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
         foreach (var line in lineSequence)
         {
+            int conditionTrueAmount = 0;
+
+            //Check each condition, if all true then add to list of triggerable one-shots
             foreach (var condition in line.Value.conditions)
             {
                 if (CheckDialogueCondition(condition.Value))
                 {
-                    triggerableLines.Add(line.Value);
-                    Debug.Log("Key for lne: " + line.Value.key);
+                    conditionTrueAmount++;
+                   
                 }
             }
-
+            if (conditionTrueAmount == line.Value.conditions.Count)
+            {
+                triggerableLines.Add(line.Value);
+            }
             //If line has no conditions then add 
-            if (line.Value.conditions.Count == 0)
+            else if (line.Value.conditions.Count == 0)
             {
                 triggerableLines.Add(line.Value);
             }

@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad1931276a73f054696e256efb577754, type: 3}
+  m_Name: Player
+  m_EditorClassIdentifier: 
+  playerName: Alex
+  responseNodeName: GetQuest
+  nodeTransitionMode: 0
+  npcID: 1041
+  playerResponses:
+  - responseText: Hey, how is it going?
+    condition: []
+    npcLineID: 1234
+    transitionNode: {fileID: 0}
+    isExitNode: 0
+    eventsList: []
+  - responseText: Know of anything I can do round here?
+    condition: []
+    npcLineID: 4567
+    transitionNode: {fileID: 11400000, guid: 1b00f9c23eb8e5041aa5347d3ff7bdeb, type: 2}
+    isExitNode: 0
+    eventsList: []
+  fmodEvent:
+    Guid:
+      Data1: -653277270
+      Data2: 1174471842
+      Data3: 16416897
+      Data4: 1969343076
+    Path: event:/Talking
+  transitionTo: {fileID: 11400000, guid: 14a42c6534ec0b441b3c8894f9da87c8, type: 2}
+  tranistonCondition:
+    gameDataConditionName: QuestAccepted
+    triggerCondition: 2
+    conditionToParse: True
+    gameDataKey: 2

@@ -10,6 +10,11 @@
           <GameDataName>QuestAccepted</GameDataName>
           <GameDataKey>2</GameDataKey>
         </Condition>
+        <Condition id="101">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>DoraSpokenTo</GameDataName>
+          <GameDataKey>7</GameDataKey>
+        </Condition>
       </Conditions>
     </Line>
     <Line id="80901">
@@ -21,6 +26,11 @@
           <GameDataName>QuestAccepted</GameDataName>
           <GameDataKey>2</GameDataKey>
         </Condition>
+        <Condition id="100230">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>DoraSpokenTo</GameDataName>
+          <GameDataKey>7</GameDataKey>
+        </Condition>
       </Conditions>
     </Line>
     <Line id="12345901">
@@ -31,6 +41,11 @@
           <TriggerCondition>True</TriggerCondition>
           <GameDataName>QuestAccepted</GameDataName>
           <GameDataKey>2</GameDataKey>
+        </Condition>
+        <Condition id="10023">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>DoraSpokenTo</GameDataName>
+          <GameDataKey>7</GameDataKey>
         </Condition>
       </Conditions>
     </Line>

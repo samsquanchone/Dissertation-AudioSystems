@@ -4,12 +4,24 @@
     <Line id="1290">
       <Key>Ben-Fine</Key>
       <LineText>Fine, walk away...</LineText>
-      <Conditions />
+      <Conditions>
+        <Condition id="1010">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>TalkedToBen</GameDataName>
+          <GameDataKey>3</GameDataKey>
+        </Condition>
+      </Conditions>
     </Line>
     <Line id="90001">
       <Key>Ben-HaveItThatWay</Key>
       <LineText>Have it that way then...</LineText>
-      <Conditions />
+      <Conditions>
+        <Condition id="1010235">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>TalkedToBen</GameDataName>
+          <GameDataKey>3</GameDataKey>
+        </Condition>
+      </Conditions>
     </Line>
   </Lines>
 </Entity>

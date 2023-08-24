@@ -4,17 +4,35 @@
     <Line id="101">
       <Key>Ben-Oi</Key>
       <LineText>Oi, you!</LineText>
-      <Conditions />
+      <Conditions>
+        <Condition id="1023">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>SpokenToBen</GameDataName>
+          <GameDataKey>3</GameDataKey>
+        </Condition>
+      </Conditions>
     </Line>
     <Line id="148">
       <Key>Ben-OverHere</Key>
       <LineText>Over here!</LineText>
-      <Conditions />
+      <Conditions>
+        <Condition id="101023">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>TalkedToBen</GameDataName>
+          <GameDataKey>3</GameDataKey>
+        </Condition>
+      </Conditions>
     </Line>
     <Line id="5678">
       <Key>Ben-TalkingToYou</Key>
       <LineText>Oi, I'm talking to you!</LineText>
-      <Conditions />
+      <Conditions>
+        <Condition id="2030">
+          <TriggerCondition>False</TriggerCondition>
+          <GameDataName>TalkedToBen</GameDataName>
+          <GameDataKey>3</GameDataKey>
+        </Condition>
+      </Conditions>
     </Line>
   </Lines>
 </Entity>
