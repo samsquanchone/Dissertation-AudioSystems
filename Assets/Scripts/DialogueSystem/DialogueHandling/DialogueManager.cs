@@ -26,8 +26,11 @@ public interface DialogueSubject
 /// </summary>
 public class DialogueManager : MonoBehaviour, DialogueSubject
 {
+
+    ///Singleton decleration
     public static DialogueManager Instance => m_instance;
     private static DialogueManager m_instance;
+
     public List<IDialogueObserver> dialogueObservers { get; set; }
     public SubtitleManager subtitleManager;
     private LookAtNPC lookAt;
@@ -48,33 +51,41 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
     private void Awake()
     {
+        //Singleton instatantiation
         m_instance = this;
+
+        //Create a new list of dialogue observers
         dialogueObservers = new();
     }
 
     private void Start()
     {
-
-
-        lookAt = GetComponent<LookAtNPC>();
-
+        lookAt = GetComponent<LookAtNPC>(); //Get reference to the look at script 
     }
 
     /// <summary>
-    /// Aims to avoid concurrancy issues with UI showing / Hiding for mutliple entity objects. 
+    /// Aims to avoid concurrancy issues with event system, 
     /// If ID matches currently interacted ID then only code will be executated for that script instance!
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="id"> instance if of the currently interacted with NPC</param>
     public void SetInteractNPCID(int id)
     {
         currentEntityID = id;
     }
 
+    /// <summary>
+    /// Allows us to get the ID of a currently interacted with NPC, to dictate when to execute event based behaviour within other scripts 
+    /// </summary>
+    /// <returns></returns>
     public int GetCurrentInteractNPCID()
     {
         return currentEntityID;
     }
 
+
+    /// <summary>
+    /// Mainly used for player Input (Note: for the prototype currently utilising the default input system, plans to add new input system capabilities in the future
+    /// </summary>
     private void Update()
     {
         if (state == DialogueState.PlayerResponse)
@@ -113,10 +124,8 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     //This should be refactored out of here
                     if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[1].transitionNode != null)
                     {
-
                         SetNewResponses(1);
                         NotifyObservers(DialogueState.DialogueStart, SequenceType.PlayerResponse, currentEntityID);
-
                     }
                 }
             }
@@ -132,7 +141,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     line.Add(0, npc.lines[currentResponseNode.playerResponses[2].npcLineID]);
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID); //NEED TO MOV THIS OR SORT TRANSFORM
 
-                    //This should be refactored out of here
+                   
                     if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[2].transitionNode != null)
                     {
 
@@ -154,7 +163,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     line.Add(0, npc.lines[currentResponseNode.playerResponses[3].npcLineID]);
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID); //NEED TO MOV THIS OR SORT TRANSFORM
 
-                    //This should be refactored out of here
+               
                     if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[3].transitionNode != null)
                     {
 
@@ -214,14 +223,20 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
     }
 
-
+    /// <summary>
+    /// Instantiate new player responses, created from the transition node of the player selected response index
+    /// </summary>
+    /// <param name="responseIndex">Reponse chosen from the list of responses for a response node</param>
     public void SetNewResponses(int responseIndex)
     {
-
         currentResponseNode = currentResponseNode.playerResponses[responseIndex].transitionNode;
         InstantiatePlayerResponseInterface(currentResponseNode, currentEntityID);
     }
 
+    /// <summary>
+    /// Called by each instance of an entity dialogue script. Note, this is called on start when an XML file is deserialized into its data containers
+    /// </summary>
+    /// <param name="entity"></param>
     public void AddEntityToHashTable(Entity entity)
     {
         //Add an entitys dialogue information within the scene to the hash table 
@@ -244,6 +259,10 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         return entity;
     }
 
+
+    /// <summary>
+    /// Globally accessible to allow notification of when a dialogue has finished, so the manager can notify its observers 
+    /// </summary>
     public void ExitConversation()
     {
         isConversationActive = false;
@@ -251,27 +270,48 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         NotifyObservers(DialogueState.ConversationEnd, SequenceType.PlayerResponse, currentEntityID);
     }
 
-
+    /// <summary>
+    /// Notify observers that the interact UI is active 
+    /// </summary>
     public void ShowInteractUI()
     {
         NotifyObservers(DialogueState.InteractShow, SequenceType.PlayerResponse, currentEntityID);
     }
 
+    /// <summary>
+    /// Notify observers that the interact UI has been disabled 
+    /// </summary>
     public void HideInteractUI()
     {
         NotifyObservers(DialogueState.InteractHide, SequenceType.PlayerResponse, currentEntityID);
     }
 
+
+    /// <summary>
+    /// Get the current state of a conversation
+    /// </summary>
+    /// <returns></returns>
     public bool GetConversationState()
     {
         return isConversationActive;
     }
 
+    /// <summary>
+    /// Look at NPC when interacted with 
+    /// </summary>
+    /// <param name="npcTransform"> transform of the NPC being interacted with </param>
     public void LookAtNPC(Transform npcTransform)
     {
         Transform playerPos = player.transform;
         lookAt.LookAtTarget(playerPos, npcTransform);
     }
+
+
+    /// <summary>
+    /// Checks the conditions of currently of responses to instantiate, will check conditions and re-organise the list depending on which response has its conditoin set
+    /// </summary>
+    /// <param name="playerResponseNode">Response node to instantiate </param>
+    /// <param name="instanceID">The ID of current NPC player is interacting with</param>
     public void InstantiatePlayerResponseInterface(PlayerResponse playerResponseNode, int instanceID)
     {
         currentEntityID = instanceID;
@@ -290,7 +330,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             //As utilising SO, they have a serializable nature, hence needing to reset them 
             response.conditionsTrue = false;
             conditionsTrueAmount = 0;
-           
+
 
             //If no conditions for response then set the UI
             if (response.condition.Count == 0)
@@ -333,10 +373,21 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         currentResponseNode.playerResponses = conditionsMetResponses;
 
         NotifyObservers(DialogueState.ConversationStart, SequenceType.PlayerResponse, currentEntityID);
-        
+
         state = DialogueState.PlayerResponse;
     }
 
+
+    /// <summary>
+    /// Trigger dialogue of a sequence type, each dialogue line will be seqeunced, waiting the length of the dialogue clip before playing the next clip.
+    /// Note: this type does not take conditions into account, even if stated within the XML file
+    /// </summary>
+    /// <param name="entityName">Name of the NPC who is triggering dialogue, will be provided to the subtitle system</param>
+    /// <param name="lineSequence"> Dictionaty of dialogue lines contained within the sequence</param>
+    /// <param name="sequenceType"></param>
+    /// <param name="eventName">FMOD event with programmer instrument that will play the dialogue</param>
+    /// <param name="transformToAttachTo"></param>
+    /// <param name="instanceID"> Instance ID of the NPC triggering dialogue</param>
     public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName, Transform transformToAttachTo, int instanceID)
     {
 
@@ -375,29 +426,8 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     i++;
                     if (i == line.Value.conditions.Count) //IF all conditions true i.e at end element + all conditions are met 
                     {
-                        //Create native array to store threading result in
-                        NativeArray<float> result = new NativeArray<float>(1, Allocator.TempJob);
+                        float diaLength = GetDialogueLength(line.Value.key, eventName);
 
-                        //Set up a new job system instance
-                        DialogueJobSystem jobSystem = new(line.Value.key, eventName);
-
-
-
-                        DialogueJobSystem.CalculateDialogueLength dialogueLength = new();
-                        dialogueLength.result = result;
-
-                        //Schedule thread
-                        JobHandle handle = dialogueLength.Schedule();
-
-                        //Wait for thread to complete 
-                        handle.Complete();
-
-                        //Store result of thread task and convert from MS to S
-                        float diaLength = result[0] / 1000;
-
-                        //Free memory 
-                        result.Dispose();
-                        //  Debug.Log("Length: " + diaInfoCallback.GetDialogueLength());
                         DialogueHandler programmerCallback = new(line.Value.key, eventName, transformToAttachTo); //Make programmer deceleration in function, to make memory management better!!!
                         subtitleManager.QueueDialogue(line.Value.line, _name, diaLength, SequenceType.Sequential);
                         NotifyObservers(DialogueState.DialogueStart, SequenceType.Sequential, currentEntityID);
@@ -413,11 +443,19 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         yield return 0;
     }
 
-
+    /// <summary>
+    /// Allows external scripts to set the internal state of the manager for a current dialogue 
+    /// </summary>
+    /// <param name="_state"> Dialogue state to set the internal state to</param>
     public void SetState(DialogueState _state)
     {
         state = _state;
     }
+
+    /// <summary>
+    /// Sets the current response node of a player resonse 
+    /// </summary>
+    /// <param name="response"></param>
     public void SetCurrentResponse(PlayerResponseData response)
     {
         currentResponse = response;
@@ -435,29 +473,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         state = DialogueState.DialogueStart;
 
 
-
-
-        //Create native array to store threading result in
-        NativeArray<float> result = new NativeArray<float>(1, Allocator.TempJob);
-
-        //Set up a new job system instance
-        DialogueJobSystem jobSystem = new(npcLine.key, eventName);
-
-        //Create a dialogue length calc thread 
-        DialogueJobSystem.CalculateDialogueLength dialogueLength = new();
-        dialogueLength.result = result;
-
-        //Schedule thread
-        JobHandle handle = dialogueLength.Schedule();
-
-        //Wait for thread to complete 
-        handle.Complete();
-
-        //Store result of thread task and convert from MS to S
-        float diaLength = result[0] / 1000;
-
-        //Free memory 
-        result.Dispose();
+        float diaLength = GetDialogueLength(npcLine.key, eventName);
 
         if (diaLength == 0) { diaLength = 2; } //On first trigger on occasion the callback with fmod does not calculate accurate length,  this just ensures there is a default val the first time
         Debug.Log("dialength: " + diaLength);
@@ -486,10 +502,13 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
     }
 
+
+
     private void PlayRandomDialogue(string entityName, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName, Transform transformToAttachTo)
     {
         List<Line> triggerableLines = new();
 
+        //Check each condition and create a list of triggerable lines 
         foreach (var line in lineSequence)
         {
             int conditionTrueAmount = 0;
@@ -500,7 +519,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                 if (CheckDialogueCondition(condition.Value))
                 {
                     conditionTrueAmount++;
-                   
+
                 }
             }
             if (conditionTrueAmount == line.Value.conditions.Count)
@@ -514,36 +533,14 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
         }
 
-
+        //If there are triggerable lines, get a random index and trigger it
         if (triggerableLines.Count != 0)
         {
             int indexToPlay = Random.Range(0, triggerableLines.Count);
 
+            float diaLength = GetDialogueLength(triggerableLines[indexToPlay].key, eventName);
 
-
-            //Create native array to store threading result in
-            NativeArray<float> result = new NativeArray<float>(1, Allocator.TempJob);
-
-            //Set up a new job system instance
-            DialogueJobSystem jobSystem = new(triggerableLines[indexToPlay].key, eventName);
-
-            //Create a dialogue length calc thread 
-            DialogueJobSystem.CalculateDialogueLength dialogueLength = new();
-            dialogueLength.result = result;
-
-            //Schedule thread
-            JobHandle handle = dialogueLength.Schedule();
-
-            //Wait for thread to complete 
-            handle.Complete();
-
-            //Store result of thread task and convert from MS to S
-            float diaLength = result[0] / 1000;
-
-            //Free memory 
-            result.Dispose();
-
-            if (diaLength == 0) { diaLength = 2; } //On first trigger on occasion the callback with fmod does not calculate accurate length,  this just ensures there is a default val the first time
+            if (diaLength == 0) { diaLength = 2; } //Just a fallback state incase FMOD can't calculate the length
             Debug.Log("dialength: " + diaLength);
 
             DialogueHandler programmerCallback = new(triggerableLines[indexToPlay].key, eventName, transformToAttachTo);
@@ -553,11 +550,46 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         }
     }
 
+    /// <summary>
+    /// Utilise the Unity Job system (threading), to ensure that we get the length before a dialogue is triggered
+    /// </summary>
+    /// <param name="dialogueKey"> key for the dialogue line to get length for </param>
+    /// <param name="eventName"> fmod event with programmer instrument on for callback</param>
+    /// <returns></returns>
+    private float GetDialogueLength(string dialogueKey, FMODUnity.EventReference eventName)
+    {
+        //Create native array to store threading result in
+        NativeArray<float> result = new(1, Allocator.TempJob);
+
+        //Set up a new job system instance
+        DialogueJobSystem jobSystem = new(dialogueKey, eventName);
+
+        //Create a dialogue length calc thread 
+        DialogueJobSystem.CalculateDialogueLength dialogueLength = new();
+        dialogueLength.result = result;
+
+        //Schedule thread
+        JobHandle handle = dialogueLength.Schedule();
+
+        //Wait for thread to complete 
+        handle.Complete();
+
+        //Store result of thread task and convert from MS to S
+        float diaLength = result[0] / 1000;
+
+        //Free memory 
+        result.Dispose();
+
+        return diaLength;
+    }
+
+    /// <summary>
+    /// Used to notify the dialogue system that a dialogue line has ended so the manager can notify its observers 
+    /// </summary>
+    /// <param name="sequenceType">Sequence type for the triggerd line</param>
     public void DialogueEnded(SequenceType sequenceType)
     {
         NotifyObservers(DialogueState.DialogueEnd, sequenceType, currentEntityID);
-
-
 
         if (currentResponse != null)
             if (currentResponse.isExitNode && sequenceType == SequenceType.PlayerResponse)
@@ -566,7 +598,12 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
     }
 
-
+    /// <summary>
+    /// Used to check the conditions of a line. Note: two objects for conditions, both XML and Unity authored (very similar, but enum is exposed to users for unity one), same variable names so generics to cast type
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="diaCondition"></param>
+    /// <returns></returns>
     public bool CheckDialogueCondition<T>(T diaCondition)
     {
 
@@ -603,7 +640,6 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                 break;
 
         }
-
 
         return false;
     }

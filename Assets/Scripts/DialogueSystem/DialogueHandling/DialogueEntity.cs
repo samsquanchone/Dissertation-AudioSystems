@@ -50,22 +50,35 @@ namespace DialogueSystem.EntityNPC
 
         [HideInInspector] public float distance;
         public bool is3D = false;
-        bool hasGeneratedResponseInterface = false;
 
-        private bool canInteract = true;
+
         //Dynamic parameters
+        [Tooltip("The collider associated with the NPC for trigger type dialogue")]
         [HideInInspector] public Transform triggerObject;
+
+        [Tooltip("The collider that will trigger the dialogue")]
         [HideInInspector] public Transform triggeringObject;
+
+        [Tooltip("The collider for object that will trigger dialogue on collision")]
         [HideInInspector] public Transform collisionObject;
+
+        [Tooltip("Radius from NPC the player has to be before showing the interact UI")]
         [HideInInspector] public float radius;
+
+        [Tooltip("The object that will be provided to the fmod spatializer")]
         [HideInInspector] public Transform origin;
+
+        [Tooltip("Activate collider debuging tools")]
         [HideInInspector] public bool debugDraw = false; //Use gizmos to draw what is provided by the user supplied trigger object param 
+
+        [Tooltip("Colour of debug gizmo")]
         [HideInInspector] public Color debugColor;
-        [HideInInspector] public PlayerResponse playerResponseNodes; //Could instead just have a list of UINTs that are used to obtain player response node. OR JUST HAVE ONE OBJECT TYPE THAT IS PLAYER RESPONSE AS A BASE NODE, THEN LET LOWER LEVEL CODE HANDLE ALL TRANSITIONS SET BY SCRIPTABLES
-                                                                     // Start is called before the first frame update
+
+        [Tooltip("Initial response node that will show when the player first interacts with this NPC")]
+        [HideInInspector] public PlayerResponse playerResponseNodes; //Base response node
         void Start()
         {
-            this.hasGeneratedResponseInterface = false;
+
             this.entity = DataManager.LoadXMLDialogueData(xmlFilePath);
             DialogueManager.Instance.AddEntityToHashTable(entity);
 
@@ -82,6 +95,10 @@ namespace DialogueSystem.EntityNPC
 
         }
 
+        /// <summary>
+        /// This function is provided the filepath from the file explorer within the inspector, provided from the custom inspector script
+        /// </summary>
+        /// <param name="fileName"></param>
         public void SetFileName(string fileName)
         {
             xmlFilePath = fileName;
@@ -129,23 +146,23 @@ namespace DialogueSystem.EntityNPC
                     DialogueManager.Instance.SetInteractNPCID(this.GetInstanceID());
 
 
-                   
-                        DialogueManager.Instance.ShowInteractUI();
+
+                    DialogueManager.Instance.ShowInteractUI();
 
 
-                        if (Input.GetKeyDown(KeyCode.E))
-                        {
-                            this.PlayerInteract();
-                            DialogueManager.Instance.HideInteractUI();
-                        }
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        this.PlayerInteract();
+                        DialogueManager.Instance.HideInteractUI();
+                    }
 
-                        if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius)) //|| hasGeneratedResponseInterface))
-                        {
-                            this.hasGeneratedResponseInterface = false;
-                            DialogueManager.Instance.ExitConversation();
-                        }
+                    if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius)) //|| hasGeneratedResponseInterface))
+                    {
 
-                    
+                        DialogueManager.Instance.ExitConversation();
+                    }
+
+
 
 
                 }
@@ -159,24 +176,11 @@ namespace DialogueSystem.EntityNPC
 
             }
 
-            /*
-            else if (this.sequenceType != SequenceType.PlayerResponse && this.triggerType == TriggerType.Radius && !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
-            {
-                this.distance = Vector3.Distance(this.gameObject.transform.position, player.transform.position);
-
-                if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) < this.radius)
-                {                  
-                    DialogueManager.Instance.ShowInteractUI();
-                    if (Input.GetKeyDown(KeyCode.E))
-                    {
-                       
-                        
-                    }
-                }
-            }
-            */
         }
 
+        /// <summary>
+        /// Called when player interacts with an NPC, if player response type then will check node transition condition. Else if radius trigger type then will just play dialogue
+        /// </summary>
         private void PlayerInteract()
         {
 
@@ -189,9 +193,8 @@ namespace DialogueSystem.EntityNPC
 
                 DialogueManager.Instance.LookAtNPC(this.transform);
                 DialogueManager.Instance.InstantiatePlayerResponseInterface(this.playerResponseNodes, this.GetInstanceID());
-                this.hasGeneratedResponseInterface = true;
             }
-            
+
             else
             {
                 DialogueManager.Instance.LookAtNPC(this.transform);
@@ -201,11 +204,6 @@ namespace DialogueSystem.EntityNPC
 
         }
 
-
-        private void InvokeCustomDialogueTrigger(string dialogueKey)
-        {
-            Debug.Log("CUSTOM EVENT TRIGGERING!" + dialogueKey);
-        }
         /// <summary>
         /// When the subject (Dialogue manager) invokes its listeners and passes the dialogue state, sequence type and entity ID, we can invoke the respetive list of user defined evvents of that instance
         /// </summary>
@@ -229,14 +227,6 @@ namespace DialogueSystem.EntityNPC
 
                     case DialogueState.ConversationEnd:
                         foreach (var _event in this.conversationEndEvent) { _event.Invoke(); }
-                        break;
-
-                    case DialogueState.InteractShow:
-                        if (sequenceType == SequenceType.PlayerResponse) { canInteract = true; }
-                        break;
-
-                    case DialogueState.InteractHide:
-                        if (sequenceType == SequenceType.PlayerResponse) { canInteract = false; }
                         break;
 
                 }
@@ -272,7 +262,11 @@ namespace DialogueSystem.EntityNPC
                 }
         }
 
-
+        /// <summary>
+        /// Calculates the collider type provided by user of the system
+        /// </summary>
+        /// <param name="triggerObj">Parameter provided from inspector for the triggerObj, aka the NPC</param>
+        /// <returns></returns>
         private ColliderType GetColliderType(Transform triggerObj)
         {
             if (triggerObj.GetComponent<BoxCollider>() != null)
@@ -297,21 +291,14 @@ namespace DialogueSystem.EntityNPC
         }
     }
 
+    /// <summary>
+    /// Data structure for a single line of dialogue 
+    /// </summary>
     public class LineData
     {
         public string key;
         public string line;
         public List<string> conditionsList;
-    }
-
-
-    /// <summary>
-    /// This is just a data object to be able to have a GUI overload list in the GUI override script for this script.
-    /// Object will be instantiated on UI when Custom trigger mode is selecter (To allow programmers to manually dictate when dialogue is triggered)
-    /// </summary>
-    public class CustomEventList
-    {
-        public List<UnityEvent> triggerEvents;
     }
 
 }
