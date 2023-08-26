@@ -3,6 +3,8 @@ using UnityEngine;
 using DialogueUtility;
 using Unity.Collections;
 using Unity.Jobs;
+using System.Collections;
+using FMODUnity;
 
 /// <summary>
 /// Enum used with the event system so difffrent parts of the code base can make decisions on an event invoke based on the enum state passed with the invoke of dialogue obserbers
@@ -101,7 +103,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID);
 
                     //Transition node
-                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[0].transitionNode != null)
+                    if (currentResponseNode.playerResponses[0].transitionNode != null)
                     {
 
                         SetNewResponses(0);
@@ -111,7 +113,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                 }
             }
 
-            else if (Input.GetKeyDown(responseInputKeys[1]))
+            if (Input.GetKeyDown(responseInputKeys[1]))
             {
                 if (currentResponseNode.playerResponses.Count > 1 && currentResponseNode.playerResponses[1].conditionsTrue)
                 {
@@ -122,7 +124,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID); //NEED TO MOV THIS OR SORT TRANSFORM
 
                     //This should be refactored out of here
-                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[1].transitionNode != null)
+                    if (currentResponseNode.playerResponses[1].transitionNode != null)
                     {
                         SetNewResponses(1);
                         NotifyObservers(DialogueState.DialogueStart, SequenceType.PlayerResponse, currentEntityID);
@@ -131,7 +133,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
 
 
-            else if (Input.GetKeyDown(responseInputKeys[2]))
+            if (Input.GetKeyDown(responseInputKeys[2]))
             {
                 if (currentResponseNode.playerResponses.Count > 2 && currentResponseNode.playerResponses[2].conditionsTrue)
                 {
@@ -142,7 +144,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID); //NEED TO MOV THIS OR SORT TRANSFORM
 
                    
-                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[2].transitionNode != null)
+                    if (currentResponseNode.playerResponses[2].transitionNode != null)
                     {
 
                         SetNewResponses(2);
@@ -153,7 +155,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
 
 
-            else if (Input.GetKeyDown(responseInputKeys[3]))
+            if (Input.GetKeyDown(responseInputKeys[3]))
             {
                 if (currentResponseNode.playerResponses.Count > 3 && currentResponseNode.playerResponses[3].conditionsTrue)
                 {
@@ -164,7 +166,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID); //NEED TO MOV THIS OR SORT TRANSFORM
 
                
-                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[3].transitionNode != null)
+                    if (currentResponseNode.playerResponses[3].transitionNode != null)
                     {
 
                         SetNewResponses(3);
@@ -175,7 +177,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
 
 
-            else if (Input.GetKeyDown(responseInputKeys[4]))
+            if (Input.GetKeyDown(responseInputKeys[4]))
             {
                 if (currentResponseNode.playerResponses.Count > 4 && currentResponseNode.playerResponses[4].conditionsTrue)
                 {
@@ -186,7 +188,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID); //NEED TO MOV THIS OR SORT TRANSFORM
 
                     //This should be refactored out of here
-                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[4].transitionNode != null)
+                    if (currentResponseNode.playerResponses[4].transitionNode != null)
                     {
 
                         SetNewResponses(4);
@@ -197,7 +199,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
 
 
-            else if (Input.GetKeyDown(responseInputKeys[5]))
+            if (Input.GetKeyDown(responseInputKeys[5]))
             {
                 if (currentResponseNode.playerResponses.Count > 5 && currentResponseNode.playerResponses[5].conditionsTrue)
                 {
@@ -208,7 +210,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID); //NEED TO MOV THIS OR SORT TRANSFORM
 
                     //This should be refactored out of here
-                    if (currentResponseNode.nodeTransitionMode == NodeTransitionMode.CHOICE && currentResponseNode.playerResponses[5].transitionNode != null)
+                    if (currentResponseNode.playerResponses[5].transitionNode != null)
                     {
 
                         SetNewResponses(5);
@@ -388,7 +390,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     /// <param name="eventName">FMOD event with programmer instrument that will play the dialogue</param>
     /// <param name="transformToAttachTo"></param>
     /// <param name="instanceID"> Instance ID of the NPC triggering dialogue</param>
-    public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, FMODUnity.EventReference eventName, Transform transformToAttachTo, int instanceID)
+    public void PlayDialogueSequence(string entityName, Dictionary<uint, Line> lineSequence, SequenceType sequenceType, EventReference eventName, Transform transformToAttachTo, int instanceID)
     {
 
         currentEntityID = instanceID;
@@ -412,7 +414,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
     }
 
-    private System.Collections.IEnumerator DialogueSequenceTimer(string _name, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName, Transform transformToAttachTo)
+    private IEnumerator DialogueSequenceTimer(string _name, Dictionary<uint, Line> lineSequence, EventReference eventName, Transform transformToAttachTo)
     {
 
         foreach (var line in lineSequence)
@@ -432,7 +434,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                         subtitleManager.QueueDialogue(line.Value.line, _name, diaLength, SequenceType.Sequential);
                         NotifyObservers(DialogueState.DialogueStart, SequenceType.Sequential, currentEntityID);
 
-                        yield return new WaitForSecondsRealtime((float)diaLength); //We want a dialogue call back for info to get the length of an audio table clip.... UNITY WHY CANT I USE A DOUBLE >_< 
+                        yield return new WaitForSecondsRealtime(diaLength); //We want a dialogue call back for info to get the length of an audio table clip.... UNITY WHY CANT I USE A DOUBLE >_< 
                     }
                 }
             }
@@ -462,28 +464,40 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
 
     }
 
+
+    /// <summary>
+    /// Allows external classes to check the current response node
+    /// </summary>
+    /// <returns> Returns the current response node</returns>
     public PlayerResponse GetCurrentResponseNode()
     {
         return currentResponseNode;
     }
 
-    private System.Collections.IEnumerator DialogueResponseTimer(string _name, Line npcLine, FMODUnity.EventReference eventName, Transform transformToAttachTo)
+
+    /// <summary>
+    /// This function is utilised to handle player response type dialogue
+    /// </summary>
+    /// <param name="_name"> name of the NPC triggering dialogue for, is provided to the subtilte manager </param>
+    /// <param name="npcLine"> current line that will be trigger with the player response</param>
+    /// <param name="eventName">fmod event</param>
+    /// <param name="transformToAttachTo"> transform that will be provided to FMOD if 3D event</param>
+    /// <returns></returns>
+    private IEnumerator DialogueResponseTimer(string _name, Line npcLine, EventReference eventName, Transform transformToAttachTo)
     {
 
         state = DialogueState.DialogueStart;
-
 
         float diaLength = GetDialogueLength(npcLine.key, eventName);
 
         if (diaLength == 0) { diaLength = 2; } //On first trigger on occasion the callback with fmod does not calculate accurate length,  this just ensures there is a default val the first time
         Debug.Log("dialength: " + diaLength);
 
-
         DialogueHandler programmerCallback = new(npcLine.key, eventName, transformToAttachTo);
 
         subtitleManager.QueueDialogue(npcLine.line, _name, diaLength, SequenceType.PlayerResponse);
         NotifyObservers(DialogueState.DialogueStart, SequenceType.PlayerResponse, currentEntityID);
-        yield return new WaitForSeconds((float)diaLength);
+        yield return new WaitForSeconds(diaLength);
 
 
         //Iterate through all responses event list and invoke all events
@@ -498,13 +512,18 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             NotifyObservers(DialogueState.PlayerResponse, SequenceType.PlayerResponse, currentEntityID);
             state = DialogueState.PlayerResponse;
         }
-
-
     }
 
 
-
-    private void PlayRandomDialogue(string entityName, Dictionary<uint, Line> lineSequence, FMODUnity.EventReference eventName, Transform transformToAttachTo)
+    /// <summary>
+    /// This function handles the triggering of a random one shot type. 
+    /// It checks conditions of XML lines for entity and complies list of triggerable lines to get a random index to trigger
+    /// </summary>
+    /// <param name="entityName">Name of the NPC</param>
+    /// <param name="lineSequence">List of lines</param>
+    /// <param name="eventName"> Fmod event</param>
+    /// <param name="transformToAttachTo">Transform to attach to if 3D dialogue type</param>
+    private void PlayRandomDialogue(string entityName, Dictionary<uint, Line> lineSequence, EventReference eventName, Transform transformToAttachTo)
     {
         List<Line> triggerableLines = new();
 
@@ -556,7 +575,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     /// <param name="dialogueKey"> key for the dialogue line to get length for </param>
     /// <param name="eventName"> fmod event with programmer instrument on for callback</param>
     /// <returns></returns>
-    private float GetDialogueLength(string dialogueKey, FMODUnity.EventReference eventName)
+    private float GetDialogueLength(string dialogueKey, EventReference eventName)
     {
         //Create native array to store threading result in
         NativeArray<float> result = new(1, Allocator.TempJob);
@@ -592,10 +611,13 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         NotifyObservers(DialogueState.DialogueEnd, sequenceType, currentEntityID);
 
         if (currentResponse != null)
+        {
             if (currentResponse.isExitNode && sequenceType == SequenceType.PlayerResponse)
             {
                 NotifyObservers(DialogueState.ConversationEnd, sequenceType, currentEntityID);
             }
+        }
+      
     }
 
     /// <summary>
@@ -644,16 +666,32 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         return false;
     }
 
+    /// <summary>
+    /// Function that allows external classes that inherit from IDialogueObserver to add themselves to this managers list of observers,
+    /// to provide event based notifications to them
+    /// </summary>
+    /// <param name="observer">An observer which inherits from the observer interface</param>
     public void AddObserver(IDialogueObserver observer)
     {
         dialogueObservers.Add(observer);
     }
 
+    /// <summary>
+    /// Function that allows external classes to remove themselves as observers. Generally done when scripts are destroyed
+    /// </summary>
+    /// <param name="observer"> Observer to remove </param>
     public void RemoveObserver(IDialogueObserver observer)
     {
         dialogueObservers.Remove(observer);
     }
 
+
+    /// <summary>
+    /// Function that will notify observers when something critical happens, providing arguments that allow observers to determine which behaviour to invoke
+    /// </summary>
+    /// <param name="state"> current dialogue state e.g. dialogue line started</param>
+    /// <param name="sequenceType">Sequence type for the current conversation</param>
+    /// <param name="instanceID">Unique ID for instance of entity script that is being interacted with, to increase memory management and performance</param>
     public void NotifyObservers(DialogueState state, SequenceType sequenceType, int instanceID)
     {
         foreach (var observer in dialogueObservers)
