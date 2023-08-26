@@ -14,9 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: Alex
   responseNodeName: QuestComplete
-  nodeTransitionMode: 0
   npcID: 900187457
   playerResponses:
+  - responseText: Hey
+    condition:
+    - gameDataConditionName: QuestComplete
+      triggerCondition: 2
+      conditionToParse: True
+      gameDataKey: 4
+    - gameDataConditionName: QuestHandedJohn
+      triggerCondition: 2
+      conditionToParse: True
+      gameDataKey: 5
+    npcLineID: 123412
+    transitionNode: {fileID: 0}
+    isExitNode: 1
+    eventsList:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7713350364998941058, guid: 347c64f5b3b91df43a38450f3af8b191, type: 3}
+          m_TargetAssemblyTypeName: QuestHandler, Assembly-CSharp
+          m_MethodName: QuestTurnedIntoDora
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    conditionsTrue: 1
   - responseText: I have the boxes!
     condition:
     - gameDataConditionName: QuestComplete
@@ -45,36 +73,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    conditionsTrue: 1
-  - responseText: Hey
-    condition:
-    - gameDataConditionName: QuestComplete
-      triggerCondition: 2
-      conditionToParse: True
-      gameDataKey: 4
-    - gameDataConditionName: QuestHandedJohn
-      triggerCondition: 2
-      conditionToParse: True
-      gameDataKey: 5
-    npcLineID: 91023
-    transitionNode: {fileID: 0}
-    isExitNode: 1
-    eventsList:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7713350364998941058, guid: 347c64f5b3b91df43a38450f3af8b191, type: 3}
-          m_TargetAssemblyTypeName: QuestHandler, Assembly-CSharp
-          m_MethodName: QuestTurnedIntoDora
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    conditionsTrue: 1
+    conditionsTrue: 0
   fmodEvent:
     Guid:
       Data1: -653277270
