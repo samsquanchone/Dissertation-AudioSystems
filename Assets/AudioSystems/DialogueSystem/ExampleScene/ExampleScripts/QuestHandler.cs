@@ -53,6 +53,7 @@ public class QuestHandler : MonoBehaviour
         {
             //Quest Complete
             GameDataResolver.Instance.SetGameDataVariable(4, true);
+
         }
     }
 
@@ -62,6 +63,7 @@ public class QuestHandler : MonoBehaviour
     public void QuestTurnedIntoJohn()
     {
         GameDataResolver.Instance.SetGameDataVariable(5, true);
+        QuestUI.Instance.DisableQuestUI();
     }
 
 
@@ -71,6 +73,7 @@ public class QuestHandler : MonoBehaviour
     public void QuestTurnedIntoDora()
     {
         GameDataResolver.Instance.SetGameDataVariable(6, true);
+        QuestUI.Instance.DisableQuestUI();
     }
 
     /// <summary>

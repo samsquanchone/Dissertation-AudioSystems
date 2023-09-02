@@ -75,6 +75,8 @@ namespace DialogueSystem.EntityNPC
 
         [Tooltip("Initial response node that will show when the player first interacts with this NPC")]
         [HideInInspector] public PlayerResponse playerResponseNodes; //Base response node
+
+        bool inConvo = false;
         void Start()
         {
 
@@ -145,20 +147,22 @@ namespace DialogueSystem.EntityNPC
                     DialogueManager.Instance.SetInteractNPCID(this.GetInstanceID());
 
 
-
-                    DialogueManager.Instance.ShowInteractUI();
+                    if (!inConvo)
+                    {
+                        DialogueManager.Instance.ShowInteractUI(this.sequenceType);
+                    }
 
 
                     if (Input.GetKeyDown(KeyCode.E))
                     {
                         this.PlayerInteract();
-                        DialogueManager.Instance.HideInteractUI();
+                        DialogueManager.Instance.HideInteractUI(this.sequenceType);
                     }
 
                     if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius)) //|| hasGeneratedResponseInterface))
                     {
 
-                        DialogueManager.Instance.ExitConversation();
+                        DialogueManager.Instance.ExitConversation(this.sequenceType);
                     }
 
 
@@ -168,7 +172,7 @@ namespace DialogueSystem.EntityNPC
 
                 else if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius && this.GetInstanceID() == DialogueManager.Instance.GetCurrentInteractNPCID() && DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
                 {
-                    DialogueManager.Instance.HideInteractUI();
+                    DialogueManager.Instance.HideInteractUI(this.sequenceType);
 
                 }
 
@@ -182,6 +186,7 @@ namespace DialogueSystem.EntityNPC
         /// </summary>
         private void PlayerInteract()
         {
+            if(!inConvo)
 
             if (sequenceType == SequenceType.PlayerResponse)
             {
@@ -221,10 +226,12 @@ namespace DialogueSystem.EntityNPC
                         break;
 
                     case DialogueState.ConversationStart:
+                        inConvo = true;
                         foreach (var _event in this.conversationStartEvent) { _event.Invoke(); }
                         break;
 
                     case DialogueState.ConversationEnd:
+                        inConvo = false;
                         foreach (var _event in this.conversationEndEvent) { _event.Invoke(); }
                         break;
 

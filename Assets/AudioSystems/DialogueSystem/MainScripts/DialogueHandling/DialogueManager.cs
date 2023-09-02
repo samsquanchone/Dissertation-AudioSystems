@@ -92,7 +92,8 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     /// </summary>
     private void Update()
     {
-        if (state == DialogueState.PlayerResponse)
+        if (state == DialogueState.PlayerResponse && isConversationActive)
+        {
             if (Input.GetKeyDown(responseInputKeys[0]))
             {
                 if (currentResponseNode.playerResponses.Count > 0 && currentResponseNode.playerResponses[0].conditionsTrue)
@@ -145,7 +146,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     line.Add(0, npc.lines[currentResponseNode.playerResponses[2].npcLineID]);
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID); //NEED TO MOV THIS OR SORT TRANSFORM
 
-                   
+
                     if (currentResponseNode.playerResponses[2].transitionNode != null)
                     {
 
@@ -167,7 +168,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                     line.Add(0, npc.lines[currentResponseNode.playerResponses[3].npcLineID]);
                     PlayDialogueSequence(npc.name, line, DialogueUtility.SequenceType.PlayerResponse, currentResponseNode.fmodEvent, null, currentEntityID); //NEED TO MOV THIS OR SORT TRANSFORM
 
-               
+
                     if (currentResponseNode.playerResponses[3].transitionNode != null)
                     {
 
@@ -223,8 +224,9 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
             else if (Input.GetKeyDown(escDialogueKey))
             {
-                ExitConversation();
+                ExitConversation(SequenceType.PlayerResponse);
             }
+        }
     }
 
     /// <summary>
@@ -267,7 +269,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     /// <summary>
     /// Globally accessible to allow notification of when a dialogue has finished, so the manager can notify its observers 
     /// </summary>
-    public void ExitConversation()
+    public void ExitConversation(SequenceType sequenceType)
     {
         isConversationActive = false;
         state = DialogueState.ConversationEnd;
@@ -277,17 +279,42 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     /// <summary>
     /// Notify observers that the interact UI is active 
     /// </summary>
-    public void ShowInteractUI()
+    public void ShowInteractUI(SequenceType sequenceType)
     {
         NotifyObservers(DialogueState.InteractShow, SequenceType.PlayerResponse, currentEntityID);
+
+        switch (sequenceType)
+        {
+            case SequenceType.PlayerResponse:
+                NotifyObservers(DialogueState.InteractShow, SequenceType.PlayerResponse, currentEntityID);
+                break;
+
+            case SequenceType.Sequential:
+                NotifyObservers(DialogueState.InteractShow, SequenceType.Sequential, currentEntityID);
+                break;
+
+
+        }
     }
 
     /// <summary>
     /// Notify observers that the interact UI has been disabled 
     /// </summary>
-    public void HideInteractUI()
+    public void HideInteractUI(SequenceType sequenceType)
     {
-        NotifyObservers(DialogueState.InteractHide, SequenceType.PlayerResponse, currentEntityID);
+        switch (sequenceType)
+        {
+            case SequenceType.PlayerResponse:
+                NotifyObservers(DialogueState.InteractHide, SequenceType.PlayerResponse, currentEntityID);
+                break;
+
+            case SequenceType.Sequential:
+                NotifyObservers(DialogueState.InteractHide, SequenceType.Sequential, currentEntityID);
+                break;
+
+
+        }
+       
     }
 
 
@@ -374,6 +401,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         {
             conditionsMetResponses.Add(_response);
         }
+
         currentResponseNode.playerResponses = conditionsMetResponses;
 
         NotifyObservers(DialogueState.ConversationStart, SequenceType.PlayerResponse, currentEntityID);
@@ -381,6 +409,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         state = DialogueState.PlayerResponse;
     }
 
+   
 
     /// <summary>
     /// Trigger dialogue of a sequence type, each dialogue line will be seqeunced, waiting the length of the dialogue clip before playing the next clip.
@@ -398,6 +427,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         currentEntityID = instanceID;
 
         isConversationActive = true;
+
         switch (sequenceType)
         {
             case SequenceType.Sequential:
@@ -419,6 +449,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     private IEnumerator DialogueSequenceTimer(string _name, Dictionary<uint, Line> lineSequence, EventReference eventName, Transform transformToAttachTo)
     {
 
+        NotifyObservers(DialogueState.ConversationStart, SequenceType.Sequential, currentEntityID);
         foreach (var line in lineSequence)
         {
             int i = 0;
@@ -442,7 +473,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
             }
         }
 
-        ExitConversation();
+        ExitConversation(SequenceType.Sequential);
 
         yield return 0;
     }
@@ -619,7 +650,7 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
                 NotifyObservers(DialogueState.ConversationEnd, sequenceType, currentEntityID);
             }
         }
-      
+
     }
 
     /// <summary>

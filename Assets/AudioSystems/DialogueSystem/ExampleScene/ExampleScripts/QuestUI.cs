@@ -16,11 +16,16 @@ public class QuestUI : MonoBehaviour
     void Start()
     {
         m_instance = this;
+        questNameText.gameObject.SetActive(false);
+        questObjectiveText.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     public void SetQuestUI(QuestData questData)
     {
+        questNameText.gameObject.SetActive(true);
+        questObjectiveText.gameObject.SetActive(true);
+
         _questData = questData;
         questNameText.text = questData.questName;
         questObjectiveText.text = questData.questObjective + " 0/" + questData.cubeAmount;
@@ -29,6 +34,17 @@ public class QuestUI : MonoBehaviour
     public void UpdateQuestUI(int cubesCollected)
     {
         questObjectiveText.text = _questData.questObjective + $":  {cubesCollected}/" + _questData.cubeAmount;
+
+        if (cubesCollected == 6)
+        {
+            questObjectiveText.text = "Return boxes to John or Dorothy";
+        }
     }
 
+    public void DisableQuestUI()
+    {
+        questNameText.gameObject.SetActive(false);
+        questObjectiveText.gameObject.SetActive(false);
+    }
+    
 }
