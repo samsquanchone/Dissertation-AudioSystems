@@ -1,0 +1,29 @@
+Dialogue System:
+
+WASD-Movement
+E-Interact (When prompted)
+1-6 Player Responses (When in player response conversation type)
+ESC-Exit Conversation (When in player response conversation type)
+
+
+This scene highlights all use cases currently available with this system. All NPC dialogue instances and condition interactions described below: 
+
+
+Ben: 
+Trigger Enter and Trigger Exit: Only when player has not yet Interacted with Ben and initiated is sequence Type
+
+Sequence: Upon being prompted and interacting with Ben, this dialogue entity instance will be initiated in sequence mode (Can't play again after interacting with ben and hearing his sequence dialogue type)
+
+Dorothy: 
+
+Trigger Enter: Only avaiable after accepting quest from John
+
+Collision: Triggered whenever player collides with this NPC
+
+Player Response: Multiple player response nodes and response conditions. New responses become avaiable upon accepting quest from John and then interacting with this NPC again. Base node will also branch once completing the quest, as well as when handing the quest in to this NPC or John.
+
+
+
+John:
+
+Player Response: Responsible for giving the player the quest. Will branch in a similar fashion to the Dorothy NPC. Once getting the quest, speak to John again and attempt to hand in the quest. Then complete quest and decide who to hand the quest into, his node will then branch again depending on the player choice.

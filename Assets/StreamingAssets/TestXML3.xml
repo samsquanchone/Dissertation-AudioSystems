@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<Entity ID="John-6428" Name="John The blacksmith">
-  <Lines>
-    <Line id="1">
-      <Key>Test3</Key>
-      <Line>Testing 3</Line>
-    </Line>
-  </Lines>
-</Entity>

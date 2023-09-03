@@ -1,0 +1,13 @@
+One-shot and parameter handling system:
+
+WASD-Movement
+
+Left-Fire
+
+R-Reload
+
+
+Overview: This scene provides an example of how the static scripts can be utilised to create adaptive audio, while abstracting the FMOD API.
+
+
+Navigate around the Scene and you will notice there are different footstep sounds for each sufrace. Furthermore, the shell casings are only audible on the concrete, hard surface. This gives an example of how this tool can be used to create adaptable audio. 

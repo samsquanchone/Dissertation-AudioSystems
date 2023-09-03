@@ -1,0 +1,7 @@
+Occlusion System: 
+
+WASD-Movement
+
+Overview: this scene attempts to emulate what is found in a nightclub where you are in another room, but can still hear the low frequencies within the loud muisc sound. However, upon leaving that room you will not hear the quieter sound source, being the ambient chatter. 
+
+Move behind objects to hear how audio can be obstructed and occluded and travel to the back room to hear the smaller sound contrast with the loud music sound source. 
