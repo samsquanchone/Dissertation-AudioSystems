@@ -25,7 +25,7 @@
     </Line>
     <Line id="900182">
       <Key>Ben-MyFriendJohn</Key>
-      <LineText>However, my friend John, the green fellow up the other end may need some help. </LineText>
+      <LineText>However, my friend John, the green fellow up the other end, may need some help. </LineText>
       <Conditions>
         <Condition id="201">
           <TriggerCondition>False</TriggerCondition>

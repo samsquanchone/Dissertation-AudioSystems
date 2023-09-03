@@ -4,6 +4,12 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+
+/// <summary>
+/// This script handles the callbacks with fmod for dialogue triggering
+/// 
+/// Author: Sam Scott
+/// </summary>
 namespace DialogueUtility
 {
     public enum SequenceType {RandomOneShot, Sequential, PlayerResponse };

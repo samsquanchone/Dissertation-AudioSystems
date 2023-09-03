@@ -1,5 +1,12 @@
 using UnityEngine;
 
+
+/// <summary>
+/// Allows handling of data, it creates a new hashtable called gameDataHashTable and provides public functions to add and remove from hashtable. Either handle game data in here or through a seperate script.
+/// 
+/// 
+/// Author:: Sam Soctt
+/// </summary>
 //Namespace to avoid the unlikely chance that someone has a class/script of the same name. However, referencing will require including this namespace!
 namespace DialogueSystem.DataResolver
 {

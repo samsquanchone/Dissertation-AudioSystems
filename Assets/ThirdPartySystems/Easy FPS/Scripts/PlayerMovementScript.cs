@@ -73,30 +73,11 @@ public class PlayerMovementScript : MonoBehaviour {
 			deaccelerationSpeed = 0.1f;
 		}
 	}
-	/*
-	* Handles jumping and ads the force and sounds.
-	*/
-	void Jumping(){
-		if (Input.GetKeyDown (KeyCode.Space) && grounded) {
-			rb.AddRelativeForce (Vector3.up * jumpForce);
-			if (_jumpSound)
-				_jumpSound.Play ();
-			else
-				print ("Missig jump sound.");
-			_walkSound.Stop ();
-			_runSound.Stop ();
-		}
-	}
-	/*
-	* Update loop calling other stuff
-	*/
-	void Update(){
-		
 
-		Jumping ();
-
-		Crouching();
-
+	
+	void Update()
+	{
+	 
 		WalkingSound ();
 
 

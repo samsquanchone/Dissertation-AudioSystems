@@ -465,10 +465,7 @@ public class GunScript : MonoBehaviour {
 		if(bulletsIHave > 0 && bulletsInTheGun < amountOfBulletsPerLoad && !reloading/* && !aiming*/){
 
 			if (reloadSound_source.isPlaying == false && reloadSound_source != null) {
-				if (reloadSound_source)
-					reloadSound_source.Play ();
-				else
-					print ("'Reload Sound Source' missing.");
+				AudioPlayback.PlayOneShot(FmodEventReferences.Instance.reloadSFX, null);
 			}
 		
 
@@ -500,7 +497,7 @@ public class GunScript : MonoBehaviour {
 					}
 				}
 			} else {
-				reloadSound_source.Stop ();
+				
 
 				print ("Reload interrupted via meele attack");
 			}

@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Static utlity script for abstracting FMOD param API, to provide easier adaptability to audio
+/// 
+/// Author: Sam Scott
+/// </summary>
 public class FmodParams : MonoBehaviour
 {
 

@@ -328,7 +328,6 @@ GameObject:
   m_Component:
   - component: {fileID: 221650545}
   - component: {fileID: 221650544}
-  - component: {fileID: 221650546}
   m_Layer: 0
   m_Name: FmodReferences
   m_TagString: Untagged
@@ -357,11 +356,18 @@ MonoBehaviour:
     Path: event:/ProceduralAndOneShots/Shooting
   footstepSFX:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 91169201
+      Data2: 1301892400
+      Data3: 1085804470
+      Data4: 1159739722
+    Path: event:/ProceduralAndOneShots/Footsteps
+  reloadSFX:
+    Guid:
+      Data1: -280559637
+      Data2: 1093713800
+      Data3: -1326059342
+      Data4: -1249658559
+    Path: event:/ProceduralAndOneShots/Reload
 --- !u!4 &221650545
 Transform:
   m_ObjectHideFlags: 0
@@ -377,37 +383,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &221650546
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 221650543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CollisionTag: 
-  EventReference:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  Event: 
-  PlayEvent: 0
-  StopEvent: 0
-  AllowFadeout: 1
-  TriggerOnce: 0
-  Preload: 0
-  AllowNonRigidbodyDoppler: 0
-  Params: []
-  OverrideAttenuation: 0
-  OverrideMinDistance: -1
-  OverrideMaxDistance: -1
 --- !u!1 &353669936
 GameObject:
   m_ObjectHideFlags: 0

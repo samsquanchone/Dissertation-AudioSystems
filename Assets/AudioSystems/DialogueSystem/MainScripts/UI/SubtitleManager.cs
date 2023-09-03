@@ -4,6 +4,12 @@ using UnityEngine;
 using TMPro;
 using DialogueUtility;
 
+
+/// <summary>
+/// Subtitle system that is used to construct subtitles from different XML file variables for the dialogue lines. 
+/// 
+///Author: Sam Scott
+/// </summary>
 public class SubtitleManager : MonoBehaviour, IDialogueObserver
 {
     [SerializeField] private GameObject subtitleContainer;
@@ -12,7 +18,6 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
     [SerializeField] private TMP_Text dialogueLineText;
     [SerializeField] private TMP_Text interactText;
     [SerializeField] private GameObject playerResponseObject;
-    [SerializeField] private GameObject responsePanel;
 
 
 
@@ -31,8 +36,10 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
             case DialogueState.DialogueEnd:
                 CloseSubtitleInterace();
 
-                if(sequenceType != SequenceType.PlayerResponse)
-                CloseParentInterface();
+                if (sequenceType != SequenceType.PlayerResponse || sequenceType != SequenceType.Sequential && instanceID == DialogueManager.Instance.GetCurrentInteractNPCID())
+                {
+                    CloseParentInterface();
+                }
                 break;
 
             case DialogueState.ConversationStart:
@@ -122,7 +129,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
     {
 
         subtitleContainer.SetActive(true);
-        if (!responsePanel.activeInHierarchy && !dialogueContainer.activeInHierarchy)
+        if (!playerResponseObject.activeInHierarchy && !dialogueContainer.activeInHierarchy)
             interactText.gameObject.SetActive(true);
     }
     /// <summary>
@@ -131,7 +138,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
     private void HideInteractionUI()
     {
         interactText.gameObject.SetActive(false);
-        if(!dialogueContainer.activeInHierarchy && !responsePanel.activeInHierarchy)
+        if(!dialogueContainer.activeInHierarchy && !playerResponseObject.activeInHierarchy)
         subtitleContainer.SetActive(false);
     }
     public bool IsInteractPanelActive()
@@ -155,6 +162,7 @@ public class SubtitleManager : MonoBehaviour, IDialogueObserver
 
     private void CloseParentInterface()
     {
+        if(!playerResponseObject.activeInHierarchy)
         subtitleContainer.SetActive(false);
     }
 

@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+
+/// <summary>
+/// Data structures for player response info
+/// 
+/// Author: Sam Scott
+/// </summary>
 [System.Serializable]
 [CreateAssetMenu()]
 public class PlayerResponse : ScriptableObject

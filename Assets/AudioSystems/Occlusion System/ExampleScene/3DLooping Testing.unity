@@ -578,7 +578,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 156204698}
   m_LocalRotation: {x: -0, y: 0.9987491, z: -0, w: -0.050003074}
-  m_LocalPosition: {x: 6.29, y: -9.72, z: -4.54}
+  m_LocalPosition: {x: 6.29, y: -9.72, z: 7.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -841,8 +841,8 @@ MonoBehaviour:
     Path: event:/SpatialAudio/Music-Occlusion
   parameterName: Occlusion
   Listener: {fileID: 846680751}
-  SoundOcclusionWidening: 5.01
-  PlayerOcclusionWidening: 1
+  soundOcclusionWidening: 3.02
+  playerOcclusionWidening: 1
   OcclusionLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -936,8 +936,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330703572}
   m_LocalRotation: {x: -0, y: -0.5954608, z: -0, w: 0.8033844}
-  m_LocalPosition: {x: 3.6035671, y: -7.6203, z: -7.4669647}
-  m_LocalScale: {x: 0.74280876, y: 4.974782, z: 4.8606997}
+  m_LocalPosition: {x: 3.6035671, y: -8.0756, z: -7.4669647}
+  m_LocalScale: {x: 0.74280876, y: 4, z: 4.8606997}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 718079804}
@@ -1101,8 +1101,8 @@ MonoBehaviour:
     Path: event:/SpatialAudio/Voices-Occlusion
   parameterName: Occlusion
   Listener: {fileID: 846680751}
-  SoundOcclusionWidening: 1
-  PlayerOcclusionWidening: 0.27
+  soundOcclusionWidening: 1
+  playerOcclusionWidening: 1
   OcclusionLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1814,8 +1814,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1071900914}
   m_LocalRotation: {x: -0, y: -0.7698492, z: -0, w: 0.638226}
-  m_LocalPosition: {x: -16.436432, y: -7.6184, z: -7.4669647}
-  m_LocalScale: {x: 0.74280876, y: 4.9793153, z: 4.8606997}
+  m_LocalPosition: {x: -16.436432, y: -8.0515, z: -7.4669647}
+  m_LocalScale: {x: 0.74280876, y: 4, z: 4.8606997}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 718079804}
@@ -2237,7 +2237,7 @@ Transform:
   m_GameObject: {fileID: 1312107575}
   m_LocalRotation: {x: -0, y: -0.7063203, z: -0, w: 0.7078925}
   m_LocalPosition: {x: -6.4899, y: -7.5919, z: -6.0869646}
-  m_LocalScale: {x: 0.74280864, y: 5.0320907, z: 0.4920929}
+  m_LocalScale: {x: 0.74280864, y: 4, z: 0.4920929}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 718079804}
@@ -2458,8 +2458,8 @@ MonoBehaviour:
     Path: event:/SpatialAudio/Music-Occlusion
   parameterName: Occlusion
   Listener: {fileID: 846680751}
-  SoundOcclusionWidening: 5.38
-  PlayerOcclusionWidening: 1
+  soundOcclusionWidening: 3
+  playerOcclusionWidening: 1
   OcclusionLayer:
     serializedVersion: 2
     m_Bits: 8

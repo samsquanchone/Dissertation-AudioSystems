@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   qCubes: {fileID: 4507575390719910873, guid: ebdf84fecc469aa4984c26dacea671f4, type: 3}
+  cubeContainer: {fileID: 4727986939967671702, guid: ebdf84fecc469aa4984c26dacea671f4, type: 3}

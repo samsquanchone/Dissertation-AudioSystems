@@ -5,13 +5,19 @@ using UnityEngine.Events;
 using DialogueSystem.DataStructure;
 using DialogueSystem.FileHandling;
 
+/// <summary>
+/// Interface for observers of dialogue system
+/// </summary>
 public interface IDialogueObserver
 {
     public void OnNotify(DialogueState state, SequenceType sequeneType, int InstanceID);
 }
 
-
-//events with enum for different state of dialogue
+/// <summary>
+/// This script handles the deserialization of an XML system for an NPC. It is also used to dictate triggering a dialogue and setting up the related parameters and setting the sequence type parameters. 
+/// 
+/// Author: Sam Scott
+/// </summary>
 namespace DialogueSystem.EntityNPC
 {
     public enum TriggerType { TriggerEnter, Collision, Radius, TriggerExit, Custom } //Alow user to determine how the dialogue from the xml file is triggered within the game engine 
@@ -43,10 +49,8 @@ namespace DialogueSystem.EntityNPC
         [Tooltip("Link functions you would like to trigger when a dialogue within the conversation starts e.g. ending animations")]
         [SerializeField] private List<UnityEvent> dialogueEndEvents;
 
-
         [HideInInspector] public Transform objectToAttachTo = null;
-        public GameObject player;
-
+       
         [HideInInspector] public float distance;
         public bool is3D = false;
 
@@ -138,11 +142,11 @@ namespace DialogueSystem.EntityNPC
         {
             if (this.triggerType == TriggerType.Radius)
             {
-                this.distance = Vector3.Distance(this.gameObject.transform.position, this.player.transform.position);
+                this.distance = Vector3.Distance(this.gameObject.transform.position, DialogueManager.Instance.GetPlayerTransform().position);
 
 
 
-                if (Vector3.Distance(this.gameObject.transform.position, player.transform.position) < this.radius) //&& !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
+                if (Vector3.Distance(this.gameObject.transform.position, DialogueManager.Instance.GetPlayerTransform().position) < this.radius) //&& !DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
                 {
                     DialogueManager.Instance.SetInteractNPCID(this.GetInstanceID());
 
@@ -159,7 +163,7 @@ namespace DialogueSystem.EntityNPC
                         DialogueManager.Instance.HideInteractUI(this.sequenceType);
                     }
 
-                    if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius)) //|| hasGeneratedResponseInterface))
+                    if (!DialogueManager.Instance.subtitleManager.IsInteractPanelActive() && (Vector3.Distance(this.gameObject.transform.position, DialogueManager.Instance.GetPlayerTransform().position) > this.radius)) 
                     {
 
                         DialogueManager.Instance.ExitConversation(this.sequenceType);
@@ -170,7 +174,7 @@ namespace DialogueSystem.EntityNPC
 
                 }
 
-                else if (Vector3.Distance(this.gameObject.transform.position, this.player.transform.position) > this.radius && this.GetInstanceID() == DialogueManager.Instance.GetCurrentInteractNPCID() && DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
+                else if (Vector3.Distance(this.gameObject.transform.position, DialogueManager.Instance.GetPlayerTransform().position) > this.radius && this.GetInstanceID() == DialogueManager.Instance.GetCurrentInteractNPCID() && DialogueManager.Instance.subtitleManager.IsInteractPanelActive())
                 {
                     DialogueManager.Instance.HideInteractUI(this.sequenceType);
 

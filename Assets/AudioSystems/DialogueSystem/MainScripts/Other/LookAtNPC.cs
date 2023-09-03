@@ -6,7 +6,10 @@ using UnityEngine;
 
 public class LookAtNPC : MonoBehaviour
 {
+    [Tooltip("Attach player camera here")]
     public Transform mainCameraTransform;
+
+    [Tooltip("Set speed you want lerp function to progress at")]
     public float speed = 1f;
 
     private Coroutine lookAtCoroutine;

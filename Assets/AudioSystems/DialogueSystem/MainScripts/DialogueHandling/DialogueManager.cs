@@ -25,8 +25,8 @@ public interface DialogueSubject
 }
 
 /// <summary>
-/// This is where the handling of a sequence of dialogue is handled, e.g. if just a random the queue size would be one, 
-/// where with sequence it would be either: time of clip + buffer, or on input e.g. space 
+/// This is where the handling of a sequence of dialogue is handle. Further more it notifys observers of key moements in a conversation
+/// Author: Sam Scott
 /// </summary>
 public class DialogueManager : MonoBehaviour, DialogueSubject
 {
@@ -36,12 +36,18 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
     private static DialogueManager m_instance;
 
     public List<IDialogueObserver> dialogueObservers { get; set; }
+
+    [Tooltip("If empty then drag an object with the DialogueUIManager script onto here")]
     public SubtitleManager subtitleManager;
     private LookAtNPC lookAt;
+
+    [Tooltip("Drag player object into this field")]
     public Transform player;
 
-
+    [Tooltip("Response bindings, please make 6 bindings if changing default ones. (Will also need to change string in responseUI script if changing bindings)")]
     [SerializeField] List<KeyCode> responseInputKeys = new(6);
+
+    [Tooltip("Binding to escape conversation. Note will need to change this inthe response UI script for the string that shows in UI text)")]
     [SerializeField] KeyCode escDialogueKey;
 
     DialogueState state = DialogueState.ConversationEnd;
@@ -731,5 +737,10 @@ public class DialogueManager : MonoBehaviour, DialogueSubject
         {
             observer.OnNotify(state, sequenceType, currentEntityID);
         }
+    }
+
+    public Transform GetPlayerTransform()
+    {
+        return player;
     }
 }

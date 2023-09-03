@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
 
+
 public class FmodEventReferences : MonoBehaviour
 {
     //Singleton decleration
@@ -12,6 +13,7 @@ public class FmodEventReferences : MonoBehaviour
     //What-ever fmod events you would like to reference
     public EventReference gunShotSFX;
     public EventReference footstepSFX;
+    public EventReference reloadSFX;
 
     private void Start()
     {

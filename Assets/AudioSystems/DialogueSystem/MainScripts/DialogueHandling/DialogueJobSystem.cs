@@ -9,6 +9,9 @@ using UnityEngine;
 /// However, the Unity API is not thread safe, hence utilising the job system which is method provided by Unity to support multi-threading!
 /// 
 /// Note: a unity job cant have reference types in it, hence the little class and static class to be able to cache values from the dialogue job system class constructor!
+/// 
+/// 
+/// Author: Sam Scott
 /// </summary>
 /// 
 public class DialogueJobSystem
