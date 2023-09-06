@@ -1,3 +1,5 @@
+using FMOD.Studio;
+using FMODUnity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,12 +9,12 @@ public class AudioPlayback : MonoBehaviour
     //Use to play basic one shot with no param values, can make 3D by passing gameobj as argument, or leave argument as null if 2D
     public static void PlayOneShot(FMODUnity.EventReference fmodEvent, Transform transformToAttachTo)
     {
-        FMOD.Studio.EventInstance instance = FMODUnity.RuntimeManager.CreateInstance(fmodEvent);
+        EventInstance instance = RuntimeManager.CreateInstance(fmodEvent);
 
         //Check if position has been given to attach event to that position and make 3D
         if (transformToAttachTo != null)
         {
-            FMODUnity.RuntimeManager.AttachInstanceToGameObject(instance, transformToAttachTo);
+            RuntimeManager.AttachInstanceToGameObject(instance, transformToAttachTo);
         }
 
         instance.start();
@@ -22,9 +24,9 @@ public class AudioPlayback : MonoBehaviour
 
     //This is a genric function that has a generic param type 'value', when calling this function you will need to cast 'value' to the desired type
     // and replace <T> with desired type
-    public static void PlayOneShotWithParameters<T>(FMODUnity.EventReference fmodEvent, Transform transformToAttachTo, params (string name, T value)[] parameters)
+    public static void PlayOneShotWithParameters<T>(EventReference fmodEvent, Transform transformToAttachTo, params (string name, T value)[] parameters)
     {
-        FMOD.Studio.EventInstance instance = FMODUnity.RuntimeManager.CreateInstance(fmodEvent);
+        EventInstance instance = RuntimeManager.CreateInstance(fmodEvent);
 
         foreach (var (name, value) in parameters)
         {  
@@ -46,7 +48,7 @@ public class AudioPlayback : MonoBehaviour
         //Check if position has been given to attach event to that position and make 3D
         if (transformToAttachTo != null)
         {
-            FMODUnity.RuntimeManager.AttachInstanceToGameObject(instance, transformToAttachTo);
+            RuntimeManager.AttachInstanceToGameObject(instance, transformToAttachTo);
         }
 
         instance.start();
