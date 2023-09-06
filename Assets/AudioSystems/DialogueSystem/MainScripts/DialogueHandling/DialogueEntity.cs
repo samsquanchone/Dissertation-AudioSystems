@@ -20,7 +20,7 @@ public interface IDialogueObserver
 /// </summary>
 namespace DialogueSystem.EntityNPC
 {
-    public enum TriggerType { TriggerEnter, Collision, Radius, TriggerExit, Custom } //Alow user to determine how the dialogue from the xml file is triggered within the game engine 
+    public enum TriggerType { TriggerEnter, Collision, Radius, TriggerExit} //Alow user to determine how the dialogue from the xml file is triggered within the game engine 
     public enum ColliderType { BoxCollider, SphereCollider, CapsuleCollider, Invalid } //Used to determine what collider type the user has attached to the triggerObject
 
 
