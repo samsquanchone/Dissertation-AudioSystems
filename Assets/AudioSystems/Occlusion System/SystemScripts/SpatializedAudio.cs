@@ -44,18 +44,22 @@ public class SpatializedAudio : MonoBehaviour
     [SerializeField]
     private LayerMask OcclusionLayer;
 
+    
+    /// <summary>
+    /// Non-designer variables, therefore not exposed in inspector
+    /// </summary>
     private bool isAudioVirtual;
     private float maxDistance;
     private float listenerDistance;
     private float lineCastHitCount = 0f;
     private Color colour;
-
     private float minDistance;
 
    
 
     private void Start()
     {
+        //Set up the fmod event
         audioEvent = RuntimeManager.CreateInstance(audioRef);
         RuntimeManager.AttachInstanceToGameObject(audioEvent, GetComponent<Transform>(), GetComponent<Rigidbody>());
         audioEvent.start();
@@ -76,6 +80,7 @@ public class SpatializedAudio : MonoBehaviour
 
     }
 
+    //Get FMOD info and distance info to provide to occlusion function
     private void FixedUpdate()
     {
         audioEvent.isVirtual(out isAudioVirtual);
@@ -89,7 +94,7 @@ public class SpatializedAudio : MonoBehaviour
     }
 
     /// <summary>
-    /// Handles the casting of rays
+    /// Calculate vectors and pass to line cast function
     /// </summary>
     /// <param name="sound"> sound source vector 3 vals </param>
     /// <param name="listener"> listener vector 3 vals </param>
@@ -171,6 +176,12 @@ public class SpatializedAudio : MonoBehaviour
         return new Vector3(x, a.y, z);
     }
 
+
+    /// <summary>
+    /// Handles the casting of lines 
+    /// </summary>
+    /// <param name="Start">Origin of line cast</param>
+    /// <param name="End">End pos of line cast</param>
     private void CastLine(Vector3 Start, Vector3 End)
     {
         RaycastHit hit;
@@ -185,6 +196,10 @@ public class SpatializedAudio : MonoBehaviour
             Debug.DrawLine(Start, End, colour);
     }
 
+
+    /// <summary>
+    /// Sets the occlusion val for the FMOD param
+    /// </summary>
     private void SetParameter()
     {
         audioEvent.setParameterByName(parameterName, lineCastHitCount / 11);
