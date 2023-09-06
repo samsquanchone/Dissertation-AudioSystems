@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: Alex
   responseNodeName: 'Dora Quest '
-  nodeTransitionMode: 0
   npcID: 900187457
   playerResponses:
   - responseText: Who are you?
@@ -24,14 +23,14 @@ MonoBehaviour:
     isExitNode: 0
     eventsList: []
     conditionsTrue: 1
-  - responseText: Sorry don't have time to chat
+  - responseText: Sorry, don't have time to chat
     condition: []
     npcLineID: 99990231
     transitionNode: {fileID: 0}
     isExitNode: 1
     eventsList: []
     conditionsTrue: 1
-  - responseText: What is it
+  - responseText: What is it?
     condition:
     - gameDataConditionName: CompletedQuest
       triggerCondition: 2
@@ -41,7 +40,7 @@ MonoBehaviour:
     transitionNode: {fileID: 11400000, guid: a12d9eef7d8c94344a062652595534d7, type: 2}
     isExitNode: 0
     eventsList: []
-    conditionsTrue: 1
+    conditionsTrue: 0
   fmodEvent:
     Guid:
       Data1: -653277270

@@ -42,7 +42,7 @@ public class PlayerResponseData
     [Tooltip("Text for the player response, will be provided to the subtitle system")]
     public string responseText;
 
-    [Tooltip("List of conditions that will need to be met before a response will be shown (Note: Currently conditions are only of an AND logic type and do not support OR types)")]
+    [Tooltip("List of conditions that will need to be met before a response will be shown (Note: Currently conditions are only of an OR logic type and do not support AND types)")]
     public List<NodeCondition> condition;
 
     [Tooltip("ID of the desired NPC line that you would like this response to trigger from its hash table entry")]

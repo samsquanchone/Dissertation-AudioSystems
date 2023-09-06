@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: Alex
   responseNodeName: GetQuest
-  nodeTransitionMode: 0
   npcID: 1041
   playerResponses:
   - responseText: Hey, how is it going?
@@ -23,12 +22,14 @@ MonoBehaviour:
     transitionNode: {fileID: 0}
     isExitNode: 0
     eventsList: []
-  - responseText: Know of anything I can do round here?
+    conditionsTrue: 1
+  - responseText: Know of anything I can do around here?
     condition: []
     npcLineID: 4567
     transitionNode: {fileID: 11400000, guid: 1b00f9c23eb8e5041aa5347d3ff7bdeb, type: 2}
     isExitNode: 0
     eventsList: []
+    conditionsTrue: 1
   fmodEvent:
     Guid:
       Data1: -653277270
